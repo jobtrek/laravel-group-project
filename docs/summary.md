@@ -73,6 +73,7 @@ Each project shows:
 - After **1 month** with no update → a **reminder email** is sent.
 - **1 week after** that first email with still no update → a **second, stronger email**, copied to **everyone with a follow-up role** on the project.
 
+
 ### Archives
 - **Each stage has its own separate archive.**
 - Archived projects can be **restored to the correct category**.
@@ -92,4 +93,6 @@ flows **Proposition → Direction → Récolte → En cours**, with refused item
 - Project lead: can see and comment on all projects in "En cours", regardless of whether they proposed them or not.
 - Direction: can see and comment on all projects in "Direction", and can move projects between stages.
 - Récolte manager: can see and comment on all projects in "Récolte", and can move projects between stages.
+
+
 
