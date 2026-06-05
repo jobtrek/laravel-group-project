@@ -23,4 +23,4 @@ suivre dans l'application. Nous proposons de complètement exclure les tâches d
 * clarifier le prérimetre d'une proposition
 
 
-CLARIFY THE PDF WITH THE CLIENT THE PDF 
+CLARIFY THE PDF WITH THE CLIENT THE PDF, 
