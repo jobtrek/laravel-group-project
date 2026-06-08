@@ -1,34 +1,21 @@
 erDiagram
 
+ROLE {
+    int id
+    string name
+}
 
 USER {
     int id
     string name
     string email
-    string role
-}
-
-DIRECTOR {
-    int user_id
-}
-
-COLLABORATORS {
-    int user_id
-}
-
-PROJECT_MANAGER {
-    int user_id
+    int role_id
 }
 
 TEAM {
     int id
     int user_id
     string name
-}
-
-FINANCIER {
-    int id
-    int user_id
 }
 
 PROJECT {
@@ -46,10 +33,11 @@ PROJECT_PROPOSAL {
     datetime created_at
 }
 
-ARCHIVE_OF_REJECTED {
+ARCHIVE {
     int id
     int project_id
-    datetime rejected_at
+    string status
+    datetime created_at
 }
 
 COMMENT {
@@ -76,35 +64,24 @@ PROJECTS_APPROVED {
     datetime approved_at
 }
 
-ARCHIVE_OF_COMPLETED {
-    int id
-    int project_id
-    datetime completed_at
-}
+%% ROLE relations
+ROLE ||--o{ USER : has
 
-USER ||--o| DIRECTOR : is
-USER ||--o| COLLABORATORS : is
-USER ||--o| PROJECT_MANAGER : is
-USER ||--o| FINANCIER : is
-
+%% USER relations
 USER ||--o{ PROJECT : creates
-
-COLLABORATORS }o--o{ PROJECT : participates
-
-PROJECT ||--o| PROJECT_PROPOSAL : proposed
-
-PROJECT ||--o| ARCHIVE_OF_REJECTED : rejected
-
-PROJECT ||--o| ARCHIVE_OF_COMPLETED : completed
-
-PROJECT ||--o{ COMMENT : has
 USER ||--o{ COMMENT : writes
 
+%% COLLABORATION
+USER }o--o{ PROJECT : participates
+
+%% PROJECT relations
+PROJECT ||--o| PROJECT_PROPOSAL : proposed
+PROJECT ||--o{ ARCHIVE : archived
+PROJECT ||--o{ COMMENT : has
 PROJECT ||--o| PROJECTS_APPROVED : approved
-
-TEAM ||--o{ PROJECTS_APPROVED : realizes
-PROJECT_MANAGER ||--o{ PROJECTS_APPROVED : manages
-
 PROJECT ||--o| PROJECTS_APPROVED_FOR_FUNDING : funded
-FINANCIER ||--o{ PROJECTS_APPROVED_FOR_FUNDING : finances
 
+%% TEAM / APPROVAL
+TEAM ||--o{ PROJECTS_APPROVED : realizes
+USER ||--o{ PROJECTS_APPROVED : manages
+USER ||--o{ PROJECTS_APPROVED_FOR_FUNDING : finances
