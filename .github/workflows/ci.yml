@@ -13,9 +13,13 @@ jobs:
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
-          php-version: '8.5'
+          php-version: "8.5"
       - name: Install dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
+      - name: Copy .env
+        run: cp .env.example .env
+      - name: Generate application key
+        run: php artisan key:generate
       - name: Run Pint (Linting & Formatting)
         run: vendor/bin/pint --test
       - name: Run PHP Stan
