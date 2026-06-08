@@ -1,0 +1,61 @@
+erDiagram
+
+    USER {
+        int id PK
+        string name
+        string email
+        string role
+    }
+
+    PROJECT {
+        int id PK
+        string title
+        text form_data
+        string status
+        datetime created_at
+    }
+
+    COMMENT {
+        int id PK
+        int project_id FK
+        int author_id FK
+        text content
+        datetime created_at
+    }
+
+    FUNDING {
+        int id PK
+        int project_id FK
+        int financier_id FK
+        decimal target_amount
+        decimal found_amount
+        datetime updated_at
+    }
+
+    TEAM {
+        int id PK
+        string name
+    }
+
+    PROJECT_TEAM {
+        int project_id FK
+        int team_id FK
+    }
+
+    %% Project proposer
+    USER ||--o{ PROJECT : proposes
+
+    %% Comments
+    USER ||--o{ COMMENT : writes
+    PROJECT ||--o{ COMMENT : contains
+
+    %% Funding
+    USER ||--o{ FUNDING : manages
+    PROJECT ||--o| FUNDING : has
+
+    %% Project chief
+    USER o|--o{ PROJECT : leads
+
+    %% Teams
+    PROJECT ||--o{ PROJECT_TEAM : assigned
+    TEAM ||--o{ PROJECT_TEAM : contains
