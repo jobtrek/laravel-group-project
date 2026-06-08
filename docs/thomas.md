@@ -12,7 +12,6 @@ and the nice-to-have needs
 what will the project will not have -> clarify the project's needs.
 what will be the first acceptance conditions
 
-
 an application that tracks the progress of projects of apprentices
 35 collaborators, 
 
