@@ -1,14 +1,14 @@
 erDiagram
 
     USER {
-        int id 
+        int id
         string name
         string email
         string role
     }
 
-    direction {
-        sint user_id 
+    director {
+        int user_id
     }
 
     collaborators {
@@ -16,23 +16,22 @@ erDiagram
     }
 
     project_manager {
-        user_id
+        int user_id
     }
 
     team {
         int id
-        int user_id 
+        int user_id
         string name
     }
 
-    financier{
+    financier {
         int id
-        int user_id 
+        int user_id
     }
 
-
     PROJECT {
-        int id 
+        int id
         int author_id
         string title
         text form_data
@@ -41,59 +40,60 @@ erDiagram
     }
 
     project_proposal {
-        int id 
+        int id
         int project_id
         datetime created_at
     }
 
-user ||--|| cololaborators : be
-colaborators }o--|| PROJECT : created
-project_proposal ||--o{} PROJECT : checking
-
-archive_of_rejected {
-    int id
-    int project_id
-    datetime rejected_at
-}
-
-archive_of_rejected ||--o{} PROJECT : rejected
+    archive_of_rejected {
+        int id
+        int project_id
+        datetime rejected_at
+    }
 
     COMMENT {
         int id
-        int project_id 
-        int author_id 
+        int project_id
+        int author_id
         text content
         datetime created_at
     }
 
+    projects_approved_for_funding {
+        int id
+        int project_id
+        int financier_id
+        datetime approved_at
+    }
 
-projects_approved_for_funding {
-    int id
-    int project_id
-    int financier_id
-    datetime approved_at
-}
+    projects_approved {
+        int id
+        int project_id
+        int team_id
+        int project_manager_id
+        int COMMENT_id
+        datetime approved_at
+    }
 
-projects_approved  {
-    int id 
-    int project_id
-    int team_id
-    int project_manager_id
-    int comment_id
-    datetime approved_at
-}
+    archive_of_completed {
+        int id
+        int project_id
+        datetime completed_at
+    }
 
-archive_of_completed {
-    int id
-    int project_id
-    datetime completed_at
-}
+    USER ||--|| collaborators : be
+    collaborators }o--|| PROJECT : created
 
-project_manager ||--o{ comment : make
-projects_approved ||--o{} PROJECT : be  
-projects_approved ||--|| team : realized_by
-projects_approved ||--|| project_manager : managed_by
-projects_approved ||--o{} COMMENT : have
+    project_proposal ||--o{ PROJECT : checking
 
-projects_approved_for_funding ||--o{} PROJECT : be_funded_by
-projects_approved_for_funding ||--o{} financier : funded_by
+    archive_of_rejected ||--o{ PROJECT : rejected
+
+    project_manager ||--o{ COMMENT : make
+
+    projects_approved ||--o{ PROJECT : be
+    projects_approved ||--|| team : realized_by
+    projects_approved ||--|| project_manager : managed_by
+    projects_approved ||--o{ COMMENT : have
+
+    projects_approved_for_funding ||--o{ PROJECT : be_funded_by
+    projects_approved_for_funding ||--o{ financier : funded_by
