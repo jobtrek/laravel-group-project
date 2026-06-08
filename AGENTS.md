@@ -1,0 +1,1 @@
+/home/thomas/Desktop/ai-context/GEMINI.md
