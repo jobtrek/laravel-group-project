@@ -1,0 +1,72 @@
+## perimeter
+
+* perimeter is a multi-line input field where the user describes the essence of the project.
+* The user already knows what to enter here.
+* In short, the perimeter describes **what the project does and what it does not do**.
+
+---
+
+## Project Phases
+
+* The user fills in the project phases themselves.
+* **Minimum requirement**: at least one phase must be completed.
+* The user determines the **size of the project**.
+
+---
+
+## Project Evaluation
+
+* There is a **predefined evaluation formula**, known to the client and their users.
+* The system’s task is to **calculate scores** according to this formula.
+* Projects submitted for review must be displayed **in descending order of score**.
+
+---
+
+## Roles and Permissions
+
+All roles can view all projects.
+
+### 1. Regular User / Collaborator
+
+* Can propose new projects.
+* Can edit projects they have proposed.
+
+### 2. Manager
+
+* Can reject proposed projects.
+* Can approve proposed projects.
+* Can request additional details on a proposed project.
+
+### 3. Project Lead / Project Administrator
+
+* Can comment on and update projects.
+* The project lead can **modify project resources**, but only for projects that are in progress.
+* For the project administrator, it is recommended to clarify permissions separately.
+
+### 4. Financial Officer / Support
+
+* Present only for projects that are **approved and seeking funding**.
+
+---
+
+## Archive Limits
+
+* Projects can remain in the archive **for no more than one year**, if they:
+
+  * have not been touched,
+  * have not been updated,
+  * or have not been returned to active status.
+
+---
+
+## Project Team
+
+* A list of people working on the project.
+
+---
+
+## Role Assignment
+
+* A user is created **with a default role**: regular user / collaborator.
+* The role can only be changed by the **site administrator**.
+
