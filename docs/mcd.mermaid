@@ -1,61 +1,99 @@
 erDiagram
 
     USER {
-        int id PK
+        int id 
         string name
         string email
         string role
     }
 
+    direction {
+        sint user_id 
+    }
+
+    collaborators {
+        int user_id
+    }
+
+    project_manager {
+        user_id
+    }
+
+    team {
+        int id
+        int user_id 
+        string name
+    }
+
+    financier{
+        int id
+        int user_id 
+    }
+
+
     PROJECT {
-        int id PK
+        int id 
+        int author_id
         string title
         text form_data
         string status
         datetime created_at
     }
 
+    project_proposal {
+        int id 
+        int project_id
+        datetime created_at
+    }
+
+user ||--|| cololaborators : be
+colaborators }o--|| PROJECT : created
+project_proposal ||--o{} PROJECT : checking
+
+archive_of_rejected {
+    int id
+    int project_id
+    datetime rejected_at
+}
+
+archive_of_rejected ||--o{} PROJECT : rejected
+
     COMMENT {
-        int id PK
-        int project_id FK
-        int author_id FK
+        int id
+        int project_id 
+        int author_id 
         text content
         datetime created_at
     }
 
-    FUNDING {
-        int id PK
-        int project_id FK
-        int financier_id FK
-        decimal target_amount
-        decimal found_amount
-        datetime updated_at
-    }
 
-    TEAM {
-        int id PK
-        string name
-    }
+projects_approved_for_funding {
+    int id
+    int project_id
+    int financier_id
+    datetime approved_at
+}
 
-    PROJECT_TEAM {
-        int project_id FK
-        int team_id FK
-    }
+projects_approved  {
+    int id 
+    int project_id
+    int team_id
+    int project_manager_id
+    int comment_id
+    datetime approved_at
+}
 
-    %% Project proposer
-    USER ||--o{ PROJECT : proposes
+archive_of_completed {
+    int id
+    int project_id
+    datetime completed_at
+}
 
-    %% Comments
-    USER ||--o{ COMMENT : writes
-    PROJECT ||--o{ COMMENT : contains
+project_manager ||--o{ comment : make
+projects_approved ||--o{} PROJECT : be  
+projects_approved ||--|| team : realized_by
+projects_approved ||--|| project_manager : managed_by
+projects_approved ||--o{} COMMENT : have
 
-    %% Funding
-    USER ||--o{ FUNDING : manages
-    PROJECT ||--o| FUNDING : has
-
-    %% Project chief
-    USER o|--o{ PROJECT : leads
-
-    %% Teams
-    PROJECT ||--o{ PROJECT_TEAM : assigned
-    TEAM ||--o{ PROJECT_TEAM : contains
+projects_approved_for_funding ||--o{} PROJECT : be_funded_by
+projects_approved_for_funding ||--o{} financier : funded_by
