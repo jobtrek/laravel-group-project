@@ -8,21 +8,75 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
+    services:
+      postgres:
+        image: postgres:18
+        env:
+          POSTGRES_DB: testing
+          POSTGRES_USER: laravel
+          POSTGRES_PASSWORD: password
+        ports:
+          - 5432:5432
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 5
+
+    env:
+      DB_CONNECTION: pgsql
+      DB_HOST: 127.0.0.1
+      DB_PORT: 5432
+      DB_DATABASE: testing
+      DB_USERNAME: laravel
+      DB_PASSWORD: password
+
     steps:
       - uses: actions/checkout@v4
+
       - name: Set up PHP
         uses: shivammathur/setup-php@v2
         with:
           php-version: "8.5"
-      - name: Install dependencies
+          extensions: pdo_pgsql
+
+      - name: Cache Composer dependencies
+        uses: actions/cache@v4
+        with:
+          path: vendor
+          key: ${{ runner.os }}-composer-${{ hashFiles('**/composer.lock') }}
+          restore-keys: ${{ runner.os }}-composer-
+
+      - name: Install PHP dependencies
         run: composer install --no-progress --prefer-dist --optimize-autoloader
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "25"
+          cache: "npm"
+
+      - name: Install Node dependencies
+        run: npm ci
+
+      - name: Build frontend assets
+        run: npm run build
+
       - name: Copy .env
         run: cp .env.example .env
+
       - name: Generate application key
         run: php artisan key:generate
+
+      - name: Run migrations
+        run: php artisan migrate --force
+
       - name: Run Pint (Linting & Formatting)
         run: vendor/bin/pint --test
+
       - name: Run PHP Stan
         run: vendor/bin/phpstan analyse
+
       - name: Run tests
         run: vendor/bin/phpunit --coverage-text --colors=never
