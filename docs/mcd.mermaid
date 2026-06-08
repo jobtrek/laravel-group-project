@@ -1,87 +1,89 @@
 erDiagram
 
-ROLE {
-    int id
-    string name
-}
+    ROLE {
+        int id
+        string name
+    }
 
-USER {
-    int id
-    string name
-    string email
-    int role_id
-}
+    USER {
+        int id
+        string name
+        string email
+        int role_id
+    }
 
-TEAM {
-    int id
-    int user_id
-    string name
-}
+    TEAM {
+        int id
+        string name
+    }
 
-PROJECT {
-    int id
-    int author_id
-    string title
-    text form_data
-    string status
-    datetime created_at
-}
+    PROJECT {
+        int id
+        int author_id
+        string title
+        text form_data
+        string status
+        datetime created_at
+        datetime updated_at
+    }
 
-PROJECT_PROPOSAL {
-    int id
-    int project_id
-    datetime created_at
-}
+    PROJECT_STATUS_HISTORY {
+        int id
+        int project_id
+        string old_status
+        string new_status
+        int changed_by
+        datetime changed_at
+    }
 
-ARCHIVE {
-    int id
-    int project_id
-    string status
-    datetime created_at
-}
+    PROJECT_FUNDING {
+        int id
+        int project_id
+        int financier_id
+        string funding_status
+        datetime assigned_at
+        datetime completed_at
+    }
 
-COMMENT {
-    int id
-    int project_id
-    int author_id
-    text content
-    datetime created_at
-}
+    PROJECT_EXECUTION {
+        int id
+        int project_id
+        int project_manager_id
+        int team_id
+        datetime started_at
+        datetime completed_at
+    }
 
-PROJECTS_APPROVED_FOR_FUNDING {
-    int id
-    int project_id
-    int financier_id
-    datetime approved_at
-}
+    COMMENT {
+        int id
+        int project_id
+        int author_id
+        text content
+        datetime created_at
+    }
 
-PROJECTS_APPROVED {
-    int id
-    int project_id
-    int team_id
-    int project_manager_id
-    int comment_id
-    datetime approved_at
-}
+    %% ROLES
+    ROLE ||--o{ USER : has
 
-%% ROLE relations
-ROLE ||--o{ USER : has
+    %% PROJECT AUTHOR
+    USER ||--o{ PROJECT : creates
 
-%% USER relations
-USER ||--o{ PROJECT : creates
-USER ||--o{ COMMENT : writes
+    %% COMMENTS
+    USER ||--o{ COMMENT : writes
+    PROJECT ||--o{ COMMENT : has
 
-%% COLLABORATION
-USER }o--o{ PROJECT : participates
+    %% COLLABORATORS
+    USER }o--o{ PROJECT : proposal_collaborators
 
-%% PROJECT relations
-PROJECT ||--o| PROJECT_PROPOSAL : proposed
-PROJECT ||--o{ ARCHIVE : archived
-PROJECT ||--o{ COMMENT : has
-PROJECT ||--o| PROJECTS_APPROVED : approved
-PROJECT ||--o| PROJECTS_APPROVED_FOR_FUNDING : funded
+    %% STATUS HISTORY
+    PROJECT ||--o{ PROJECT_STATUS_HISTORY : changes
+    USER ||--o{ PROJECT_STATUS_HISTORY : performs
 
-%% TEAM / APPROVAL
-TEAM ||--o{ PROJECTS_APPROVED : realizes
-USER ||--o{ PROJECTS_APPROVED : manages
-USER ||--o{ PROJECTS_APPROVED_FOR_FUNDING : finances
+    %% FUNDING
+    PROJECT ||--o| PROJECT_FUNDING : funding_process
+    USER ||--o{ PROJECT_FUNDING : finances
+
+    %% EXECUTION
+    PROJECT ||--o| PROJECT_EXECUTION : execution_process
+    USER ||--o{ PROJECT_EXECUTION : manages
+    TEAM ||--o{ PROJECT_EXECUTION : realizes
