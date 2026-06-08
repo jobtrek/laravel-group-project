@@ -1,1 +1,0 @@
-/home/thomas/Desktop/ai-context/AGENTS.md
