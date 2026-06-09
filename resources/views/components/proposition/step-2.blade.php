@@ -39,9 +39,9 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Objectives</label>
                         <p class="text-xs text-gray-500 mb-2">Measurable — what success looks like for this phase.</p>
                         <div class="space-y-2">
-                            <template x-for="(obj, oi) in phase.ressources_necessaires" :key="oi">
+                            <template x-for="(obj, oi) in phase.objectifs" :key="oi">
                                 <div class="flex gap-2">
-                                    <input type="text" :name="'phases[' + pi + '][ressources_necessaires][' + oi + ']'"
+                                    <input type="text" :name="'phases[' + pi + '][objectifs][' + oi + ']'"
                                         x-model="phase.objectifs[oi]" placeholder="Objective"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                     <button type="button" @click="removeItem(phase.objectifs, oi)"
@@ -79,18 +79,18 @@
                         <p class="text-xs text-gray-500 mb-2">e.g. "1 personne à 20% durant toute la phase", "1000 CHF
                             pour l'achat de matériel"</p>
                         <div class="space-y-2">
-                            <template x-for="(res, ri) in phase.ressources" :key="ri">
+                            <template x-for="(res, ri) in phase.ressources_necessaires" :key="ri">
                                 <div class="flex gap-2">
                                     <input type="text" :name="'phases[' + pi + '][ressources_necessaires][' + ri + ']'"
-                                        x-model="phase.ressources[ri]" placeholder="Resource"
+                                        x-model="phase.ressources_necessaires[ri]" placeholder="Resource"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    <button type="button" @click="removeItem(phase.ressources, ri)"
-                                        x-show="phase.ressources.length > 1"
+                                    <button type="button" @click="removeItem(phase.ressources_necessaires, ri)"
+                                        x-show="phase.ressources_necessaires.length > 1"
                                         class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
                                 </div>
                             </template>
                         </div>
-                        <button type="button" @click="phase.ressources.push('')"
+                        <button type="button" @click="phase.ressources_necessaires.push('')"
                             class="mt-2 text-sm text-indigo-600 hover:underline">+ Add resource</button>
                     </div>
                 </div>
