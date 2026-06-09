@@ -1,61 +1,89 @@
 erDiagram
 
+    ROLE {
+        int id
+        string name
+    }
+
     USER {
-        int id PK
+        int id
         string name
         string email
-        string role
+        int role_id
+    }
+
+    TEAM {
+        int id
+        string name
     }
 
     PROJECT {
-        int id PK
+        int id
+        int author_id
         string title
         text form_data
         string status
         datetime created_at
+        datetime updated_at
+    }
+
+    PROJECT_STATUS_HISTORY {
+        int id
+        int project_id
+        string old_status
+        string new_status
+        int changed_by
+        datetime changed_at
+    }
+
+    PROJECT_FUNDING {
+        int id
+        int project_id
+        int financier_id
+        string funding_status
+        datetime assigned_at
+        datetime completed_at
+    }
+
+    PROJECT_EXECUTION {
+        int id
+        int project_id
+        int project_manager_id
+        int team_id
+        datetime started_at
+        datetime completed_at
     }
 
     COMMENT {
-        int id PK
-        int project_id FK
-        int author_id FK
+        int id
+        int project_id
+        int author_id
         text content
         datetime created_at
     }
 
-    FUNDING {
-        int id PK
-        int project_id FK
-        int financier_id FK
-        decimal target_amount
-        decimal found_amount
-        datetime updated_at
-    }
+    %% ROLES
+    ROLE ||--o{ USER : has
 
-    TEAM {
-        int id PK
-        string name
-    }
+    %% PROJECT AUTHOR
+    USER ||--o{ PROJECT : creates
 
-    PROJECT_TEAM {
-        int project_id FK
-        int team_id FK
-    }
-
-    %% Project proposer
-    USER ||--o{ PROJECT : proposes
-
-    %% Comments
+    %% COMMENTS
     USER ||--o{ COMMENT : writes
-    PROJECT ||--o{ COMMENT : contains
+    PROJECT ||--o{ COMMENT : has
 
-    %% Funding
-    USER ||--o{ FUNDING : manages
-    PROJECT ||--o| FUNDING : has
+    %% COLLABORATORS
+    USER }o--o{ PROJECT : proposal_collaborators
 
-    %% Project chief
-    USER o|--o{ PROJECT : leads
+    %% STATUS HISTORY
+    PROJECT ||--o{ PROJECT_STATUS_HISTORY : changes
+    USER ||--o{ PROJECT_STATUS_HISTORY : performs
 
-    %% Teams
-    PROJECT ||--o{ PROJECT_TEAM : assigned
-    TEAM ||--o{ PROJECT_TEAM : contains
+    %% FUNDING
+    PROJECT ||--o| PROJECT_FUNDING : funding_process
+    USER ||--o{ PROJECT_FUNDING : finances
+
+    %% EXECUTION
+    PROJECT ||--o| PROJECT_EXECUTION : execution_process
+    USER ||--o{ PROJECT_EXECUTION : manages
+    TEAM ||--o{ PROJECT_EXECUTION : realizes
