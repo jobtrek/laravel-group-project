@@ -2,12 +2,25 @@
     step: 1,
     membres: @js(old('membres', [''])),
     buts: @js(old('buts', [''])),
-    phases: [{
-        titre: '', duree: '', description: '',
-        objectifs: [''], livrables: [''], ressources: ['']
-    }],
+    phases: @js(old('phases', [
+        [
+            'titre' => '',
+            'duree' => '',
+            'description' => '',
+            'objectifs' => [''],
+            'livrables' => [''],
+            'ressources_necessaires' => ['']
+        ]
+    ])),
     addPhase() {
-        this.phases.push({ titre: '', duree: '', description: '', objectifs: [''], livrables: [''], ressources: [''] });
+        this.phases.push({
+            titre: '',
+            duree: '',
+            description: '',
+            objectifs: [''],
+            livrables: [''],
+            ressources_necessaires: ['']
+        });
     },
     removePhase(i) {
         if (this.phases.length > 1) this.phases.splice(i, 1);

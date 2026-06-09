@@ -1,7 +1,8 @@
 <div x-show="step === 2" class="space-y-8">
     <div>
         <h4 class="text-base font-semibold text-gray-800 mb-1">Section 4 — Phases du projet</h4>
-        <p class="text-xs text-gray-500 mb-4">Add as many phases as needed. Each has its own objectives, deliverables, and resources.</p>
+        <p class="text-xs text-gray-500 mb-4">Add as many phases as needed. Each has its own objectives, deliverables,
+            and resources.</p>
 
         <div class="space-y-6">
             <template x-for="(phase, pi) in phases" :key="pi">
@@ -29,8 +30,8 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Description</label>
-                        <textarea :name="'phases[' + pi + '][description]'" x-model="phase.description"
-                            rows="3" placeholder="Overview of what this phase covers"
+                        <textarea :name="'phases[' + pi + '][description]'" x-model="phase.description" rows="3"
+                            placeholder="Overview of what this phase covers"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
                     </div>
 
@@ -38,9 +39,9 @@
                         <label class="block text-sm font-medium text-gray-700 mb-1">Objectives</label>
                         <p class="text-xs text-gray-500 mb-2">Measurable — what success looks like for this phase.</p>
                         <div class="space-y-2">
-                            <template x-for="(obj, oi) in phase.objectifs" :key="oi">
+                            <template x-for="(obj, oi) in phase.ressources_necessaires" :key="oi">
                                 <div class="flex gap-2">
-                                    <input type="text" :name="'phases[' + pi + '][objectifs][' + oi + ']'"
+                                    <input type="text" :name="'phases[' + pi + '][ressources_necessaires][' + oi + ']'"
                                         x-model="phase.objectifs[oi]" placeholder="Objective"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                     <button type="button" @click="removeItem(phase.objectifs, oi)"
@@ -55,7 +56,8 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Deliverables</label>
-                        <p class="text-xs text-gray-500 mb-2">Documents, processes, events, etc. produced in this phase.</p>
+                        <p class="text-xs text-gray-500 mb-2">Documents, processes, events, etc. produced in this phase.
+                        </p>
                         <div class="space-y-2">
                             <template x-for="(liv, li) in phase.livrables" :key="li">
                                 <div class="flex gap-2">
@@ -74,7 +76,8 @@
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700 mb-1">Required resources</label>
-                        <p class="text-xs text-gray-500 mb-2">e.g. "1 personne à 20% durant toute la phase", "1000 CHF pour l'achat de matériel"</p>
+                        <p class="text-xs text-gray-500 mb-2">e.g. "1 personne à 20% durant toute la phase", "1000 CHF
+                            pour l'achat de matériel"</p>
                         <div class="space-y-2">
                             <template x-for="(res, ri) in phase.ressources" :key="ri">
                                 <div class="flex gap-2">

@@ -30,7 +30,7 @@ class PropositionRequest extends FormRequest
             'description' => ['required', 'string'],
             'buts' => ['required', 'array', 'min:1'],
             'buts.*' => ['required', 'string', 'max:255'],
-            'perimetre' => ['required', 'string'],
+            'perimetre' => ['nullable', 'string'],
 
             'phases' => ['required', 'array', 'min:1'],
             'phases.*.titre' => ['required', 'string', 'max:255'],
@@ -45,7 +45,7 @@ class PropositionRequest extends FormRequest
 
             'ressources_totales' => ['nullable', 'string'],
 
-            'portee' => ['required', 'integer', 'min:0', 'max:50'],
+            'portee' => ['required', 'numeric', 'min:0', 'max:50'],
             'impact' => ['required', 'integer', 'min:1', 'max:5'],
             'confiance' => ['required', 'integer', 'min:0', 'max:100'],
             'effort' => ['required', 'integer', 'min:1', 'max:5'],
