@@ -45,7 +45,7 @@
                                         x-model="phase.objectifs[oi]" placeholder="Objective"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                     <button type="button" @click="removeItem(phase.objectifs, oi)"
-                                        x-show="phase.objectifs.length > 1"
+                                        x-show="phase.objectifs.length > 1" x-show="phase.objectifs.length > 1"
                                         class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
                                 </div>
                             </template>
