@@ -9,7 +9,6 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-
 Route::get('/dashboard', function () {
     return view('dashboard', ['users' => User::all(['id', 'name'])]);
 })->middleware(['auth', 'verified'])->name('dashboard');

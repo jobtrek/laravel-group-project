@@ -6,7 +6,6 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-
     public function up(): void
     {
         Schema::create('project_phases', function (Blueprint $table) {
@@ -16,10 +15,10 @@ return new class extends Migration
             $table->json('objectifs')->nullable();
             $table->json('livrables')->nullable();
             $table->integer('order')->default(0);
-            
+
             $table->foreignId('project_id')
-                  ->constrained('projects')
-                  ->onDelete('cascade');
+                ->constrained('projects')
+                ->onDelete('cascade');
         });
     }
 
@@ -28,5 +27,3 @@ return new class extends Migration
         Schema::dropIfExists('project_phases');
     }
 };
-
-
