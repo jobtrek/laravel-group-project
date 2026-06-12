@@ -26,7 +26,10 @@
                             class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                             <option value="">Select a user…</option>
                             @foreach($users as $user)
-                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                                <option value="{{ $user->id }}"
+                                    :disabled="membres.some((m, i) => i !== idx && String(m) === '{{ $user->id }}')">
+                                    {{ $user->name }}
+                                </option>
                             @endforeach
                         </select>
                         <button type="button" @click="membres.splice(idx, 1)"

@@ -28,6 +28,7 @@ class Project extends Model
         'proposer_id',
         'leader_id',
         'recolte_manager_id',
+        'ressources_totales',
     ];
 
     protected $casts = [
@@ -90,6 +91,7 @@ class Project extends Model
                 'description' => $data['description'],
                 'but' => $data['buts'],
                 'perimetre' => $data['perimetre'] ?? null,
+                'ressources_totales' => $data['ressources_totales'] ?? null,
                 'status' => 'proposition',
                 'current_stage' => 'proposition',
                 'proposer_id' => $proposerId,
