@@ -1,15 +1,42 @@
+@props(['users'])
+
 <div x-show="step === 1" class="space-y-8">
     <div class="space-y-4">
         <x-proposition.input title="Title" name="titre" :value="old('titre')" />
 
-        <x-proposition.input title="Porteur" name="porteur" :value="old('porteur')">
+        <div>
+            <label class="block text-sm font-medium text-gray-700">Porteur</label>
             <p class="text-xs text-gray-500 mb-1">Person guaranteeing this proposal</p>
-        </x-proposition.input>
+            <select name="porteur" x-model="porteur"
+                class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                <option value="">Select a user…</option>
+                @foreach($users as $user)
+                    <option value="{{ $user->id }}" {{ old('porteur') == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
+                @endforeach
+            </select>
+        </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700">Membres</label>
             <p class="text-xs text-gray-500 mb-2">All people involved in the project</p>
-            <x-proposition.repeatable-list items="membres" name="membres[]" placeholder="Name" add-label="+ Add member" />
+            <div class="space-y-2">
+                <template x-for="(membre, idx) in membres" :key="idx">
+                    <div class="flex gap-2">
+                        <select :name="'membres[' + idx + ']'" x-model="membres[idx]"
+                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <option value="">Select a user…</option>
+                            @foreach($users as $user)
+                                <option value="{{ $user->id }}">{{ $user->name }}</option>
+                            @endforeach
+                        </select>
+                        <button type="button" @click="membres.splice(idx, 1)"
+                            x-show="membres.length > 1"
+                            class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
+                    </div>
+                </template>
+            </div>
+            <button type="button" @click="membres.push('')"
+                class="mt-2 text-sm text-indigo-600 hover:underline">+ Add member</button>
         </div>
     </div>
 

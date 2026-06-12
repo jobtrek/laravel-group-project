@@ -6,10 +6,10 @@
     </x-slot>
 
     <div class="flex justify-center py-12">
-        <div class="w-full max-w-7xl mx-auto sm:px-6 lg:px-8">
+        
+        <div class="w-full max-w-3xl mx-auto sm:px-6 lg:px-8">
             <div class="bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-
                     @if ($errors->any())
                         <div class="mb-4 p-4 bg-red-50 border border-red-200 rounded text-red-700 text-sm">
                             <ul class="list-disc list-inside">
@@ -24,7 +24,7 @@
 
                     <form method="POST" action="/propositions">
                         @csrf
-                        <x-proposition.wizard />
+                        <x-proposition.wizard :users="$users" />
                     </form>
 
                 </div>

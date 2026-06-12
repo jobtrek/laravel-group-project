@@ -19,6 +19,12 @@ cd laravel-group-project
 ```bash
 composer install
 ```
+### 3. Install Node Modules
+```bash 
+./vendor/bin/sail npm install
+
+```
+
 
 ### 3. Set Up Environment
 ```bash
@@ -46,20 +52,12 @@ Run migrations:
 
 The application will be available at `http://localhost`.
 
-### 5. Without Docker
 
-Create a PostgreSQL database:
+to run the frontend build:
 ```bash
-createdb laravel
+./vendor/bin/sail npm run dev
 ```
 
-Configure `.env` with your database credentials, then:
-```bash
-php artisan migrate
-npm install
-npm run build
-php artisan serve
-```
 
 ## Development
 

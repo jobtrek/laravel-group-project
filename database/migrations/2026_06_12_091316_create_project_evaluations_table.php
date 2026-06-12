@@ -17,7 +17,6 @@ return new class extends Migration
             $table->integer('impact');
             $table->integer('confiance');
             $table->integer('effort');
-            $table->integer('importance');
             $table->foreignId('project_id')->constrained()->onDelete('cascade');
             $table->timestamps();
         });

@@ -1,5 +1,8 @@
+@props(['users'])
+
 <div x-data="{
     step: 1,
+    porteur: @js(old('porteur', '')),
     membres: @js(old('membres', [''])),
     buts: @js(old('buts', [''])),
     phases: @js(old('phases', [
@@ -9,7 +12,7 @@
             'description' => '',
             'objectifs' => [''],
             'livrables' => [''],
-            'ressources_necessaires' => ['']
+            'ressources_necessaires' => [['resource_type' => '', 'amount_needed' => '']]
         ]
     ])),
     addPhase() {
@@ -19,7 +22,7 @@
             description: '',
             objectifs: [''],
             livrables: [''],
-            ressources_necessaires: ['']
+            ressources_necessaires: [{ resource_type: '', amount_needed: '' }]
         });
     },
     removePhase(i) {
@@ -30,7 +33,7 @@
     }
 }">
     <p class="text-sm text-gray-500 mb-4">Step <span x-text="step"></span> of 3</p>
-    <x-proposition.step-1 />
+    <x-proposition.step-1 :users="$users" />
     <x-proposition.step-2 />
     <x-proposition.step-3 />
 </div>
