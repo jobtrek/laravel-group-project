@@ -1,0 +1,94 @@
+erDiagram
+    Users {
+        INT id PK
+        VARCHAR_100_ name NOT_NULL
+        VARCHAR_255_ email NOT_NULL_UNIQUE
+        TEXT password NOT_NULL
+        VARCHAR_50_ role NOT_NULL
+    }
+
+    Projects {
+        INT id PK
+        VARCHAR_100_ title NOT_NULL
+        TEXT description NOT_NULL
+        DECIMAL_10_2_ budget_global
+        TEXT but NOT_NULL
+        TEXT perimetre
+        VARCHAR_50_ status NOT_NULL
+        VARCHAR_50_ current_stage NOT_NULL
+        TIMESTAMP created_at NOT_NULL
+        TIMESTAMP updated_at
+        TIMESTAMP archived_at
+        TIMESTAMP restored_at
+        TIMESTAMP last_reminder_at
+        INT id_proposer FK
+        INT id_leader FK
+        INT id_recolte_manager FK
+    }
+
+    Project_Members {
+        INT id_user FK
+        INT id_project FK
+    }
+
+    Comments {
+        INT id PK
+        TEXT content NOT_NULL
+        VARCHAR_50_ stage NOT_NULL
+        TIMESTAMP created_at NOT_NULL
+        INT id_user FK
+        INT id_project FK
+    }
+
+    Project_Reviews {
+        INT id PK
+        VARCHAR_50_ review_status NOT_NULL
+        TIMESTAMP created_at NOT_NULL
+        INT id_project FK
+        INT id_director FK
+    }
+
+    Project_Phases {
+        INT id PK
+        TEXT title NOT_NULL
+        VARCHAR_100_ duration
+        TEXT description
+        TEXT objectifs
+        TEXT livrables
+        INT order NOT_NULL
+        INT id_project FK
+    }
+
+    Phase_Resources {
+        INT id PK
+        VARCHAR_100_ resource_type NOT_NULL
+        TEXT description
+        INT work_rate
+        DECIMAL_10_2_ amount_needed
+        DECIMAL_10_2_ amount_found
+        INT id_phase FK
+    }
+
+    Project_Evaluations {
+        INT id PK
+        DECIMAL portee
+        INT impact
+        INT confiance
+        INT effort
+        INT importance
+        INT id_project FK
+    }
+
+    %% Relations basées sur les liaisons graphiques du diagramme
+    Users ||--o{ Projects : "proposes / leads / manages"
+    Users ||--o{ Project_Members : "is member"
+    Users ||--o{ Comments : "writes"
+    Users ||--o{ Project_Reviews : "reviews"
+    
+    Projects ||--o{ Project_Members : "has members"
+    Projects ||--o{ Comments : "has"
+    Projects ||--o{ Project_Reviews : "receives"
+    Projects ||--o{ Project_Phases : "contains"
+    Projects ||--|| Project_Evaluations : "has score"
+    
+    Project_Phases ||--o{ Phase_Resources : "requires"
