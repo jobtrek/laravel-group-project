@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+
 class Project extends Model
 {
     protected $fillable = [
@@ -30,7 +31,6 @@ class Project extends Model
     {
         return $this->hasMany(ProjectPhase::class);
     }
-
 
     public static function createProposal(array $data, int $proposerId): self
     {
