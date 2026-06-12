@@ -2,9 +2,7 @@
 
 namespace App\Models;
 
-use app\Models\Comment;
 // use Illuminate\Contracts\Auth\MustVerifyEmail;
-use app\Models\Project_evaluation;
 use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
@@ -39,11 +37,11 @@ class User extends Authenticatable
 
     public function projectReviews()
     {
-        return $this->hasMany(Project_review::class);
+        return $this->hasMany(ProjectReview::class);
     }
 
     public function projectEvaluations()
     {
-        return $this->hasMany(Project_evaluation::class);
+        return $this->hasMany(ProjectEvaluation::class);
     }
 }

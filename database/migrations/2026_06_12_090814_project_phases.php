@@ -11,6 +11,7 @@ return new class extends Migration
         Schema::create('project_phases', function (Blueprint $table) {
             $table->id();
             $table->text('name');
+            $table->text('description')->nullable();
             $table->string('duration', 100)->nullable();
             $table->json('objectifs')->nullable();
             $table->json('livrables')->nullable();
