@@ -11,7 +11,7 @@ class Project_review extends Model
 {
     /** @use HasFactory<\Database\Factories\ProjectReviewFactory> */
     use HasFactory;
-    private $fillable = ['project_id', 'user_id', 'review_status'];
+    protected $fillable = ['project_id', 'user_id', 'review_status'];
 
     public function user()
     {

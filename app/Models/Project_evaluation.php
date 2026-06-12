@@ -11,7 +11,7 @@ class project_evaluation extends Model
 {
     /** @use HasFactory<\Database\Factories\ProjectEvaluationFactory> */
     use HasFactory;
-    private $fillable = ['portee', 'impact', 'confiance', 'effort', 'importance', 'project_id'];
+    protected $fillable = ['portee', 'impact', 'confiance', 'effort', 'importance', 'project_id'];
 
     public function user()
     {
