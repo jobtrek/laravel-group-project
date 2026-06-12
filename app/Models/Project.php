@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
 
 class Project extends Model
 {
@@ -66,12 +66,10 @@ class Project extends Model
         return $this->hasMany(Comment::class, 'project_id');
     }
 
-
     public function reviews(): HasMany
     {
         return $this->hasMany(ProjectReview::class, 'project_id');
     }
-
 
     public function phases(): HasMany
     {
