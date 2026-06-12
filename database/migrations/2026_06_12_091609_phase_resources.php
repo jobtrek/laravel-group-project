@@ -13,12 +13,12 @@ return new class extends Migration
             $table->id();
             $table->string('resource_type', 100);
             $table->text('description')->nullable();
-            $table->integer('work_rate', 50)->nullable();
+            $table->integer('work_rate')->nullable();
             
             $table->decimal('amount_needed', 10, 2);
             $table->decimal('amount_found', 10, 2)->default(0.00);
             
-            $table->foreignId('id_phase')
+            $table->foreignId('phase_id')
                   ->constrained('project_phases')
                   ->onDelete('cascade');
         });

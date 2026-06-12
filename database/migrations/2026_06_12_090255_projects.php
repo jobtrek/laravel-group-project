@@ -27,16 +27,16 @@ return new class extends Migration
             $table->timestamp('last_reminder_at')->nullable();
             
 
-            $table->foreignId('id_proposer')
+            $table->foreignId('proposer_id')
                   ->constrained('users')
                   ->onDelete('restrict');
                   
-            $table->foreignId('id_leader')
+            $table->foreignId('leader_id')
                   ->nullable()
                   ->constrained('users')
                   ->onDelete('set null');
                   
-            $table->foreignId('id_recolte_manager')
+            $table->foreignId('recolte_manager_id')
                   ->nullable()
                   ->constrained('users')
                   ->onDelete('set null');
