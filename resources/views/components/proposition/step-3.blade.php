@@ -11,7 +11,7 @@
                 <p class="text-xs text-gray-500 mb-1">Direct collaborators count 1 pt each, partners count 0.5 pt each.</p>
                 <input type="number" id="portee" name="portee" min="0" max="50"
                     value="{{ old('portee') }}"
-                    class="mt-1 block w-32 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
             </div>
 
             <div>
@@ -19,7 +19,7 @@
                     Impact <span class="text-gray-400 font-normal">(1 – 5)</span>
                 </label>
                 <select id="impact" name="impact"
-                    class="mt-1 block w-full max-w-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     <option value="">Select…</option>
                     <option value="1" {{ old('impact') == '1' ? 'selected' : '' }}>1 — Invisible at foundation level</option>
                     <option value="2" {{ old('impact') == '2' ? 'selected' : '' }}>2 — Measurable but limited effect</option>
@@ -54,7 +54,7 @@
                     Effort <span class="text-gray-400 font-normal">(1 – 5)</span>
                 </label>
                 <select id="effort" name="effort"
-                    class="mt-1 block w-full max-w-sm rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     <option value="">Select…</option>
                     <option value="1" {{ old('effort') == '1' ? 'selected' : '' }}>1 — A few days (≤ 1 week ETP, &lt; 200 CHF)</option>
                     <option value="2" {{ old('effort') == '2' ? 'selected' : '' }}>2 — A few weeks (1–4 weeks ETP, &lt; 2 000 CHF)</option>

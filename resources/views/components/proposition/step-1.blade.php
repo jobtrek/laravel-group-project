@@ -33,7 +33,7 @@
         label="Périmètre" description="What will the project will and will not do." />
 
     <div class="flex items-center gap-4 pt-2">
-        <x-proposition.next />
         <a href="#" class="text-base text-gray-600 hover:underline">Cancel</a>
+        <x-proposition.next />
     </div>
 </div>
