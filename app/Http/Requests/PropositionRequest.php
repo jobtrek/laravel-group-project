@@ -23,7 +23,7 @@ class PropositionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'titre' => ['required', 'string', 'max:255'],
+            'titre' => ['required', 'string', 'max:100'],
             'porteur' => ['required', 'integer', 'exists:users,id'],
             'membres' => ['required', 'array', 'min:1'],
             'membres.*' => ['required', 'integer', 'distinct', 'exists:users,id'],
