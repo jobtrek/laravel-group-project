@@ -12,7 +12,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::table('project_evaluations', function (Blueprint $table) {
-            $table->decimal('importance')->storedAs('(portee * impact * confiance) / effort');
+            $table->decimal('importance')->storedAs('(portee * impact * confiance) / NULLIF(effort, 0)');
         });
         //
     }
