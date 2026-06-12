@@ -26,7 +26,7 @@ class PropositionRequest extends FormRequest
             'titre' => ['required', 'string', 'max:255'],
             'porteur' => ['required', 'integer', 'exists:users,id'],
             'membres' => ['required', 'array', 'min:1'],
-            'membres.*' => ['required', 'integer', 'exists:users,id'],
+            'membres.*' => ['required', 'integer', 'distinct', 'exists:users,id'],
             'description' => ['required', 'string'],
             'buts' => ['required', 'array', 'min:1'],
             'buts.*' => ['required', 'string', 'max:255'],

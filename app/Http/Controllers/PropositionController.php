@@ -23,7 +23,7 @@ class PropositionController extends Controller
                 'description' => $step_1['description'],
                 'but' => $step_1['buts'],
                 'perimetre' => $step_1['perimetre'],
-                'status' => 'pending',
+                'status' => 'proposition',
                 'current_stage' => 'proposition',
                 'proposer_id' => auth()->id(),
                 'leader_id' => $step_1['porteur'],
@@ -41,6 +41,7 @@ class PropositionController extends Controller
                 $createdPhase = $project->phases()->create([
                     'name' => $phase['titre'],
                     'duration' => $phase['duree'],
+                    'description' => $phase['description'],
                     'objectifs' => $phase['objectifs'],
                     'livrables' => $phase['livrables'],
                     'order' => $index + 1,

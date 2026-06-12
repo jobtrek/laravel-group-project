@@ -7,6 +7,6 @@ use Illuminate\Database\Eloquent\Model;
 class ProjectEvaluation extends Model
 {
     protected $fillable = [
-        'portee', 'impact', 'confiance', 'effort', 'importance', 'project_id',
+        'portee', 'impact', 'confiance', 'effort', 'project_id',
     ];
 }

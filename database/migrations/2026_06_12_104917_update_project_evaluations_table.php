@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-       Schema::table('project_evaluations', function (Blueprint $table) {
+        Schema::table('project_evaluations', function (Blueprint $table) {
             $table->decimal('importance')->storedAs('(portee * impact * confiance) / effort');
         });
         //
@@ -22,6 +22,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        
+        Schema::table('project_evaluations', function (Blueprint $table) {
+            $table->dropColumn('importance');
+        });
     }
 };

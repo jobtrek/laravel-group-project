@@ -9,7 +9,7 @@ class ProjectPhase extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'name', 'duration', 'objectifs', 'livrables', 'order', 'project_id',
+        'name', 'duration', 'description', 'objectifs', 'livrables', 'order', 'project_id',
     ];
 
     protected $casts = [
