@@ -35,7 +35,7 @@ erDiagram
         INT id PK
         TEXT content NOT_NULL
         VARCHAR_50_ stage NOT_NULL
-        DATETIME created_at NOT_NULL
+        TIMESTAMP created_at NOT_NULL
         INT id_user FK
         INT id_project FK
     }
@@ -43,14 +43,14 @@ erDiagram
     Project_Reviews {
         INT id PK
         VARCHAR_50_ review_status NOT_NULL
-        DATETIME created_at NOT_NULL
+        TIMESTAMP created_at NOT_NULL
         INT id_project FK
         INT id_director FK
     }
 
     Project_Phases {
         INT id PK
-        VARCHAR_100_ title NOT_NULL
+        TEXT title NOT_NULL
         VARCHAR_100_ duration
         TEXT description
         TEXT objectifs
