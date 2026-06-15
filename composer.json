@@ -12,6 +12,7 @@
         "spatie/laravel-model-states": "^2.14"
     },
     "require-dev": {
+        "captainhook/captainhook": "^5.29",
         "fakerphp/faker": "^1.23",
         "larastan/larastan": "^3.10",
         "laravel/breeze": "^2.4",
