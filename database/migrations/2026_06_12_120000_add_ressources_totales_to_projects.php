@@ -12,9 +12,6 @@ return new class extends Migration
             $table->text('ressources_totales')->nullable()->after('perimetre');
         });
 
-        Schema::table('project_phases', function (Blueprint $table) {
-            $table->text('description')->nullable()->after('duration');
-        });
     }
 
     public function down(): void
@@ -23,8 +20,5 @@ return new class extends Migration
             $table->dropColumn('ressources_totales');
         });
 
-        Schema::table('project_phases', function (Blueprint $table) {
-            $table->dropColumn('description');
-        });
     }
 };

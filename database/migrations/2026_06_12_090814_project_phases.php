@@ -16,6 +16,7 @@ return new class extends Migration
             $table->json('objectifs')->nullable();
             $table->json('livrables')->nullable();
             $table->integer('order')->default(0);
+            $table->text('description')->nullable();
 
             $table->foreignId('project_id')
                 ->constrained('projects')
