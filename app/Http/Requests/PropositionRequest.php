@@ -23,10 +23,10 @@ class PropositionRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'titre' => ['required', 'string', 'max:255'],
-            'porteur' => ['required', 'string', 'max:255'],
+            'titre' => ['required', 'string', 'max:100'],
+            'porteur' => ['required', 'integer', 'exists:users,id'],
             'membres' => ['required', 'array', 'min:1'],
-            'membres.*' => ['required', 'string', 'max:255'],
+            'membres.*' => ['required', 'integer', 'distinct', 'exists:users,id'],
             'description' => ['required', 'string'],
             'buts' => ['required', 'array', 'min:1'],
             'buts.*' => ['required', 'string', 'max:255'],
@@ -41,7 +41,8 @@ class PropositionRequest extends FormRequest
             'phases.*.livrables' => ['required', 'array', 'min:1'],
             'phases.*.livrables.*' => ['required', 'string'],
             'phases.*.ressources_necessaires' => ['required', 'array', 'min:1'],
-            'phases.*.ressources_necessaires.*' => ['required', 'string'],
+            'phases.*.ressources_necessaires.*.resource_type' => ['required', 'string', 'max:100'],
+            'phases.*.ressources_necessaires.*.amount_needed' => ['required', 'numeric', 'min:0'],
 
             'ressources_totales' => ['nullable', 'string'],
 
