@@ -1,6 +1,7 @@
 <?php
 
 // app/Actions/CreateProjectProposal.php
+
 namespace App\Actions;
 
 use App\Models\Project;
@@ -13,34 +14,34 @@ class CreateProjectProposal
     {
         return DB::transaction(function () use ($data, $proposerId) {
             $project = Project::create([
-                'title'             => $data['titre'],
-                'description'       => $data['description'],
-                'but'               => $data['buts'],
-                'perimetre'         => $data['perimetre'] ?? null,
-                'ressources_totales'=> $data['ressources_totales'] ?? null,
-                'status'            => DraftState::getMorphClass(),
-                'current_stage'     => DraftState::getMorphClass(),
-                'proposer_id'       => $proposerId,
-                'leader_id'         => $data['porteur'],
+                'title' => $data['titre'],
+                'description' => $data['description'],
+                'but' => $data['buts'],
+                'perimetre' => $data['perimetre'] ?? null,
+                'ressources_totales' => $data['ressources_totales'] ?? null,
+                'status' => DraftState::getMorphClass(),
+                'current_stage' => DraftState::getMorphClass(),
+                'proposer_id' => $proposerId,
+                'leader_id' => $data['porteur'],
             ]);
 
             $project->members()->attach($data['membres']);
 
             $project->evaluation()->create([
-                'portee'    => $data['portee'],
-                'impact'    => $data['impact'],
+                'portee' => $data['portee'],
+                'impact' => $data['impact'],
                 'confiance' => $data['confiance'],
-                'effort'    => $data['effort'],
+                'effort' => $data['effort'],
             ]);
 
             foreach ($data['phases'] as $index => $phase) {
                 $createdPhase = $project->phases()->create([
-                    'name'        => $phase['titre'],
-                    'duration'    => $phase['duree'],
+                    'name' => $phase['titre'],
+                    'duration' => $phase['duree'],
                     'description' => $phase['description'],
-                    'objectifs'   => $phase['objectifs'],
-                    'livrables'   => $phase['livrables'],
-                    'order'       => $index + 1,
+                    'objectifs' => $phase['objectifs'],
+                    'livrables' => $phase['livrables'],
+                    'order' => $index + 1,
                 ]);
 
                 foreach ($phase['ressources_necessaires'] as $resource) {
