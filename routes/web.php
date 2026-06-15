@@ -10,7 +10,7 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard', ['users' => User::query()->select('id', 'name')->get()]);
+    return view('dashboard');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/create', function () {
