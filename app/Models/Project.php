@@ -2,6 +2,17 @@
 
 namespace App\Models;
 
+use App\Models\States\ActiveState;
+use App\Models\States\ApprovedState;
+use App\Models\States\ArchivedState;
+use App\Models\States\CollectingState;
+use App\Models\States\CompletedState;
+use App\Models\States\DraftState;
+use App\Models\States\ProjectState;
+use App\Models\States\ReadyState;
+use App\Models\States\RefusedState;
+use App\Models\States\SubmittedState;
+use App\Models\States\ModificationState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -9,10 +20,37 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
+use Spatie\ModelStates\HasStates;
 
 class Project extends Model
 {
     use HasFactory;
+    use HasStates;
+
+    protected function registerStates(): void
+    {
+        $this->addState('status', ProjectState::class)
+            ->default(DraftState::class)
+            ->allowTransition(DraftState::class, SubmittedState::class)
+            ->allowTransition(SubmittedState::class, ApprovedState::class)
+            ->allowTransition(SubmittedState::class, RefusedState::class)
+            ->allowTransition(SubmittedState::class, ModificationState::class)
+            ->allowTransition(SubmittedState::class, ArchivedState::class)
+            ->allowTransition(ModificationState::class, SubmittedState::class)
+            ->allowTransition(ModificationState::class, ArchivedState::class)
+            ->allowTransition(ApprovedState::class, CollectingState::class)
+            ->allowTransition(RefusedState::class, SubmittedState::class)
+            ->allowTransition(CollectingState::class, ReadyState::class)
+            ->allowTransition(CollectingState::class, ArchivedState::class)
+            ->allowTransition(ReadyState::class, ActiveState::class)
+            ->allowTransition(ReadyState::class, CollectingState::class)
+            ->allowTransition(ReadyState::class, ArchivedState::class)
+            ->allowTransition(ActiveState::class, CompletedState::class)
+            ->allowTransition(ActiveState::class, ArchivedState::class)
+            ->allowTransition(ArchivedState::class, SubmittedState::class)
+            ->allowTransition(ArchivedState::class, CollectingState::class)
+            ->allowTransition(ArchivedState::class, ActiveState::class);
+    }
 
     protected $fillable = [
         'title',
@@ -39,6 +77,7 @@ class Project extends Model
         'archived_at' => 'datetime',
         'restored_at' => 'datetime',
         'last_reminder_at' => 'datetime',
+        'status' => ProjectState::class,
     ];
 
     public function proposer(): BelongsTo
@@ -90,8 +129,8 @@ class Project extends Model
                 'but' => $data['buts'],
                 'perimetre' => $data['perimetre'] ?? null,
                 'ressources_totales' => $data['ressources_totales'] ?? null,
-                'status' => 'proposition',
-                'current_stage' => 'proposition',
+                'status' => DraftState::class,
+                'current_stage' => DraftState::class,
                 'proposer_id' => $proposerId,
                 'leader_id' => $data['porteur'],
             ]);
