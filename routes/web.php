@@ -4,7 +4,6 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropositionController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
-use app\Http\Controllers\ProjectController;
 
 Route::get('/', function () {
     return view('welcome');
