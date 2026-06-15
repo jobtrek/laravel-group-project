@@ -24,7 +24,7 @@
 
                     <form method="POST" action="/propositions">
                         @csrf
-                        <x-proposition.wizard />
+                        <x-proposition.wizard :users="$users" />
                     </form>
 
                 </div>
