@@ -24,4 +24,4 @@ Route::middleware('auth')->group(function () {
     Route::post('/propositions', [PropositionController::class, 'store'])->name('proposition.store');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
