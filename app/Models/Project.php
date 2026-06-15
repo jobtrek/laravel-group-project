@@ -31,25 +31,17 @@ class Project extends Model
     {
         $this->addState('status', ProjectState::class)
             ->default(DraftState::class)
-            ->allowTransition(DraftState::class, SubmittedState::class)
-            ->allowTransition(SubmittedState::class, ApprovedState::class)
-            ->allowTransition(SubmittedState::class, RefusedState::class)
-            ->allowTransition(SubmittedState::class, ModificationState::class)
-            ->allowTransition(SubmittedState::class, ArchivedState::class)
-            ->allowTransition(ModificationState::class, SubmittedState::class)
-            ->allowTransition(ModificationState::class, ArchivedState::class)
-            ->allowTransition(ApprovedState::class, CollectingState::class)
-            ->allowTransition(RefusedState::class, SubmittedState::class)
-            ->allowTransition(CollectingState::class, ReadyState::class)
-            ->allowTransition(CollectingState::class, ArchivedState::class)
-            ->allowTransition(ReadyState::class, ActiveState::class)
-            ->allowTransition(ReadyState::class, CollectingState::class)
-            ->allowTransition(ReadyState::class, ArchivedState::class)
-            ->allowTransition(ActiveState::class, CompletedState::class)
-            ->allowTransition(ActiveState::class, ArchivedState::class)
-            ->allowTransition(ArchivedState::class, SubmittedState::class)
-            ->allowTransition(ArchivedState::class, CollectingState::class)
-            ->allowTransition(ArchivedState::class, ActiveState::class);
+            ->allowTransitions([
+                [DraftState::class,        SubmittedState::class],
+                [SubmittedState::class,    [ApprovedState::class, RefusedState::class, ModificationState::class, ArchivedState::class]],
+                [ModificationState::class, [SubmittedState::class, ArchivedState::class]],
+                [ApprovedState::class,     CollectingState::class],
+                [RefusedState::class,      SubmittedState::class],
+                [CollectingState::class,   [ReadyState::class, ArchivedState::class]],
+                [ReadyState::class,        [ActiveState::class, CollectingState::class, ArchivedState::class]],
+                [ActiveState::class,       [CompletedState::class, ArchivedState::class]],
+                [ArchivedState::class,     [SubmittedState::class, CollectingState::class, ActiveState::class]],
+            ]);
     }
 
     protected $fillable = [
