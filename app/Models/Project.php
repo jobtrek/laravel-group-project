@@ -8,11 +8,11 @@ use App\Models\States\ArchivedState;
 use App\Models\States\CollectingState;
 use App\Models\States\CompletedState;
 use App\Models\States\DraftState;
+use App\Models\States\ModificationState;
 use App\Models\States\ProjectState;
 use App\Models\States\ReadyState;
 use App\Models\States\RefusedState;
 use App\Models\States\SubmittedState;
-use App\Models\States\ModificationState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -129,8 +129,8 @@ class Project extends Model
                 'but' => $data['buts'],
                 'perimetre' => $data['perimetre'] ?? null,
                 'ressources_totales' => $data['ressources_totales'] ?? null,
-                'status' => DraftState::class,
-                'current_stage' => DraftState::class,
+                'status' => DraftState::getMorphClass(),
+                'current_stage' => DraftState::getMorphClass(),
                 'proposer_id' => $proposerId,
                 'leader_id' => $data['porteur'],
             ]);
