@@ -8,6 +8,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Facades\DB;
 
 class Project extends Model
 {
@@ -27,10 +28,12 @@ class Project extends Model
         'proposer_id',
         'leader_id',
         'recolte_manager_id',
+        'ressources_totales',
     ];
 
     protected $casts = [
         'budget_global' => 'decimal:2',
+        'but' => 'array',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
         'archived_at' => 'datetime',
@@ -63,12 +66,10 @@ class Project extends Model
         return $this->hasMany(Comment::class, 'project_id');
     }
 
-
     public function reviews(): HasMany
     {
         return $this->hasMany(ProjectReview::class, 'project_id');
     }
-
 
     public function phases(): HasMany
     {
@@ -78,5 +79,52 @@ class Project extends Model
     public function evaluation(): HasOne
     {
         return $this->hasOne(ProjectEvaluation::class, 'project_id');
+    }
+
+    public static function createProposal(array $data, int $proposerId): self
+    {
+        return DB::transaction(function () use ($data, $proposerId) {
+            $project = self::create([
+                'title' => $data['titre'],
+                'description' => $data['description'],
+                'but' => $data['buts'],
+                'perimetre' => $data['perimetre'] ?? null,
+                'ressources_totales' => $data['ressources_totales'] ?? null,
+                'status' => 'proposition',
+                'current_stage' => 'proposition',
+                'proposer_id' => $proposerId,
+                'leader_id' => $data['porteur'],
+            ]);
+
+            $project->members()->attach($data['membres']);
+
+            $project->evaluation()->create([
+                'portee' => $data['portee'],
+                'impact' => $data['impact'],
+                'confiance' => $data['confiance'],
+                'effort' => $data['effort'],
+            ]);
+
+            foreach ($data['phases'] as $index => $phase) {
+                /** @var ProjectPhase $createdPhase */
+                $createdPhase = $project->phases()->create([
+                    'name' => $phase['titre'],
+                    'duration' => $phase['duree'],
+                    'description' => $phase['description'],
+                    'objectifs' => $phase['objectifs'],
+                    'livrables' => $phase['livrables'],
+                    'order' => $index + 1,
+                ]);
+
+                foreach ($phase['ressources_necessaires'] as $resource) {
+                    $createdPhase->resources()->create([
+                        'resource_type' => $resource['resource_type'],
+                        'amount_needed' => $resource['amount_needed'],
+                    ]);
+                }
+            }
+
+            return $project;
+        });
     }
 }

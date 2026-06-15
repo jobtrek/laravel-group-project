@@ -50,7 +50,7 @@ erDiagram
 
     Project_Phases {
         INT id PK
-        TEXT title NOT_NULL
+        TEXT name NOT_NULL
         VARCHAR_100_ duration
         TEXT description
         TEXT objectifs
@@ -64,7 +64,7 @@ erDiagram
         VARCHAR_100_ resource_type NOT_NULL
         TEXT description
         INT work_rate
-        DECIMAL_10_2_ amount_needed
+        DECIMAL_10_2_ amount_needed NOT_NULL
         DECIMAL_10_2_ amount_found
         INT id_phase FK
     }

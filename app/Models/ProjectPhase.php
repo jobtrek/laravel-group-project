@@ -16,7 +16,7 @@ class ProjectPhase extends Model
     public $timestamps = false;
 
     protected $fillable = [
-        'title',
+        'name',
         'duration',
         'description',
         'objectifs',
@@ -25,14 +25,18 @@ class ProjectPhase extends Model
         'project_id',
     ];
 
+    protected $casts = [
+        'objectifs' => 'array',
+        'livrables' => 'array',
+    ];
+
     public function project(): BelongsTo
     {
         return $this->belongsTo(Project::class);
     }
 
-
     public function resources(): HasMany
     {
-        return $this->hasMany(PhaseResource::class);
+        return $this->hasMany(PhaseResource::class, 'phase_id');
     }
 }

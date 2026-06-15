@@ -11,7 +11,7 @@ See @docs/summary.md for the full requirements and @docs/mcd.mermaid for the dat
 
 - **PHP 8.3 / Laravel 13** — Blade templates, Eloquent ORM, Laravel queues/mail
 - **Frontend** — Vite + Tailwind CSS v4 (no JS framework)
-- **Database** — PostgreSQL 18 via Laravel Sail (`compose.yaml`)
+- **Database** — sail for docker compose, and psql `.env`
 
 ## Commands
 
