@@ -10,7 +10,7 @@ class ProjectController extends Controller
 {
     public function listingProjects()
     {
-        $projects = Project::select('id', 'title', 'description')->with("evaluations")->get();
+        $projects = Project::select('id', 'title', 'description')->with("evaluation")->get();
         $users = User::query()->select('id', 'name')->get();
 
         return view('dashboard', ['projects' => $projects, 'users' => $users]);
