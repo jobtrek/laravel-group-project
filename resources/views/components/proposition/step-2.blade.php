@@ -19,12 +19,14 @@
                             <input type="text" :name="'phases[' + pi + '][titre]'" x-model="phase.titre"
                                 placeholder="Phase name"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <p x-show="phaseErrors[pi]?.titre" x-text="phaseErrors[pi]?.titre || ''" class="mt-1 text-sm text-red-600"></p>
                         </div>
                         <div>
                             <label class="block text-sm font-medium text-gray-700">Duration</label>
                             <input type="text" :name="'phases[' + pi + '][duree]'" x-model="phase.duree"
                                 placeholder="e.g. 3 mois, 1 semaine"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                            <p x-show="phaseErrors[pi]?.duree" x-text="phaseErrors[pi]?.duree || ''" class="mt-1 text-sm text-red-600"></p>
                         </div>
                     </div>
 
@@ -33,6 +35,7 @@
                         <textarea :name="'phases[' + pi + '][description]'" x-model="phase.description" rows="3"
                             placeholder="Overview of what this phase covers"
                             class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500"></textarea>
+                        <p x-show="phaseErrors[pi]?.description" x-text="phaseErrors[pi]?.description || ''" class="mt-1 text-sm text-red-600"></p>
                     </div>
 
                     <div>
@@ -45,11 +48,12 @@
                                         x-model="phase.objectifs[oi]" placeholder="Objective"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                                     <button type="button" @click="removeItem(phase.objectifs, oi)"
-                                        x-show="phase.objectifs.length > 1" x-show="phase.objectifs.length > 1"
+                                        x-show="phase.objectifs.length > 1"
                                         class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
                                 </div>
                             </template>
                         </div>
+                        <p x-show="phaseErrors[pi]?.objectifs" x-text="phaseErrors[pi]?.objectifs || ''" class="mt-1 text-sm text-red-600"></p>
                         <button type="button" @click="phase.objectifs.push('')"
                             class="mt-2 text-sm text-indigo-600 hover:underline">+ Add objective</button>
                     </div>
@@ -70,6 +74,7 @@
                                 </div>
                             </template>
                         </div>
+                        <p x-show="phaseErrors[pi]?.livrables" x-text="phaseErrors[pi]?.livrables || ''" class="mt-1 text-sm text-red-600"></p>
                         <button type="button" @click="phase.livrables.push('')"
                             class="mt-2 text-sm text-indigo-600 hover:underline">+ Add deliverable</button>
                     </div>
@@ -93,6 +98,7 @@
                                 </div>
                             </template>
                         </div>
+                        <p x-show="phaseErrors[pi]?.ressources" x-text="phaseErrors[pi]?.ressources || ''" class="mt-1 text-sm text-red-600"></p>
                         <button type="button" @click="phase.ressources_necessaires.push({ resource_type: '', amount_needed: '' })"
                             class="mt-2 text-sm text-indigo-600 hover:underline">+ Add resource</button>
                     </div>

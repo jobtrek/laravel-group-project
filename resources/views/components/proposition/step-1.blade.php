@@ -2,7 +2,10 @@
 
 <div x-show="step === 1" class="space-y-8">
     <div class="space-y-4">
-        <x-proposition.input title="Title" name="titre" :value="old('titre')" />
+        <div>
+            <x-proposition.input title="Title" name="titre" :value="old('titre')" x-model="titre" />
+            <p x-show="errors.titre" x-text="errors.titre || ''" class="mt-1 text-sm text-red-600"></p>
+        </div>
 
         <div>
             <label class="block text-sm font-medium text-gray-700">Porteur</label>
@@ -14,6 +17,7 @@
                     <option value="{{ $user->id }}" {{ old('porteur') == $user->id ? 'selected' : '' }}>{{ $user->name }}</option>
                 @endforeach
             </select>
+            <p x-show="errors.porteur" x-text="errors.porteur || ''" class="mt-1 text-sm text-red-600"></p>
         </div>
 
         <div>
@@ -38,6 +42,7 @@
                     </div>
                 </template>
             </div>
+            <p x-show="errors.membres" x-text="errors.membres || ''" class="mt-1 text-sm text-red-600"></p>
             <button type="button" @click="membres.push('')"
                 class="mt-2 text-sm text-indigo-600 hover:underline">+ Add member</button>
         </div>
@@ -45,9 +50,13 @@
 
     <hr class="border-gray-200">
 
-    <x-proposition.text-area name="description" section="Section 1 — Description"
-        label="Description"
-        description="Short description of the project. Max 3 paragraphs." />
+    <div>
+        <x-proposition.text-area name="description" section="Section 1 — Description"
+            label="Description"
+            description="Short description of the project. Max 3 paragraphs."
+            x-model="description" />
+        <p x-show="errors.description" x-text="errors.description || ''" class="mt-1 text-sm text-red-600"></p>
+    </div>
 
     <hr class="border-gray-200">
 
@@ -55,12 +64,17 @@
         <h4 class="text-base font-semibold text-gray-800 mb-1">Section 2 — Buts</h4>
         <p class="text-xs text-gray-500 mb-3">Main goals of the project. Should be SMART and aligned with the foundation's mission/vision.</p>
         <x-proposition.repeatable-list items="buts" name="buts[]" placeholder="Goal" add-label="+ Add goal" />
+        <p x-show="errors.buts" x-text="errors.buts || ''" class="mt-1 text-sm text-red-600"></p>
     </div>
 
     <hr class="border-gray-200">
 
-    <x-proposition.text-area name="perimetre" section="Section 3 — Périmètre"
-        label="Périmètre" description="What will the project will and will not do." />
+    <div>
+        <x-proposition.text-area name="perimetre" section="Section 3 — Périmètre"
+            label="Périmètre" description="What will the project will and will not do."
+            x-model="perimetre" />
+        <p x-show="errors.perimetre" x-text="errors.perimetre || ''" class="mt-1 text-sm text-red-600"></p>
+    </div>
 
     <div class="flex items-center gap-4 pt-2">
         <a href="#" class="text-base text-gray-600 hover:underline">Cancel</a>

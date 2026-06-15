@@ -10,15 +10,17 @@
                 </label>
                 <p class="text-xs text-gray-500 mb-1">Direct collaborators count 1 pt each, partners count 0.5 pt each.</p>
                 <input type="number" id="portee" name="portee" min="0" max="50"
+                    x-model="portee"
                     value="{{ old('portee') }}"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                <p x-show="errors.portee" x-text="errors.portee || ''" class="mt-1 text-sm text-red-600"></p>
             </div>
 
             <div>
                 <label for="impact" class="block text-sm font-medium text-gray-700">
                     Impact <span class="text-gray-400 font-normal">(1 – 5)</span>
                 </label>
-                <select id="impact" name="impact"
+                <select id="impact" name="impact" x-model="impact"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     <option value="">Select…</option>
                     <option value="1" {{ old('impact') == '1' ? 'selected' : '' }}>1 — Invisible at foundation level</option>
@@ -27,6 +29,7 @@
                     <option value="4" {{ old('impact') == '4' ? 'selected' : '' }}>4 — Significantly changes how circles/products operate</option>
                     <option value="5" {{ old('impact') == '5' ? 'selected' : '' }}>5 — Transformational</option>
                 </select>
+                <p x-show="errors.impact" x-text="errors.impact || ''" class="mt-1 text-sm text-red-600"></p>
                 <x-proposition.scale-toggle toggle-label="See impact scale" hide-label="Hide scale">
                     <p><strong>1</strong> — Invisible at the foundation level — negligible, concerns only a few roles</p>
                     <p><strong>2</strong> — Measurable but limited effect — restricted to one product or circle, not necessarily lasting</p>
@@ -43,17 +46,19 @@
                 <p class="text-xs text-gray-500 mb-1">Certainty the project will succeed and be completed.</p>
                 <div class="flex items-center gap-2 mt-1">
                     <input type="number" id="confiance" name="confiance" min="0" max="100"
+                        x-model="confiance"
                         value="{{ old('confiance') }}"
                         class="block w-24 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     <span class="text-sm text-gray-500">%</span>
                 </div>
+                <p x-show="errors.confiance" x-text="errors.confiance || ''" class="mt-1 text-sm text-red-600"></p>
             </div>
 
             <div>
                 <label for="effort" class="block text-sm font-medium text-gray-700">
                     Effort <span class="text-gray-400 font-normal">(1 – 5)</span>
                 </label>
-                <select id="effort" name="effort"
+                <select id="effort" name="effort" x-model="effort"
                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     <option value="">Select…</option>
                     <option value="1" {{ old('effort') == '1' ? 'selected' : '' }}>1 — A few days (≤ 1 week ETP, &lt; 200 CHF)</option>
@@ -62,6 +67,7 @@
                     <option value="4" {{ old('effort') == '4' ? 'selected' : '' }}>4 — More than a semester (3–6 months ETP, 10 000–50 000 CHF)</option>
                     <option value="5" {{ old('effort') == '5' ? 'selected' : '' }}>5 — Several years at &gt;100% ETP (&gt; 50 000 CHF)</option>
                 </select>
+                <p x-show="errors.effort" x-text="errors.effort || ''" class="mt-1 text-sm text-red-600"></p>
                 <x-proposition.scale-toggle toggle-label="See effort scale" hide-label="Hide scale">
                     <p><strong>1</strong> — A few days of work (≤ 1 week ETP). Very few financial resources (&lt; 200 CHF). Near-zero logistics.</p>
                     <p><strong>2</strong> — A few weeks (1–4 weeks ETP). Minor financial investment (&lt; 2 000 CHF). Coordination within one autonomous team.</p>
