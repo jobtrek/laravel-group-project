@@ -44,9 +44,7 @@
             if (!phase.description.trim()) { pe[i].description = 'Required.'; valid = false; }
             if (phase.objectifs.every(o => !String(o).trim())) { pe[i].objectifs = 'At least one objective is required.'; valid = false; }
             if (phase.livrables.every(l => !String(l).trim())) { pe[i].livrables = 'At least one deliverable is required.'; valid = false; }
-            if (phase.ressources_necessaires.some(r => !String(r.resource_type || '').trim() || String(r.amount_needed || '') === '')) {
-                pe[i].ressources = 'All resource fields are required.'; valid = false;
-            }
+                        if (phase.ressources_necessaires.some(r => !String(r.resource_type || '').trim() || r.amount_needed === undefined || r.amount_needed === null || String(r.amount_needed).trim() === '')) {
         });
         this.phaseErrors = pe;
         return valid;
