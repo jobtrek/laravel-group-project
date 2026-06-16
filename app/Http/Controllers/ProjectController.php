@@ -11,6 +11,7 @@ class ProjectController extends Controller
     private function filterProjects(Request $request)
     {
         $request->validate([
+            'status' => 'nullable|string',
             'score' => 'nullable|integer',
             'date' => 'nullable|date',
             'proposer' => 'nullable|exists:users,id',
@@ -18,7 +19,7 @@ class ProjectController extends Controller
 
 
 
-        $query = Project::query()->select('id', 'title', 'description')->with('evaluation', 'proposer:id,name');
+        $query = Project::query()->select('id', 'title', 'description', 'proposer_id')->with('evaluation', 'proposer:id,name');
 
         if ($request->filled('status')) {
             $query->where('status', $request->status);
