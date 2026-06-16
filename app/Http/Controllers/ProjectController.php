@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\User;
+use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
@@ -20,12 +20,13 @@ class ProjectController extends Controller
         return Project::query()
             ->select('id', 'title', 'description', 'proposer_id')
             ->with('evaluation', 'proposer:id,name')
-            ->when($request->filled('status'), fn($q) => $q->status($request->status))
-            ->when($request->filled('score'), fn($q) => $q->score($request->score))
-            ->when($request->filled('date'), fn($q) => $q->date($request->date))
-            ->when($request->filled('proposer'), fn($q) => $q->proposer($request->proposer))
+            ->when($request->filled('status'), fn ($q) => $q->status($request->status))
+            ->when($request->filled('score'), fn ($q) => $q->score($request->score))
+            ->when($request->filled('date'), fn ($q) => $q->date($request->date))
+            ->when($request->filled('proposer'), fn ($q) => $q->proposer($request->proposer))
             ->get();
     }
+
     public function index(Request $request)
     {
         $projects = $this->filterProjects($request);
