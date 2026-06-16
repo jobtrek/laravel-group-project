@@ -46,9 +46,6 @@ class ProjectController extends Controller
         $projects = $this->filterProjects($request);
         $users = User::select('id', 'name')->get();
 
-        return view('dashboard', [
-            'projects' => $projects,
-            'users' => $users,
-        ]);
+        return view('dashboard', compact('projects', 'users'));
     }
 }
