@@ -158,4 +158,26 @@ class Project extends Model
             return $project;
         });
     }
+
+    public function scopeStatus($query, $status)
+    {
+        return $query->where('status', $status);
+    }
+
+    public function scopeScore($query, $score)
+    {
+        return $query->whereHas('evaluation', function ($q) use ($score) {
+            $q->where('importance', '>=', $score);
+        });
+    }
+
+    public function scopeDate($query, $date)
+    {
+        return $query->whereDate('created_at', $date);
+    }
+
+    public function scopeProposer($query, $proposerId)
+    {
+        return $query->where('proposer_id', $proposerId);
+    }
 }

@@ -10,37 +10,22 @@ class ProjectController extends Controller
 {
     private function filterProjects(Request $request)
     {
-        $request->validate([
+        $validated = $request->validate([
             'status' => 'string',
             'score' => 'integer',
             'date' => 'date',
             'proposer' => 'exists:users,id',
         ]);
 
-
-
-        $query = Project::query()->select('id', 'title', 'description', 'proposer_id')->with('evaluation', 'proposer:id,name');
-
-        if ($request->filled('status')) {
-            $query->where('status', $request->status);
-        }
-
-        if ($request->filled('score')) {
-            $query->whereHas('evaluation', function ($q) use ($request) {
-                $q->where('importance', '>=', $request->score);
-            });
-        }
-        if ($request->filled('date')) {
-            $query->whereDate('created_at', $request->date);
-        }
-
-        if ($request->filled('proposer')) {
-            $query->where('proposer_id', $request->proposer);
-        }
-
-        return $query->get();
+        return Project::query()
+            ->select('id', 'title', 'description', 'proposer_id')
+            ->with('evaluation', 'proposer:id,name')
+            ->when($request->filled('status'), fn($q) => $q->status($request->status))
+            ->when($request->filled('score'), fn($q) => $q->score($request->score))
+            ->when($request->filled('date'), fn($q) => $q->date($request->date))
+            ->when($request->filled('proposer'), fn($q) => $q->proposer($request->proposer))
+            ->get();
     }
-
     public function index(Request $request)
     {
         $projects = $this->filterProjects($request);
