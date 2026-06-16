@@ -11,10 +11,10 @@ class ProjectController extends Controller
     private function filterProjects(Request $request)
     {
         $request->validate([
-            'status' => 'nullable|string',
-            'score' => 'nullable|integer',
-            'date' => 'nullable|date',
-            'proposer' => 'nullable|exists:users,id',
+            'status' => 'string',
+            'score' => 'integer',
+            'date' => 'date',
+            'proposer' => 'exists:users,id',
         ]);
 
 
