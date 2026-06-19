@@ -44,8 +44,6 @@ class RecolteController extends Controller
             $project['progress'] = $progress;
         }
 
-        return redirect()->route('dashboard')->with([
-            'projects' => $projects,
-        ]);
+        return view('dashboard', ['projects' => $projects]);
     }
 }
