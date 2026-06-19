@@ -23,7 +23,6 @@
                             text="Completed"
                             projets="7"/>
                     </div>
-                    <div><p></p></div>
                     <x-projects.inputSearch/>
                     <div>
                         <x-projects.buttons text="All"/>
@@ -34,7 +33,7 @@
                         <x-projects.buttons text="paused"/>
                     </div>
                     <button class="bg-blue-700 text-white rounded-lg p-1" >New proposal</button>
-                    <div class="flex-col gap-4">
+                    <div class="flex flex-col gap-4">
                         <x-projects.displayProjects
                             status="En retard"
                             title="Refonte du site web"
