@@ -20,13 +20,27 @@ cd laravel-group-project
 composer install
 ```
 
-### 3. Set Up Environment
+### 3. Install Git Hooks
+```bash
+./vendor/bin/captainhook install
+```
+
+This sets up the pre-commit hook that automatically formats your PHP code before every commit — no manual step needed after this.
+
+### 4. Install Node Modules
+```bash 
+./vendor/bin/sail npm install
+
+```
+
+
+### 5. Set Up Environment
 ```bash
 cp .env.example .env
 php artisan key:generate
 ```
 
-### 4. With Docker (Laravel Sail)
+### 6. With Docker (Laravel Sail)
 
 I highly recommend creating an alias in your shell configuration for easier access to Sail commands:
 
@@ -46,20 +60,12 @@ Run migrations:
 
 The application will be available at `http://localhost`.
 
-### 5. Without Docker
 
-Create a PostgreSQL database:
+to run the frontend build:
 ```bash
-createdb laravel
+./vendor/bin/sail npm run dev
 ```
 
-Configure `.env` with your database credentials, then:
-```bash
-php artisan migrate
-npm install
-npm run build
-php artisan serve
-```
 
 ## Development
 
@@ -84,6 +90,21 @@ php artisan serve
 # Run queue listener
 ./vendor/bin/sail artisan queue:listen
 ```
+
+### Code Formatting
+
+[Laravel Pint](https://laravel.com/docs/pint) is used for code style. The pre-commit hook (installed in step 3) runs automatically on every `git commit` — it formats any staged PHP files and re-stages them, so your commits always go out clean.
+
+To format manually at any time:
+```bash
+# Format all files
+./vendor/bin/sail pint
+
+# Format only staged/modified files (same as the hook does)
+./vendor/bin/sail pint --dirty
+```
+
+If a colleague hasn't run `./vendor/bin/captainhook install` yet, they can always format manually before committing.
 
 ### Database
 

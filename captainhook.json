@@ -1,0 +1,17 @@
+{
+    "pre-commit": {
+        "enabled": true,
+        "actions": [
+            {
+                "action": "vendor/bin/pint --dirty",
+                "options": [],
+                "conditions": []
+            },
+            {
+                "action": "bash -c 'git diff --name-only -- \"*.php\" | xargs -r git add'",
+                "options": [],
+                "conditions": []
+            }
+        ]
+    }
+}

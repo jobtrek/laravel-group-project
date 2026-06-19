@@ -13,7 +13,7 @@
         <p class="text-xs text-gray-500 mb-1">{{ $description }}</p>
     @endif
     <textarea id="{{ $name }}" name="{{ $name }}" rows="{{ $rows }}"
-        class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 @error($name)  @enderror">{{ old($name) }}</textarea>
+        {{ $attributes->merge(['class' => 'mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500']) }}>{{ old($name) }}</textarea>
     @error($name)
         <p class="mt-1 text-sm text-red-600">{{ $message }}</p>
     @enderror

@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Database\Factories\UserFactory;
-// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Attributes\Fillable;
 use Illuminate\Database\Eloquent\Attributes\Hidden;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -28,5 +27,20 @@ class User extends Authenticatable
             'email_verified_at' => 'datetime',
             'password' => 'hashed',
         ];
+    }
+
+    public function comments()
+    {
+        return $this->hasMany(Comment::class);
+    }
+
+    public function projectReviews()
+    {
+        return $this->hasMany(ProjectReview::class);
+    }
+
+    public function projectEvaluations()
+    {
+        return $this->hasMany(ProjectEvaluation::class);
     }
 }
