@@ -20,10 +20,10 @@ class ProjectController extends Controller
         return Project::query()
             ->select('id', 'title', 'description', 'proposer_id')
             ->with('evaluation', 'proposer:id,name')
-            ->when($request->filled('status'), fn($q) => $q->status($validated['status']))
-            ->when($request->filled('score'), fn($q) => $q->score($validated['score']))
-            ->when($request->filled('date'), fn($q) => $q->date($validated['date']))
-            ->when($request->filled('proposer'), fn($q) => $q->proposer($validated['proposer']))
+            ->when($request->filled('status'), fn ($q) => $q->status($validated['status']))
+            ->when($request->filled('score'), fn ($q) => $q->score($validated['score']))
+            ->when($request->filled('date'), fn ($q) => $q->date($validated['date']))
+            ->when($request->filled('proposer'), fn ($q) => $q->proposer($validated['proposer']))
             ->get();
     }
 
