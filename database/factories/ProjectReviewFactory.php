@@ -4,6 +4,8 @@ namespace Database\Factories;
 
 use App\Models\ProjectReview;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Project;
+use App\Models\User;
 
 /**
  * @extends Factory<ProjectReview>
@@ -18,8 +20,8 @@ class ProjectReviewFactory extends Factory
     public function definition(): array
     {
         return [
-            'project_id' => \App\Models\Project::factory(),
-            'user_id' => \App\Models\User::factory(),
+            'project_id' => Project::factory(),
+            'user_id' => User::factory(),
             'review_status' => $this->faker->randomElement(['pending', 'approved', 'rejected']),
         ];
     }

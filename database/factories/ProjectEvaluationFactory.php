@@ -4,6 +4,7 @@ namespace Database\Factories;
 
 use App\Models\ProjectEvaluation;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\Project;
 
 /**
  * @extends Factory<ProjectEvaluation>
@@ -22,7 +23,7 @@ class ProjectEvaluationFactory extends Factory
             'impact' => $this->faker->numberBetween(1, 10),
             'confiance' => $this->faker->numberBetween(1, 10),
             'effort' => $this->faker->numberBetween(1, 10),
-            'project_id' => \App\Models\Project::factory(),
+            'project_id' => Project::factory(),
         ];
     }
 }

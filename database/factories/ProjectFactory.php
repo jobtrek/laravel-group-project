@@ -14,6 +14,8 @@ use App\Models\States\CollectingState;
 use App\Models\States\ReadyState;
 use App\Models\States\ActiveState;
 use App\Models\States\CompletedState;
+use App\Models\User;
+
 
 /**
  * @extends Factory<Project>
@@ -47,9 +49,9 @@ class ProjectFactory extends Factory
             'perimetre' => $this->faker->paragraph(),
             'status' => $this->faker->randomElement($statusStates),
             'current_stage' => $this->faker->randomElement($statusStates),
-            'proposer_id' => \App\Models\User::factory(),
-            'leader_id' => \App\Models\User::factory(),
-            'recolte_manager_id' => \App\Models\User::factory(),
+            'proposer_id' => User::factory(),
+            'leader_id' => User::factory(),
+            'recolte_manager_id' => User::factory(),
         ];
     }
 }

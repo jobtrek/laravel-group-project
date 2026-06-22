@@ -4,6 +4,8 @@ namespace Database\Factories;
 
 use App\Models\ProjectMember;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\User;
+use App\Models\Project;
 
 /**
  * @extends Factory<ProjectMember>
@@ -18,8 +20,8 @@ class ProjectMemberFactory extends Factory
     public function definition(): array
     {
         return [
-            'user_id' => \App\Models\User::factory(),
-            'project_id' => \App\Models\Project::factory(),
+            'user_id' => User::factory(),
+            'project_id' => Project::factory(),
         ];
     }
 }

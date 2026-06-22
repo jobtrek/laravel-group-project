@@ -4,6 +4,8 @@ namespace Database\Factories;
 
 use App\Models\Comment;
 use Illuminate\Database\Eloquent\Factories\Factory;
+use App\Models\User;
+use App\Models\Project;
 
 /**
  * @extends Factory<Comment>
@@ -20,8 +22,8 @@ class CommentFactory extends Factory
         return [
             'content' => $this->faker->paragraph(),
             'stage' => $this->faker->randomElement(['planning', 'development', 'testing', 'deployment']),
-            'user_id' => \App\Models\User::factory(),
-            'project_id' => \App\Models\Project::factory(),
+            'user_id' => User::factory(),
+            'project_id' => Project::factory(),
         ];
     }
 }
