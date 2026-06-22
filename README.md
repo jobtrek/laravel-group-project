@@ -79,7 +79,7 @@ to run the frontend build:
 ./vendor/bin/sail artisan <command>
 
 # Access the database
-./vendor/bin/sail pgsql
+./vendor/bin/sail psql
 
 # Run tests
 ./vendor/bin/sail test
