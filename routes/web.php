@@ -11,10 +11,7 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/mail', function () {
-    $name = 'Thomas Lucking';
-    Mail::to('test@test.com')->send(new MailableName($name));
-});
+
 Route::get('/dashboard', function () {
     return redirect()->route('projects');
 })->middleware(['auth', 'verified'])->name('dashboard');

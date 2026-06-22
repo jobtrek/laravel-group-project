@@ -26,7 +26,7 @@ class SendStrongerMailProcess implements ShouldQueue
     public function handle(): void
     {
 
-        Mail::to($this->project->members)->queue(new StrongerEmailReminder($this->project));
+        Mail::to($this->project->members)->queue(new StrongerEmailReminder($this->project->title));
 
     }
 }
