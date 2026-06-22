@@ -5,6 +5,7 @@
 namespace App\Actions;
 
 use App\Models\Project;
+use App\Models\ProjectPhase;
 use App\Models\States\DraftState;
 use App\Models\States\SubmittedState;
 use Illuminate\Support\Facades\DB;
@@ -36,6 +37,7 @@ class CreateProjectProposal
             ]);
 
             foreach ($data['phases'] as $index => $phase) {
+                /** @var ProjectPhase $createdPhase */
                 $createdPhase = $project->phases()->create([
                     'name' => $phase['titre'],
                     'duration' => $phase['duree'],
