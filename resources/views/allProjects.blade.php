@@ -9,22 +9,10 @@
             <div class=" bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
                     <div class="flex justify-between gap-4 mb-4">
-                        <x-projects.countProjects
-                            text="Propositions"
-                            projets="20"
-                            route="propositions"/>
-                        <x-projects.countProjects
-                            text="Review"
-                            projets="6"
-                            route="review"/>
-                        <x-projects.countProjects
-                            text="Recolte"
-                            projets="9"
-                            route="recolte"/>
-                        <x-projects.countProjects
-                            text="En cours"
-                            projets="7"
-                            route="en-cours"/>
+                        <x-projects.countProjects text="Propositions" :projets="$counts->get('submitted', 0)" route="propositions"/>
+                        <x-projects.countProjects text="Review" :projets="$counts->get('approved', 0)" route="review"/>
+                        <x-projects.countProjects text="Recolte" :projets="$counts->get('collecting', 0)" route="recolte"/>
+                        <x-projects.countProjects text="En cours" :projets="$counts->get('active', 0)" route="en-cours"/>
                     </div>
                     <a href="{{ route('create') }}" class="bg-blue-700 text-white rounded-lg p-1">New proposal</a>
                     <div class="flex flex-col gap-4 mt-4">
