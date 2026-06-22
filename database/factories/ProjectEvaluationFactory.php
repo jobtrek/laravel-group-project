@@ -2,7 +2,6 @@
 
 namespace Database\Factories;
 
-use App\Models\project_evaluation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
