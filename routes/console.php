@@ -21,6 +21,7 @@ Artisan::command('mail:send-reminders', function () {
 
     foreach ($projects as $project) {
         SendMailProcess::dispatch($project->leader);
+        $project->forceFill(['last_reminder_at' => now()])->saveQuietly();
     }
 
     $this->info("Friendly reminders queued for {$projects->count()} project(s).");

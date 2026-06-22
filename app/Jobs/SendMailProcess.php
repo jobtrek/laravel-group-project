@@ -24,7 +24,7 @@ class SendMailProcess implements ShouldQueue
      */
     public function handle(): void
     {
-        Mail::to($this->user->email)->queue(new EmailReminder($this->user->name));
+        Mail::to($this->user->email)->send(new EmailReminder($this->user->name));
 
     }
 

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="fr">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -11,6 +12,7 @@
             margin: 0;
             padding: 0;
         }
+
         .container {
             max-width: 600px;
             margin: 40px auto;
@@ -19,10 +21,12 @@
             overflow: hidden;
             box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
         }
+
         .header {
             background-color: #dc2626;
             padding: 32px 40px;
         }
+
         .header h1 {
             color: #ffffff;
             margin: 0;
@@ -30,6 +34,7 @@
             font-weight: 700;
             letter-spacing: 0.3px;
         }
+
         .header p {
             color: #fecaca;
             margin: 8px 0 0;
@@ -38,15 +43,18 @@
             letter-spacing: 1px;
             font-weight: 600;
         }
+
         .body {
             padding: 36px 40px;
             color: #374151;
             line-height: 1.7;
             font-size: 15px;
         }
+
         .body p {
             margin: 0 0 16px;
         }
+
         .warning-box {
             background-color: #fef2f2;
             border-left: 4px solid #dc2626;
@@ -56,6 +64,7 @@
             font-size: 14px;
             color: #7f1d1d;
         }
+
         .footer {
             padding: 20px 40px;
             background-color: #f9fafb;
@@ -66,6 +75,7 @@
         }
     </style>
 </head>
+
 <body>
     <div class="container">
         <div class="header">
@@ -73,7 +83,7 @@
             <h1>Action immédiate requise</h1>
         </div>
         <div class="body">
-            <p>À tous les membres de l'équipe,</p>
+            <p>À tous les membres de l'équipe du projet <strong>{{ $name }}</strong>,</p>
 
             <p>
                 Ceci est un avis formel indiquant que les mises à jour de progression des projets sont
@@ -120,4 +130,5 @@
         </div>
     </div>
 </body>
+
 </html>
