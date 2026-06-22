@@ -10,15 +10,15 @@ class ProjectsSeeder extends Seeder
 {
     public function run(): void
     {
-        $userIds = User::pluck('id')->toArray();
+        $proposers = User::where('role', 'proposer')->pluck('id')->toArray();
+        $leads = User::where('role', 'project_lead')->pluck('id')->toArray();
+        $recolteManagers = User::where('role', 'recolte_manager')->pluck('id')->toArray();
 
-        if (empty($userIds)) {
-            $this->command->warn('No users found. Run UserSeeder first.');
+        if (empty($proposers)) {
+            $this->command->warn('No proposer users found. Run UserSeeder first.');
 
             return;
         }
-
-        $states = ['draft', 'submitted', 'modification', 'approved', 'refused', 'collecting', 'ready', 'active', 'completed', 'archived'];
 
         $projects = [
             [
@@ -30,9 +30,9 @@ class ProjectsSeeder extends Seeder
                 'ressources_totales' => 'Terrain municipal, outils de jardinage, semences, système d\'irrigation',
                 'status' => 'active',
                 'current_stage' => 'active',
-                'proposer_id' => $userIds[array_rand($userIds)],
-                'leader_id' => $userIds[array_rand($userIds)],
-                'recolte_manager_id' => $userIds[array_rand($userIds)],
+                'proposer_id' => $proposers[array_rand($proposers)],
+                'leader_id' => $leads[array_rand($leads)],
+                'recolte_manager_id' => $recolteManagers[array_rand($recolteManagers)],
             ],
             [
                 'title' => 'Ateliers Numériques pour Seniors',
@@ -43,9 +43,9 @@ class ProjectsSeeder extends Seeder
                 'ressources_totales' => '10 tablettes, connexion internet, supports pédagogiques',
                 'status' => 'collecting',
                 'current_stage' => 'collecting',
-                'proposer_id' => $userIds[array_rand($userIds)],
-                'leader_id' => $userIds[array_rand($userIds)],
-                'recolte_manager_id' => $userIds[array_rand($userIds)],
+                'proposer_id' => $proposers[array_rand($proposers)],
+                'leader_id' => $leads[array_rand($leads)],
+                'recolte_manager_id' => $recolteManagers[array_rand($recolteManagers)],
             ],
             [
                 'title' => 'Festival de la Transition Écologique',
@@ -56,7 +56,7 @@ class ProjectsSeeder extends Seeder
                 'ressources_totales' => 'Scène, sonorisation, stands, bénévoles, communication',
                 'status' => 'draft',
                 'current_stage' => 'draft',
-                'proposer_id' => $userIds[array_rand($userIds)],
+                'proposer_id' => $proposers[array_rand($proposers)],
                 'leader_id' => null,
                 'recolte_manager_id' => null,
             ],
@@ -69,7 +69,7 @@ class ProjectsSeeder extends Seeder
                 'ressources_totales' => 'Camion aménagé, fonds documentaire, carburant, bibliothécaire',
                 'status' => 'submitted',
                 'current_stage' => 'submitted',
-                'proposer_id' => $userIds[array_rand($userIds)],
+                'proposer_id' => $proposers[array_rand($proposers)],
                 'leader_id' => null,
                 'recolte_manager_id' => null,
             ],
@@ -82,9 +82,9 @@ class ProjectsSeeder extends Seeder
                 'ressources_totales' => 'Local cuisine, équipement professionnel, denrées, cuisiniers, bénévoles',
                 'status' => 'ready',
                 'current_stage' => 'ready',
-                'proposer_id' => $userIds[array_rand($userIds)],
-                'leader_id' => $userIds[array_rand($userIds)],
-                'recolte_manager_id' => $userIds[array_rand($userIds)],
+                'proposer_id' => $proposers[array_rand($proposers)],
+                'leader_id' => $leads[array_rand($leads)],
+                'recolte_manager_id' => $recolteManagers[array_rand($recolteManagers)],
             ],
             [
                 'title' => 'Réseau de Compostage Participatif',
@@ -95,7 +95,7 @@ class ProjectsSeeder extends Seeder
                 'ressources_totales' => 'Borne de compostage, bio-seaux, formation',
                 'status' => 'refused',
                 'current_stage' => 'refused',
-                'proposer_id' => $userIds[array_rand($userIds)],
+                'proposer_id' => $proposers[array_rand($proposers)],
                 'leader_id' => null,
                 'recolte_manager_id' => null,
             ],
@@ -108,8 +108,8 @@ class ProjectsSeeder extends Seeder
                 'ressources_totales' => 'Plateforme web, bases de données, communication, événements',
                 'status' => 'approved',
                 'current_stage' => 'approved',
-                'proposer_id' => $userIds[array_rand($userIds)],
-                'leader_id' => $userIds[array_rand($userIds)],
+                'proposer_id' => $proposers[array_rand($proposers)],
+                'leader_id' => $leads[array_rand($leads)],
                 'recolte_manager_id' => null,
             ],
             [
@@ -121,8 +121,8 @@ class ProjectsSeeder extends Seeder
                 'ressources_totales' => 'Matériaux, architecte, entreprise spécialisée, équipements adaptés',
                 'status' => 'modification',
                 'current_stage' => 'modification',
-                'proposer_id' => $userIds[array_rand($userIds)],
-                'leader_id' => $userIds[array_rand($userIds)],
+                'proposer_id' => $proposers[array_rand($proposers)],
+                'leader_id' => $leads[array_rand($leads)],
                 'recolte_manager_id' => null,
             ],
             [
@@ -134,9 +134,9 @@ class ProjectsSeeder extends Seeder
                 'ressources_totales' => 'Formateurs, matériel pédagogique, salle, ordinateurs',
                 'status' => 'completed',
                 'current_stage' => 'completed',
-                'proposer_id' => $userIds[array_rand($userIds)],
-                'leader_id' => $userIds[array_rand($userIds)],
-                'recolte_manager_id' => $userIds[array_rand($userIds)],
+                'proposer_id' => $proposers[array_rand($proposers)],
+                'leader_id' => $leads[array_rand($leads)],
+                'recolte_manager_id' => $recolteManagers[array_rand($recolteManagers)],
             ],
             [
                 'title' => 'Exposition d\'Art Urbain',
@@ -147,7 +147,7 @@ class ProjectsSeeder extends Seeder
                 'ressources_totales' => 'Murs autorisés, matériel, assurance, communication',
                 'status' => 'archived',
                 'current_stage' => 'archived',
-                'proposer_id' => $userIds[array_rand($userIds)],
+                'proposer_id' => $proposers[array_rand($proposers)],
                 'leader_id' => null,
                 'recolte_manager_id' => null,
             ],

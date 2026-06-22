@@ -11,7 +11,7 @@ class ProjectReviewSeeder extends Seeder
     public function run(): void
     {
         $projects = Project::whereIn('status', ['submitted', 'modification', 'approved', 'refused'])->get();
-        $directionUsers = User::where('name', 'like', '%Direction%')->get();
+        $directionUsers = User::where('role', 'direction')->get();
 
         if ($projects->isEmpty() || $directionUsers->isEmpty()) {
             return;
@@ -29,7 +29,7 @@ class ProjectReviewSeeder extends Seeder
         }
 
         $activeProjects = Project::whereIn('status', ['active', 'completed'])->get();
-        $leaders = User::where('name', 'like', '%Lead%')->get()->merge($directionUsers);
+        $leaders = User::where('role', 'project_lead')->get()->merge($directionUsers);
 
         foreach ($activeProjects as $project) {
             foreach ($leaders as $user) {
