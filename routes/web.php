@@ -9,6 +9,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/dashboard', function () {
+    return redirect()->route('projects');
+})->middleware(['auth', 'verified'])->name('dashboard');
+
 Route::get('/projects', function () {
     return view('allProjects');
 })->middleware(['auth', 'verified'])->name('projects');

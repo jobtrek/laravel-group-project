@@ -12,6 +12,6 @@ class ProjectController extends Controller
         $projects = Project::select('id', 'title', 'description')->with('evaluation')->get();
         $users = User::select('id', 'name')->get();
 
-        return view('dashboard', ['projects' => $projects, 'users' => $users]);
+        return view('allProjects', ['projects' => $projects, 'users' => $users]);
     }
 }

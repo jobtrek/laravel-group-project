@@ -26,7 +26,7 @@
                             projets="7"
                             route="en-cours"/>
                     </div>
-                    <a href="{{ route('create') }}" class="bg-blue-700 text-white rounded-lg 2 p-1">New proposal</a>
+                         <a href="{{ route('create') }}" class="bg-blue-700 text-white rounded-lg p-1">New proposal</a>
                     <div class="flex flex-col gap-4 mt-4">
                         <x-projects.displayProjects
                             status="En retard"
