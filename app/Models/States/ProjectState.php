@@ -5,7 +5,8 @@ namespace App\Models\States;
 use Spatie\ModelStates\State;
 use Spatie\ModelStates\StateConfig;
 
-abstract class ProjectState extends State {
+abstract class ProjectState extends State
+{
     abstract public function label(): string;
 
     public static function config(): StateConfig

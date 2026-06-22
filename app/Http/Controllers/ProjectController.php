@@ -2,11 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Project;
 use App\Models\States\ApprovedState;
 use App\Models\States\ModificationState;
 use App\Models\States\RefusedState;
 use App\Models\States\SubmittedState;
-use App\Models\Project;
 use App\Models\User;
 use Illuminate\Support\Facades\Redirect;
 
@@ -24,6 +24,7 @@ class ProjectController extends Controller
     {
         $project->status->transitionTo(ApprovedState::class);
         $project->save();
+
         return Redirect::back()->with('status', 'project-approved');
     }
 
@@ -31,6 +32,7 @@ class ProjectController extends Controller
     {
         $project->status->transitionTo(RefusedState::class);
         $project->save();
+
         return Redirect::back()->with('status', 'project-denied');
     }
 
@@ -38,6 +40,7 @@ class ProjectController extends Controller
     {
         $project->status->transitionTo(ModificationState::class);
         $project->save();
+
         return Redirect::back()->with('status', 'more-info-requested');
     }
 
@@ -45,7 +48,7 @@ class ProjectController extends Controller
     {
         $project->status->transitionTo(SubmittedState::class);
         $project->save();
+
         return Redirect::back()->with('status', 'project-resubmitted');
     }
-
 }

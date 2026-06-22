@@ -1,8 +1,8 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
-use App\Http\Controllers\PropositionController;
 use App\Http\Controllers\ProjectController;
+use App\Http\Controllers\PropositionController;
 use App\Models\Project;
 use App\Models\States\ModificationState;
 use App\Models\States\SubmittedState;
@@ -52,6 +52,7 @@ Route::middleware('auth')->group(function () {
         $projects = Project::with('evaluation')
             ->whereState('status', [SubmittedState::class, ModificationState::class])
             ->get();
+
         return view('testDirectionFront', ['projects' => $projects]);
     })->name('direction.projects');
 
