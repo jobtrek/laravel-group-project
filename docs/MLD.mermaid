@@ -1,0 +1,152 @@
+classDiagram
+direction BT
+class cache {
+   text value
+   bigint expiration
+   varchar(255) key
+}
+class cache_locks {
+   varchar(255) owner
+   bigint expiration
+   varchar(255) key
+}
+class comments {
+   text content
+   varchar(50) stage
+   bigint user_id
+   bigint project_id
+   timestamp(0) created_at
+   timestamp(0) updated_at
+   bigint id
+}
+class failed_jobs {
+   varchar(255) uuid
+   varchar(255) connection
+   varchar(255) queue
+   text payload
+   text exception
+   timestamp(0) failed_at
+   bigint id
+}
+class job_batches {
+   varchar(255) name
+   integer total_jobs
+   integer pending_jobs
+   integer failed_jobs
+   text failed_job_ids
+   text options
+   integer cancelled_at
+   integer created_at
+   integer finished_at
+   varchar(255) id
+}
+class jobs {
+   varchar(255) queue
+   text payload
+   smallint attempts
+   integer reserved_at
+   integer available_at
+   integer created_at
+   bigint id
+}
+class migrations {
+   varchar(255) migration
+   integer batch
+   integer id
+}
+class password_reset_tokens {
+   varchar(255) token
+   timestamp(0) created_at
+   varchar(255) email
+}
+class phase_resources {
+   varchar(100) resource_type
+   text description
+   integer work_rate
+   numeric(10,2) amount_needed
+   numeric(10,2) amount_found
+   bigint phase_id
+   bigint id
+}
+class project_evaluations {
+   numeric(10,2) portee
+   integer impact
+   integer confiance
+   integer effort
+   integer importance
+   bigint project_id
+   timestamp(0) created_at
+   timestamp(0) updated_at
+   bigint id
+}
+class project_members {
+   bigint user_id
+   bigint project_id
+}
+class project_phases {
+   text name
+   varchar(100) duration
+   json objectifs
+   json livrables
+   integer order
+   bigint project_id
+   bigint id
+}
+class project_reviews {
+   bigint project_id
+   bigint user_id
+   varchar(50) review_status
+   timestamp(0) created_at
+   timestamp(0) updated_at
+   bigint id
+}
+class projects {
+   varchar(100) title
+   text description
+   numeric(10,2) budget_global
+   json but
+   text perimetre
+   varchar(50) status
+   varchar(50) current_stage
+   timestamp(0) created_at
+   timestamp(0) updated_at
+   timestamp(0) archived_at
+   timestamp(0) restored_at
+   timestamp(0) last_reminder_at
+   bigint proposer_id
+   bigint leader_id
+   bigint recolte_manager_id
+   bigint id
+}
+class sessions {
+   bigint user_id
+   varchar(45) ip_address
+   text user_agent
+   text payload
+   integer last_activity
+   varchar(255) id
+}
+class users {
+   varchar(255) name
+   varchar(255) email
+   timestamp(0) email_verified_at
+   varchar(255) password
+   varchar(100) remember_token
+   timestamp(0) created_at
+   timestamp(0) updated_at
+   bigint id
+}
+
+comments  -->  projects : project_id:id
+comments  -->  users : user_id:id
+phase_resources  -->  project_phases : phase_id:id
+project_evaluations  -->  projects : project_id:id
+project_members  -->  projects : project_id:id
+project_members  -->  users : user_id:id
+project_phases  -->  projects : project_id:id
+project_reviews  -->  projects : project_id:id
+project_reviews  -->  users : user_id:id
+projects  -->  users : proposer_id:id
+projects  -->  users : recolte_manager_id:id
+projects  -->  users : leader_id:id
+sessions  -->  users : user_id:id
