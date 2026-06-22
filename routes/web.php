@@ -34,7 +34,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/direction/projects', function () {
         $projects = Project::with('evaluation')
-            ->whereIn('status', [SubmittedState::$name, ModificationState::$name])
+            ->whereState('status', [SubmittedState::class, ModificationState::class])
             ->get();
         return view('testDirectionFront', ['projects' => $projects]);
     })->name('direction.projects');
