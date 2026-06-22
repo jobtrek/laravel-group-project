@@ -1,7 +1,11 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
+use App\Models\Project;
+use App\Models\States\ModificationState;
+use App\Models\States\SubmittedState;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -43,6 +47,19 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::post('/propositions', [PropositionController::class, 'store'])->name('proposition.store');
+
+    Route::get('/direction/projects', function () {
+        $projects = Project::with('evaluation')
+            ->whereState('status', [SubmittedState::class, ModificationState::class])
+            ->get();
+
+        return view('testDirectionFront', ['projects' => $projects]);
+    })->name('direction.projects');
+
+    Route::patch('/projects/{project}/approve', [ProjectController::class, 'approve'])->name('projects.approve');
+    Route::patch('/projects/{project}/deny', [ProjectController::class, 'deny'])->name('projects.deny');
+    Route::post('/projects/{project}/request-more-info', [ProjectController::class, 'requestMoreInfo'])->name('projects.request-more-info');
+    Route::patch('/projects/{project}/resubmit', [ProjectController::class, 'reSubmit'])->name('projects.resubmit');
 });
 
 require __DIR__.'/auth.php';
