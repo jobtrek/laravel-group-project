@@ -22,27 +22,10 @@ use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 use Spatie\ModelStates\HasStates;
 
-class Project extends Model
+  class Project extends Model
 {
     use HasFactory;
     use HasStates;
-
-    protected function registerStates(): void
-    {
-        $this->addState('status', ProjectState::class)
-            ->default(DraftState::class)
-            ->allowTransitions([
-                [DraftState::class,        SubmittedState::class],
-                [SubmittedState::class,    [ApprovedState::class, RefusedState::class, ModificationState::class, ArchivedState::class]],
-                [ModificationState::class, [SubmittedState::class, ArchivedState::class]],
-                [ApprovedState::class,     CollectingState::class],
-                [RefusedState::class,      SubmittedState::class],
-                [CollectingState::class,   [ReadyState::class, ArchivedState::class]],
-                [ReadyState::class,        [ActiveState::class, CollectingState::class, ArchivedState::class]],
-                [ActiveState::class,       [CompletedState::class, ArchivedState::class]],
-                [ArchivedState::class,     [SubmittedState::class, CollectingState::class, ActiveState::class]],
-            ]);
-    }
 
     protected $fillable = [
         'title',
@@ -121,8 +104,8 @@ class Project extends Model
                 'but' => $data['buts'],
                 'perimetre' => $data['perimetre'] ?? null,
                 'ressources_totales' => $data['ressources_totales'] ?? null,
-                'status' => DraftState::getMorphClass(),
-                'current_stage' => DraftState::getMorphClass(),
+                'status' => SubmittedState::getMorphClass(),
+                'current_stage' => SubmittedState::getMorphClass(),
                 'proposer_id' => $proposerId,
                 'leader_id' => $data['porteur'],
             ]);

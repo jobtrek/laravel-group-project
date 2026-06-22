@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\States\ApprovedState;
+use App\Models\States\ModificationState;
 use App\Models\States\RefusedState;
 use App\Models\States\SubmittedState;
 use App\Models\Project;
@@ -32,4 +33,17 @@ class ProjectController extends Controller
         $project->save();
         return Redirect::back()->with('status', 'project-denied');
     }
+
+    public function requestMoreInfo(Project $project)
+    {
+        $project->status->transitionTo(ModificationState::class);
+        $project->save();
+    }
+
+    public function reSubmit(Project $project)
+    {
+        $project->status->transitionTo(SubmittedState::class);
+        $project->save();
+    }
+
 }
