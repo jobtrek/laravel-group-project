@@ -36,7 +36,7 @@ class Project extends Model
                 [SubmittedState::class,    [ApprovedState::class, RefusedState::class, ModificationState::class, ArchivedState::class]],
                 [ModificationState::class, [SubmittedState::class, ArchivedState::class]],
                 [ApprovedState::class,     CollectingState::class],
-                [RefusedState::class,      SubmittedState::class],
+                [RefusedState::class,      ArchivedState::class],
                 [CollectingState::class,   [ReadyState::class, ArchivedState::class]],
                 [ReadyState::class,        [ActiveState::class, CollectingState::class, ArchivedState::class]],
                 [ActiveState::class,       [CompletedState::class, ArchivedState::class]],

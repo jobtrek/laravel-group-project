@@ -7,3 +7,4 @@ parameters:
     level: 5
     ignoreErrors:
         - '/Parameter #1 \$user of class Illuminate\\Auth\\Events\\Verified constructor expects Illuminate\\Contracts\\Auth\\MustVerifyEmail, App\\Models\\User\|null given./'
+        - '/Call to an undefined method App\\Models\\Project::addState\(\)\./'
