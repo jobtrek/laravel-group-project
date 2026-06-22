@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Urgent: Project Update Required</title>
+    <title>Urgent : mise à jour du projet requise</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -69,52 +69,54 @@
 <body>
     <div class="container">
         <div class="header">
-            <p>Urgent Notice</p>
-            <h1>Immediate Action Required</h1>
+            <p>Avis urgent</p>
+            <h1>Action immédiate requise</h1>
         </div>
         <div class="body">
-            <p>To all members of the team,</p>
+            <p>À tous les membres de l'équipe,</p>
 
             <p>
-                This is a formal notice that project progress updates are significantly overdue. Despite
-                previous reminders, the project management platform does not reflect the current status
-                of ongoing work.
+                Ceci est un avis formel indiquant que les mises à jour de progression des projets sont
+                considérablement en retard. Malgré les rappels précédents, la plateforme de gestion de
+                projets ne reflète pas l'état actuel des travaux en cours.
             </p>
 
             <div class="warning-box">
-                <strong>Warning:</strong> Failure to update your project progress promptly is a direct
-                breach of team responsibilities and will impact project reporting, stakeholder confidence,
-                and overall team performance evaluations.
+                <strong>Avertissement :</strong> Ne pas mettre à jour votre progression de projet dans
+                les délais constitue un manquement direct aux responsabilités de l'équipe et aura un
+                impact sur les rapports de projet, la confiance des parties prenantes et les évaluations
+                globales des performances de l'équipe.
             </div>
 
             <p>
-                All team members are required to log their project updates <strong>immediately</strong>.
-                This includes completed tasks, current blockers, revised timelines, and any changes to
-                project scope or deliverables.
+                Tous les membres de l'équipe sont tenus de consigner leurs mises à jour de projet
+                <strong>immédiatement</strong>. Cela inclut les tâches accomplies, les obstacles actuels,
+                les délais révisés et tout changement dans la portée ou les livrables du projet.
             </p>
 
             <p>
-                Project leads are expected to ensure that every member of their team has complied within
-                <strong>24 hours</strong> of receiving this notice.
+                Les responsables de projet sont tenus de s'assurer que chaque membre de leur équipe
+                s'est conformé dans les <strong>24 heures</strong> suivant la réception de cet avis.
             </p>
 
             <p>
-                If there are legitimate reasons preventing an update — such as access issues or ongoing
-                blockers — you must communicate these directly to your project lead without delay.
+                S'il existe des raisons légitimes empêchant une mise à jour — telles que des problèmes
+                d'accès ou des obstacles en cours — vous devez en informer directement votre responsable
+                de projet sans délai.
             </p>
 
             <p>
-                Non-compliance will be escalated and may result in formal consequences. This matter is
-                considered serious and requires your immediate attention.
+                Le non-respect sera escaladé et pourra entraîner des conséquences formelles. Cette
+                situation est considérée comme sérieuse et requiert votre attention immédiate.
             </p>
 
             <p>
-                Regards,<br>
-                <strong>Project Management — Administration</strong>
+                Cordialement,<br>
+                <strong>Gestion de projets — Administration</strong>
             </p>
         </div>
         <div class="footer">
-            This is an official automated notice. Do not ignore this message.
+            Ceci est un avis automatique officiel. Ne pas ignorer ce message.
         </div>
     </div>
 </body>

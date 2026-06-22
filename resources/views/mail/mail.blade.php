@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Project Progress Reminder</title>
+    <title>Rappel de progression du projet</title>
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -63,41 +63,43 @@
 <body>
     <div class="container">
         <div class="header">
-            <h1>Project Progress Reminder</h1>
+            <h1>Rappel de progression du projet</h1>
         </div>
         <div class="body">
-            <p>Dear {{ $name }},</p>
+            <p>Cher(e) {{ $name }},</p>
 
             <p>
-                We hope this message finds you well. This is a friendly reminder to log any recent progress
-                on your assigned projects within the project management platform.
+                Nous espérons que ce message vous trouve en bonne santé. Ceci est un rappel amical pour
+                enregistrer toute progression récente sur vos projets assignés dans la plateforme de
+                gestion de projets.
             </p>
 
             <p>
-                Keeping your project status up to date helps the whole team stay aligned, ensures accurate
-                reporting, and allows project leads to provide support where it is needed most.
+                Maintenir votre statut de projet à jour aide toute l'équipe à rester alignée, garantit
+                des rapports précis et permet aux responsables de projet d'apporter un soutien là où
+                c'est le plus nécessaire.
             </p>
 
             <p>
-                If your project has seen any developments — milestones reached, tasks completed, blockers
-                identified, or next steps planned — please take a moment to record them at your earliest
-                convenience.
+                Si votre projet a connu des développements — jalons atteints, tâches accomplies, obstacles
+                identifiés ou prochaines étapes planifiées — veuillez prendre un moment pour les consigner
+                dès que possible.
             </p>
 
             <p>
-                If you have any questions or need assistance, do not hesitate to reach out to your project
-                lead or team coordinator.
+                Si vous avez des questions ou avez besoin d'aide, n'hésitez pas à contacter votre
+                responsable de projet ou votre coordinateur d'équipe.
             </p>
 
-            <p>Thank you for your continued efforts and dedication.</p>
+            <p>Merci pour vos efforts continus et votre dévouement.</p>
 
             <p>
-                Warm regards,<br>
-                <strong>The Project Management Team</strong>
+                Cordialement,<br>
+                <strong>L'équipe de gestion de projets</strong>
             </p>
         </div>
         <div class="footer">
-            This is an automated reminder. Please do not reply directly to this email.
+            Ceci est un rappel automatique. Veuillez ne pas répondre directement à cet e-mail.
         </div>
     </div>
 </body>
