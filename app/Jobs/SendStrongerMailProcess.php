@@ -3,9 +3,9 @@
 namespace App\Jobs;
 
 use App\Mail\StrongerEmailReminder;
+use App\Models\Project;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
-use App\Models\Project;
 use Illuminate\Support\Facades\Mail;
 
 class SendStrongerMailProcess implements ShouldQueue
@@ -18,9 +18,7 @@ class SendStrongerMailProcess implements ShouldQueue
     public function __construct(
         public Project $project
 
-    )
-    {
-    }
+    ) {}
 
     /**
      * Execute the job.

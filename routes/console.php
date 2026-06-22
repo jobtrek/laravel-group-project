@@ -41,6 +41,6 @@ Artisan::command('mail:send-warnings', function () {
     $this->info("Warning emails queued for {$overdueProjects->count()} project(s).");
 })->purpose('Queue firm warning emails for projects overdue for a progress update');
 
-// it checks if any of the projects meets the criteria within a weekly basic. 
-Schedule::command('mail:send-reminders')->weeklyOn(1, '09:00'); 
-Schedule::command('mail:send-warnings')->weeklyOn(3, '09:00');  
+// it checks if any of the projects meets the criteria within a weekly basic.
+Schedule::command('mail:send-reminders')->weeklyOn(1, '09:00');
+Schedule::command('mail:send-warnings')->weeklyOn(3, '09:00');

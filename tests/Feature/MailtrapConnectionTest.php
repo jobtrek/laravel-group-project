@@ -10,7 +10,7 @@ use Illuminate\Support\Facades\Mail;
 test('smtp connection to mailtrap is reachable', function () {
     Mail::raw('Connection check from integration test.', function ($message) {
         $message->to('test@example.com')
-                ->subject('Connection Test');
+            ->subject('Connection Test');
     });
 })->throwsNoExceptions();
 
