@@ -38,12 +38,14 @@ class ProjectController extends Controller
     {
         $project->status->transitionTo(ModificationState::class);
         $project->save();
+        return Redirect::back()->with('status', 'more-info-requested');
     }
 
     public function reSubmit(Project $project)
     {
         $project->status->transitionTo(SubmittedState::class);
         $project->save();
+        return Redirect::back()->with('status', 'project-resubmitted');
     }
 
 }
