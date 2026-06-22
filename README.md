@@ -40,7 +40,26 @@ cp .env.example .env
 php artisan key:generate
 ```
 
-### 6. With Docker (Laravel Sail)
+### 6. Configure Mail (Mailtrap)
+
+The project sends automated reminder emails to project leaders. For local development it uses [Mailtrap](https://mailtrap.io) — a free sandbox that catches all outgoing mail without delivering it.
+
+1. Create a free account at [mailtrap.io](https://mailtrap.io)
+2. Go to **Email Testing → your inbox → SMTP Settings → Laravel**
+3. Copy the `MAIL_USERNAME` and `MAIL_PASSWORD` values into your `.env`
+
+Your `.env` mail block should look like:
+```env
+MAIL_MAILER=smtp
+MAIL_HOST=sandbox.smtp.mailtrap.io
+MAIL_PORT=2525
+MAIL_USERNAME=<your-mailtrap-username>
+MAIL_PASSWORD=<your-mailtrap-password>
+MAIL_FROM_ADDRESS="hello@example.com"
+MAIL_FROM_NAME="${APP_NAME}"
+```
+
+### 7. With Docker (Laravel Sail)
 
 I highly recommend creating an alias in your shell configuration for easier access to Sail commands:
 
@@ -90,6 +109,33 @@ to run the frontend build:
 # Run queue listener
 ./vendor/bin/sail artisan queue:listen
 ```
+
+### Mail & Scheduled Reminders
+
+The project automatically emails project leaders when their projects go stale. Two Artisan commands handle this, scheduled to run via Laravel's task scheduler:
+
+| Command | Schedule | Purpose |
+|---|---|---|
+| `mail:send-reminders` | Monday 09:00 | Friendly nudge to leaders of projects not updated in a month |
+| `mail:send-warnings` | Wednesday 09:00 | Firm warning to all members of projects overdue after a reminder |
+
+Emails are dispatched as queued jobs, so **both the queue worker and the scheduler must be running** for mail to actually send.
+
+```bash
+# Keep the queue worker running (processes queued mail jobs)
+./vendor/bin/sail artisan queue:listen
+
+# Run the scheduler (for local dev — checks every minute and fires due commands)
+./vendor/bin/sail artisan schedule:work
+```
+
+To trigger the commands manually without waiting for the schedule:
+```bash
+./vendor/bin/sail artisan mail:send-reminders
+./vendor/bin/sail artisan mail:send-warnings
+```
+
+All sent mail is caught by Mailtrap — check your inbox at [mailtrap.io](https://mailtrap.io) to see it.
 
 ### Code Formatting
 
