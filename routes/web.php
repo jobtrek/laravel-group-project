@@ -4,6 +4,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PropositionController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\ProjectController;
 
 Route::get('/', function () {
     return view('welcome');
@@ -13,9 +14,8 @@ Route::get('/dashboard', function () {
     return redirect()->route('projects');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/projects', function () {
-    return view('allProjects');
-})->middleware(['auth', 'verified'])->name('projects');
+Route::get('/projects', [ProjectController::class, 'index'])
+    ->middleware(['auth', 'verified'])->name('projects');
 
 Route::get('/propositions', function () {
     return view('propositions');

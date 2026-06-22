@@ -9,9 +9,8 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::select('id', 'title', 'description')->with('evaluation')->get();
-        $users = User::select('id', 'name')->get();
+        $projects = Project::with(['proposer', 'leader'])->get();
+        $counts = Project::statusCounts();
 
-        return view('allProjects', ['projects' => $projects, 'users' => $users]);
-    }
+        return view('allProjects', compact('projects', 'counts'));    }
 }

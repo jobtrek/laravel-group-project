@@ -158,4 +158,11 @@ class Project extends Model
             return $project;
         });
     }
+    public static function statusCounts()
+    {
+        return self::select('status')
+            ->selectRaw('count(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+    }
 }

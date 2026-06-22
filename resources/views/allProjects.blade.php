@@ -16,7 +16,7 @@
                         <x-projects.countProjects
                             text="Review"
                             projets="6"
-                            route="review"/>    
+                            route="review"/>
                         <x-projects.countProjects
                             text="Recolte"
                             projets="9"
@@ -26,24 +26,18 @@
                             projets="7"
                             route="en-cours"/>
                     </div>
-                         <a href="{{ route('create') }}" class="bg-blue-700 text-white rounded-lg p-1">New proposal</a>
+                    <a href="{{ route('create') }}" class="bg-blue-700 text-white rounded-lg p-1">New proposal</a>
                     <div class="flex flex-col gap-4 mt-4">
-                        <x-projects.displayProjects
-                            status="En retard"
-                            title="Refonte du site web"
-                            chef="Marie Dupont"
-                            description="Refonte totale de l'interface utilisateur avec Tailwind CSS et Laravel."
-                            progress="45"
-                            deadline="12 Oct 2024"
-                        />
-                        <x-projects.displayProjects
-                            status="En retard"
-                            title="Refonte du site web"
-                            chef="Marie Dupont"
-                            description="Refonte totale de l'interface utilisateur avec Tailwind CSS et Laravel."
-                            progress="45"
-                            deadline="12 Oct 2024"
-                        />
+                        @foreach($projects as $project)
+                            <x-projects.displayProjects
+                                :status="$project->status->label()"
+                                :title="$project->title"
+                                :chef="$project->leader?->name ?? $project->proposer->name"
+                                :description="$project->description"
+                                progress="0"
+                                :deadline="$project->created_at->format('d M Y')"
+                            />
+                        @endforeach
                     </div>
                 </div>
             </div>
