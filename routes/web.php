@@ -9,13 +9,25 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/dashboard', function () {
-    return view('dashboard');
-})->middleware(['auth', 'verified'])->name('dashboard');
-
 Route::get('/projects', function () {
     return view('allProjects');
 })->middleware(['auth', 'verified'])->name('projects');
+
+Route::get('/propositions', function () {
+    return view('propositions');
+})->middleware(['auth', 'verified'])->name('propositions');
+
+Route::get('/review', function () {
+    return view('review');
+})->middleware(['auth', 'verified'])->name('review');
+
+Route::get('/recolte', function () {
+    return view('recolte');
+})->middleware(['auth', 'verified'])->name('recolte');
+
+Route::get('/en-cours', function () {
+    return view('enCours');
+})->middleware(['auth', 'verified'])->name('en-cours');
 
 Route::middleware('auth')->group(function () {
     Route::get('/create', function () {
