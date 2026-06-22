@@ -5,13 +5,13 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class commentSeeder extends Seeder
+class ProjectPhaseFactory extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        \App\Models\Comment::factory()->count(10)->create();
+        \App\Models\ProjectPhase::factory(10)->create();
     }
 }

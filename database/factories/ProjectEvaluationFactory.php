@@ -2,10 +2,11 @@
 
 namespace Database\Factories;
 
+use App\Models\ProjectEvaluation;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<project_evaluation>
+ * @extends Factory<ProjectEvaluation>
  */
 class ProjectEvaluationFactory extends Factory
 {
@@ -17,7 +18,11 @@ class ProjectEvaluationFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'portee' => $this->faker->randomFloat(2, 0, 100),
+            'impact' => $this->faker->numberBetween(1, 10),
+            'confiance' => $this->faker->numberBetween(1, 10),
+            'effort' => $this->faker->numberBetween(1, 10),
+            'project_id' => \App\Models\Project::factory(),
         ];
     }
 }

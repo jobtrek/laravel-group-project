@@ -12,12 +12,10 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         $this->call([
-            CacheTableSeeder::class,
-            JobsTableSeeder::class,
             UserSeeder::class,
-            ProjectsSeeder::class,
+            ProjectSeeder::class,
             ProjectMemberSeeder::class,
-            ProjectPhaseSeeder::class,
+            ProjectPhaseFactory::class,
             PhaseResourceSeeder::class,
             ProjectEvaluationSeeder::class,
             ProjectReviewSeeder::class,
