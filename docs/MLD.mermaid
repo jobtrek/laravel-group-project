@@ -73,10 +73,10 @@ class project_evaluations {
    integer impact
    integer confiance
    integer effort
-   integer importance
    bigint project_id
    timestamp(0) created_at
    timestamp(0) updated_at
+   numeric(8,2) importance
    bigint id
 }
 class project_members {
@@ -85,6 +85,7 @@ class project_members {
 }
 class project_phases {
    text name
+   text description
    varchar(100) duration
    json objectifs
    json livrables
@@ -116,6 +117,7 @@ class projects {
    bigint proposer_id
    bigint leader_id
    bigint recolte_manager_id
+   text ressources_totales
    bigint id
 }
 class sessions {
