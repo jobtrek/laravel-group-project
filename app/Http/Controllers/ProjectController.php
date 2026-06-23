@@ -20,8 +20,9 @@ class ProjectController extends Controller
     {
         ProjectService::approve($project);
 
-        $proposer = $project->proposer;
-        Mail::to($proposer->email)->send(new ApprovedEmail($proposer->name));
+        if ($proposer = $project->proposer) {
+            Mail::to($proposer->email)->send(new ApprovedEmail($proposer->name));
+        }
 
         return Redirect::back()->with('status', 'project-approved');
     }
@@ -30,8 +31,9 @@ class ProjectController extends Controller
     {
         ProjectService::deny($project);
 
-        $proposer = $project->proposer;
-        Mail::to($proposer->email)->send(new DeniedEmail($proposer->name));
+        if ($proposer = $project->proposer) {
+            Mail::to($proposer->email)->send(new DeniedEmail($proposer->name));
+        }
 
         return Redirect::back()->with('status', 'project-denied');
     }

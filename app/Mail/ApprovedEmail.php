@@ -10,14 +10,14 @@ use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
 
-class ApprovedEmail extends Mailable
+class ApprovedEmail extends Mailable implements ShouldQueue
 {
     use Queueable, SerializesModels;
 
     /**
      * Create a new message instance.
      */
-    public function __construct(private $name)
+    public function __construct(private string $name)
     {
         //
     }
@@ -28,7 +28,7 @@ class ApprovedEmail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Approved Email',
+            subject: 'Projet approuvé',
         );
     }
 
