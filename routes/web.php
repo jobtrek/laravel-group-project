@@ -1,7 +1,11 @@
 <?php
 
 use App\Http\Controllers\ProfileController;
+use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
+use App\Models\Project;
+use App\Models\States\ModificationState;
+use App\Models\States\SubmittedState;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -10,12 +14,32 @@ Route::get('/', function () {
 });
 
 Route::get('/dashboard', function () {
-    return view('dashboard');
+    return redirect()->route('projects');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
 Route::get('/projects', function () {
     return view('allProjects');
 })->middleware(['auth', 'verified'])->name('projects');
+
+Route::get('/propositions', function () {
+    return view('propositions');
+})->middleware(['auth', 'verified'])->name('propositions');
+
+Route::get('/review', function () {
+    return view('review');
+})->middleware(['auth', 'verified'])->name('review');
+
+Route::get('/recolte', function () {
+    return view('recolte');
+})->middleware(['auth', 'verified'])->name('recolte');
+
+Route::get('/en-cours', function () {
+    return view('enCours');
+})->middleware(['auth', 'verified'])->name('en-cours');
+
+Route::get('/archive', function () {
+    return view('archive');
+})->middleware(['auth', 'verified'])->name('archive');
 
 Route::middleware('auth')->group(function () {
     Route::get('/create', function () {
@@ -27,6 +51,19 @@ Route::middleware('auth')->group(function () {
     Route::delete('/profile', [ProfileController::class, 'destroy'])->name('profile.destroy');
 
     Route::post('/propositions', [PropositionController::class, 'store'])->name('proposition.store');
+
+    Route::get('/direction/projects', function () {
+        $projects = Project::with('evaluation')
+            ->whereState('status', [SubmittedState::class, ModificationState::class])
+            ->get();
+
+        return view('testDirectionFront', ['projects' => $projects]);
+    })->name('direction.projects');
+
+    Route::patch('/projects/{project}/approve', [ProjectController::class, 'approve'])->name('projects.approve');
+    Route::patch('/projects/{project}/deny', [ProjectController::class, 'deny'])->name('projects.deny');
+    Route::post('/projects/{project}/request-more-info', [ProjectController::class, 'requestMoreInfo'])->name('projects.request-more-info');
+    Route::patch('/projects/{project}/resubmit', [ProjectController::class, 'reSubmit'])->name('projects.resubmit');
 });
 
 require __DIR__.'/auth.php';
