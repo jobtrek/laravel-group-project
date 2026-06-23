@@ -41,7 +41,7 @@ class RecolteArchivingMail extends Mailable
     public function content(): Content
     {
         return new Content(
-            view: 'emails.recolte_archiving',
+            view: 'emails.RecolteArchivingMail',
         );
     }
 
