@@ -5,13 +5,13 @@ namespace Database\Seeders;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
-class ProjectReviewSeeder extends Seeder
+class ProjectPhaseSeeder extends Seeder
 {
     /**
      * Run the database seeds.
      */
     public function run(): void
     {
-        \App\Models\ProjectReview::factory(10)->create();
+        \App\Models\ProjectPhase::factory(10)->create();
     }
 }
