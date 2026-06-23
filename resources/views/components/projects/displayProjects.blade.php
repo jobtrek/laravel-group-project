@@ -26,12 +26,18 @@
     </div>
     <p class="text-sm text-gray-500 leading-relaxed line-clamp-2">{{ $description }}</p>
 
+<<<<<<< Updated upstream
    <div class="flex items-center gap-2">
     <div class="w-full bg-gray-200 rounded-full h-1.5">
         <div class="{{ $progress <= 20 ? 'bg-red-500' : 'bg-green-700' }} h-1.5 rounded-full" style="width: {{ $progress }}%"></div>
     </div>
     <span class="text-xs font-medium {{ $progress <= 20 ? 'text-red-500' : 'text-green-700' }} whitespace-nowrap">{{ $progress }}%</span>
 </div>
+=======
+    <div class="w-full bg-gray-200 rounded-full h-1.5">
+        <div class="bg-green-700 h-1.5 rounded-full" style="width: {{ $progress }}%"></div>
+    </div>
+>>>>>>> Stashed changes
     <div class="flex items-center justify-between mt-1">
 
         <span class="text-xs text-gray-400 flex items-center gap-1">
