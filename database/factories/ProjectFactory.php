@@ -4,7 +4,6 @@ namespace Database\Factories;
 
 use App\Models\Project;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\States\DraftState;
 use App\Models\States\SubmittedState;
 use App\Models\States\ApprovedState;
 use App\Models\States\RefusedState;
@@ -30,7 +29,6 @@ class ProjectFactory extends Factory
     public function definition(): array
     {
         $statusStates = [
-            DraftState::class,
             SubmittedState::class,
             ApprovedState::class,
             RefusedState::class,
