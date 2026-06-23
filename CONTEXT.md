@@ -123,7 +123,7 @@ USER ──proposes──► PROJECT ──has──► FUNDING
 
 | Entity       | Key fields                                                      |
 |--------------|-----------------------------------------------------------------|
-| `USER`       | id, name, email, **role**                                       |
+| `USER`       | id, name, email,                                     |
 | `PROJECT`    | id, title, **form_data** (JSON), **status**, created_at         |
 | `COMMENT`    | id, project_id, author_id, content, created_at                  |
 | `FUNDING`    | id, project_id, financier_id, **target_amount**, **found_amount**, updated_at |
@@ -133,6 +133,8 @@ USER ──proposes──► PROJECT ──has──► FUNDING
 > **Note:** `form_data` is a JSON blob carrying the full proposition form (goal, description, budget, planning steps with taux, impact analysis).
 
 ---
+
+roles are defined using spatie roles, there are no columns using "role" in the user table
 
 ## Roles & Permissions
 
@@ -201,7 +203,6 @@ Implement via **queued jobs** (Laravel queue worker is started by `composer dev`
 
 The project is a **fresh Laravel skeleton** — only the default scaffold exists. Everything below is yet to be implemented:
 
-- [ ] `role` column on `users` migration
 - [ ] `projects` migration + `Project` model + relationships
 - [ ] `funding` migration + `Funding` model
 - [ ] `comments` migration + `Comment` model
