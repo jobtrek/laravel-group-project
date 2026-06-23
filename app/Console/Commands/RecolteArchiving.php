@@ -28,6 +28,7 @@ class RecolteArchiving extends Command
     {
         // take all projects with status "Collecting" 
         $projects = Project::whereState('status', CollectingState::class)
+            ->with('proposer', 'recolteManager')
             ->get();
 
         foreach ($projects as $project) {
@@ -43,10 +44,15 @@ class RecolteArchiving extends Command
                 $project->save();
 
                 // send an email to the proposer and the recolte manager
-                $proposer = User::where('id', $project->proposer_id)->first();
-                $recolteManager = User::where('id', $project->recolte_manager_id)->first();
+                $proposer = $project->proposer;
+                $recolteManager = $project->recolteManager;
+                if ($recolteManager) {
+                    Mail::to($recolteManager->email)->send(new RecolteArchivingMail($recolteManager, $project));
+                }
 
-                Mail::to($proposer->email)->send(new RecolteArchivingMail($proposer, $project));
+                if ($proposer) {
+                    Mail::to($proposer->email)->send(new RecolteArchivingMail($proposer, $project));
+                }
             }
         }
     }
