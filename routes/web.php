@@ -36,6 +36,10 @@ Route::get('/en-cours', function () {
     return view('enCours');
 })->middleware(['auth', 'verified'])->name('en-cours');
 
+Route::get('/archive', function () {
+    return view('archive');
+})->middleware(['auth', 'verified'])->name('archive');
+
 Route::middleware('auth')->group(function () {
     Route::get('/create', function () {
         return view('create', ['users' => User::query()->select('id', 'name')->get()]);

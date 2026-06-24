@@ -1,4 +1,5 @@
 <x-app-layout>
+    <x-projects.filter-bar :users="$users ?? []" />
     <div class="relative w-full max-w-7xl mx-auto sm:px-6 lg:px-8">
 
        <x-projects.nav-arrow direction="right" route="review" label="Review" />
