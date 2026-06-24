@@ -136,7 +136,6 @@ class Project extends Model
         });
     }
 
-
     public function getProgressAttribute(): float
     {
         $totalNeeded = 0;
@@ -154,6 +153,7 @@ class Project extends Model
         }
 
         return round(($totalFound / $totalNeeded) * 100, 2);
+    }
 
     public static function statusCounts()
     {
@@ -161,6 +161,5 @@ class Project extends Model
             ->selectRaw('count(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status');
-
     }
 }
