@@ -2,9 +2,9 @@
 
 namespace Database\Factories;
 
+use App\Models\Project;
 use App\Models\ProjectEvaluation;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\Project;
 
 /**
  * @extends Factory<ProjectEvaluation>

@@ -132,6 +132,7 @@ class Project extends Model
             return $project;
         });
     }
+
     public static function statusCounts()
     {
         return self::select('status')
