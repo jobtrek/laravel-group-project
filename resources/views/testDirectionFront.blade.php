@@ -1,6 +1,6 @@
 <x-app-layout>
     <div class="max-w-4xl mx-auto py-8 px-4">
-        <h1 class="text-2xl font-bold mb-6">Projects — Transition Test</h1>
+        <h1 class="text-2xl font-bold mb-6">Projets — Test de transition</h1>
 
 @if (session('success'))
     <div class="mb-4 p-3 bg-green-100 text-green-800 rounded">
@@ -23,7 +23,7 @@
                     <p class="text-gray-600 text-sm mt-1">{{ $project->description }}</p>
                     <div class="flex items-center gap-4 mt-2 text-sm text-gray-500">
                                 <span>
-                                    Importance:
+                                    Importance :
                                     <strong>{{ $project->evaluation?->importance ?? '—' }}</strong>
                                 </span>
                         <span>
