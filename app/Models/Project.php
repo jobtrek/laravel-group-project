@@ -136,11 +136,31 @@ class Project extends Model
         });
     }
 
+
+    public function getProgressAttribute(): float
+    {
+        $totalNeeded = 0;
+        $totalFound = 0;
+
+        foreach ($this->phases as $phase) {
+            foreach ($phase->resources as $resource) {
+                $totalNeeded += (float) $resource->amount_needed;
+                $totalFound += (float) ($resource->amount_found ?? 0);
+            }
+        }
+
+        if ($totalNeeded <= 0) {
+            return 0;
+        }
+
+        return round(($totalFound / $totalNeeded) * 100, 2);
+
     public static function statusCounts()
     {
         return self::select('status')
             ->selectRaw('count(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status');
+
     }
 }
