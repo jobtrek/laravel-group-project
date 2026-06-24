@@ -2,16 +2,24 @@
 
 namespace Database\Seeders;
 
+use App\Models\Project;
+use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 
 class ProjectMemberSeeder extends Seeder
 {
-    /**
-     * Run the database seeds.
-     */
+    use WithoutModelEvents;
+
     public function run(): void
     {
-        \App\Models\ProjectMember::factory(10)->create();
+        $projects = Project::all();
+        $users = User::all();
+
+        $projects->each(function ($project) use ($users) {
+            $users->random(rand(2, 4))->each(function ($user) use ($project) {
+                $project->members()->attach($user->id);
+            });
+        });
     }
 }
