@@ -13,7 +13,6 @@
             <p class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                 {{auth()->user()->name}}
             </p>
-            <p x-show="errors.porteur" x-text="errors.porteur || ''" class="mt-1 text-sm text-red-600"></p>
         </div>
 
         <div>
