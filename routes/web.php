@@ -17,9 +17,8 @@ Route::get('/dashboard', function () {
     return redirect()->route('projects');
 })->middleware(['auth', 'verified'])->name('dashboard');
 
-Route::get('/projects', function () {
-    return view('allProjects');
-})->middleware(['auth', 'verified'])->name('projects');
+Route::get('/projects', [ProjectController::class, 'index'])
+    ->middleware(['auth', 'verified'])->name('projects');
 
 Route::get('/propositions', function () {
     return view('propositions');

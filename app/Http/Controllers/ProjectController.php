@@ -13,7 +13,10 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        return view('allProjects', ProjectService::getAllProjectsWithUsers());
+        $projects = Project::with(['proposer', 'leader'])->get();
+        $counts = Project::statusCounts();
+
+        return view('allProjects', compact('projects', 'counts'));
     }
 
     public function approve(Project $project)
