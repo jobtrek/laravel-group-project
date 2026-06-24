@@ -46,16 +46,19 @@ class Project extends Model
         'status' => ProjectState::class,
     ];
 
+    /** @return BelongsTo<User, $this> */
     public function proposer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'proposer_id');
     }
 
+    /** @return BelongsTo<User, $this> */
     public function leader(): BelongsTo
     {
         return $this->belongsTo(User::class, 'leader_id');
     }
 
+    /** @return BelongsTo<User, $this> */
     public function recolteManager(): BelongsTo
     {
         return $this->belongsTo(User::class, 'recolte_manager_id');
