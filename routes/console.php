@@ -46,3 +46,4 @@ Artisan::command('mail:send-warnings', function () {
 // It checks if any of the projects meet the criteria within a weekly basis.
 Schedule::command('mail:send-reminders')->weeklyOn(1, '09:00');
 Schedule::command('mail:send-warnings')->weeklyOn(3, '09:00');
+Schedule::command('recolte:archiving')->dailyAt('00:00');
