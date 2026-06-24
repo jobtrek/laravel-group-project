@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
+use Carbon\Carbon;
 use App\Models\Project;
 use App\Models\States\ArchivedState;
 use App\Models\States\CollectingState;
@@ -15,8 +16,7 @@ use App\Mail\RecolteArchivingMail;
 
 class RecolteArchiving extends Command
 {
-
-    protected $signature = 'Recolte:archiving';
+    protected $signature = 'recolte:archiving';
 
     /**
      * Execute the console command.
@@ -41,7 +41,7 @@ class RecolteArchiving extends Command
                 // send an email to the proposer and the recolte manager
                 $proposer = $project->proposer;
                 $recolteManager = $project->recolteManager;
-                if ($recolteManager) {
+                if ($recolteManager && $recolteManager->email !== $proposer->email) {
                     Mail::to($recolteManager->email)->send(new RecolteArchivingMail($recolteManager, $project));
                 }
 

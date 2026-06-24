@@ -9,6 +9,8 @@ use Illuminate\Mail\Mailables\Attachment;
 use Illuminate\Mail\Mailables\Content;
 use Illuminate\Mail\Mailables\Envelope;
 use Illuminate\Queue\SerializesModels;
+use App\Models\Project;
+use App\Models\User;
 
 class RecolteArchivingMail extends Mailable implements ShouldQueue
 {
