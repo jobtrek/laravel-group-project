@@ -43,7 +43,6 @@ enum Stage: string
         };
     }
 
-
     public function statuses(): array
     {
         return match ($this) {
