@@ -19,10 +19,10 @@ class ProjectEvaluationFactory extends Factory
     public function definition(): array
     {
         return [
-            'portee' => $this->faker->randomFloat(2, 0, 100),
-            'impact' => $this->faker->numberBetween(1, 10),
-            'confiance' => $this->faker->numberBetween(1, 10),
-            'effort' => $this->faker->numberBetween(1, 10),
+            'portee' => $this->faker->randomFloat(2, 1, 50),
+            'impact' => $this->faker->numberBetween(1, 5),
+            'confiance' => $this->faker->numberBetween(1, 100),
+            'effort' => $this->faker->numberBetween(1, 5),
             'project_id' => Project::factory(),
         ];
     }

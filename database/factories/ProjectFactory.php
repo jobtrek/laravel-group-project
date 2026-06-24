@@ -20,6 +20,7 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ProjectFactory extends Factory
 {
+    protected $model = Project::class;
     /**
      * Define the model's default state.
      *
@@ -51,5 +52,17 @@ class ProjectFactory extends Factory
             'leader_id' => User::factory(),
             'recolte_manager_id' => User::factory(),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Project $project) {
+            $project->evaluation()->create([
+                'portee' => fake()->numberBetween(0, 50),
+                'impact' => fake()->numberBetween(1, 5),
+                'confiance' => fake()->numberBetween(0, 100),
+                'effort' => fake()->numberBetween(1, 5),
+            ]);
+        });
     }
 }
