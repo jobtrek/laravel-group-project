@@ -14,6 +14,6 @@ class RecolteController extends Controller
             ->with('phases.resources')
             ->get();
 
-        return view('dashboard', ['projects' => $projects]);
+        return view('recolte', ['projects' => $projects]);
     }
 }
