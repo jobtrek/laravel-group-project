@@ -19,7 +19,6 @@ class CreateProjectProposal
                 'description' => $data['description'],
                 'but' => $data['buts'],
                 'perimetre' => $data['perimetre'] ?? null,
-                'ressources_totales' => $data['ressources_totales'] ?? null,
                 'status' => SubmittedState::getMorphClass(),
                 'current_stage' => SubmittedState::getMorphClass(),
                 'proposer_id' => $proposerId,

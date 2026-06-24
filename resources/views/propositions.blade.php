@@ -2,7 +2,7 @@
     <x-projects.filter-bar :users="$users ?? []" />
     <div class="relative w-full max-w-7xl mx-auto sm:px-6 lg:px-8">
 
-       <x-projects.nav-arrow direction="right" route="review" label="Review" />
+       <x-projects.nav-arrow direction="right" route="review" label="Révision" />
         <section class="flex flex-col gap-4 p-4">
             <h3 class="text-2xl font-medium text-gray-900 mb-6">Propositions</h3>
             <x-projects.displayProjects

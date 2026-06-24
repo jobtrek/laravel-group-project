@@ -15,7 +15,7 @@ class DatabaseSeeder extends Seeder
             UserSeeder::class,
             ProjectSeeder::class,
             ProjectMemberSeeder::class,
-            ProjectPhaseFactory::class,
+            ProjectPhaseSeeder::class,
             PhaseResourceSeeder::class,
             ProjectEvaluationSeeder::class,
             ProjectReviewSeeder::class,
