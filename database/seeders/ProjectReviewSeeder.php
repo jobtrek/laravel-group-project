@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\ProjectReview;
 use Illuminate\Database\Seeder;
 
 class ProjectReviewSeeder extends Seeder
@@ -12,6 +12,6 @@ class ProjectReviewSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\ProjectReview::factory(10)->create();
+        ProjectReview::factory(10)->create();
     }
 }

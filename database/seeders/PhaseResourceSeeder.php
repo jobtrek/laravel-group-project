@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\PhaseResource;
 use Illuminate\Database\Seeder;
 
 class PhaseResourceSeeder extends Seeder
@@ -12,6 +12,6 @@ class PhaseResourceSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\PhaseResource::factory()->count(10)->create();
+        PhaseResource::factory()->count(10)->create();
     }
 }
