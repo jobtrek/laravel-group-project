@@ -2,7 +2,7 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use App\Models\ProjectPhase;
 use Illuminate\Database\Seeder;
 
 class ProjectPhaseSeeder extends Seeder
@@ -12,6 +12,6 @@ class ProjectPhaseSeeder extends Seeder
      */
     public function run(): void
     {
-        \App\Models\ProjectPhase::factory(10)->create();
+        ProjectPhase::factory(10)->create();
     }
 }

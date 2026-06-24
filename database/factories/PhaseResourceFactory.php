@@ -3,8 +3,8 @@
 namespace Database\Factories;
 
 use App\Models\PhaseResource;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\ProjectPhase;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends Factory<PhaseResource>

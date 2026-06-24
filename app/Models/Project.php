@@ -46,16 +46,19 @@ class Project extends Model
         'status' => ProjectState::class,
     ];
 
+    /** @return BelongsTo<User, $this> */
     public function proposer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'proposer_id');
     }
 
+    /** @return BelongsTo<User, $this> */
     public function leader(): BelongsTo
     {
         return $this->belongsTo(User::class, 'leader_id');
     }
 
+    /** @return BelongsTo<User, $this> */
     public function recolteManager(): BelongsTo
     {
         return $this->belongsTo(User::class, 'recolte_manager_id');
@@ -133,6 +136,7 @@ class Project extends Model
         });
     }
 
+
     public function getProgressAttribute(): float
     {
         $totalNeeded = 0;
@@ -150,5 +154,13 @@ class Project extends Model
         }
 
         return round(($totalFound / $totalNeeded) * 100, 2);
+
+    public static function statusCounts()
+    {
+        return self::select('status')
+            ->selectRaw('count(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
+
     }
 }

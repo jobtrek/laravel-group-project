@@ -2,10 +2,10 @@
 
 namespace Database\Factories;
 
-use App\Models\ProjectReview;
-use Illuminate\Database\Eloquent\Factories\Factory;
 use App\Models\Project;
+use App\Models\ProjectReview;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
  * @extends Factory<ProjectReview>

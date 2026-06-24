@@ -3,7 +3,7 @@
     <div class="relative w-full max-w-7xl mx-auto sm:px-6 lg:px-8">
     <section class="flex flex-col gap-4 p-4">
         <x-projects.nav-arrow direction="left" route="en-cours" label="En cours" />
-        <h3 class="text-2xl font-medium text-gray-900 mb-6">Archive</h3>
+        <h3 class="text-2xl font-medium text-gray-900 mb-6">Archives</h3>
         <x-projects.displayProjects
                             status="En retard"
                             title="Refonte du site web"
