@@ -5,7 +5,6 @@ namespace App\Console\Commands;
 use Illuminate\Console\Attributes\Description;
 use Illuminate\Console\Attributes\Signature;
 use Illuminate\Console\Command;
-use carbon\Carbon;
 use App\Models\Project;
 use App\Models\States\ArchivedState;
 use App\Models\States\CollectingState;
@@ -14,8 +13,6 @@ use Illuminate\Support\Facades\Mail;
 use App\Mail\RecolteArchivingMail;
 
 
-#[Signature('app:recolte-archiving')]
-#[Description('Command description')]
 class RecolteArchiving extends Command
 {
 
@@ -32,10 +29,8 @@ class RecolteArchiving extends Command
             ->get();
 
         foreach ($projects as $project) {
-            $dbDate = Carbon::parse($project->updated_at);
-            $currentDate = Carbon::now();
             // check if the project has been in "Collecting" status for more than 1 year
-            $isOlderThanOneYear = $dbDate->diffInYears($currentDate) >= 1;
+            $isOlderThanOneYear = $project->updated_at->lt(now()->subYear());
 
             if ($isOlderThanOneYear) {
                 // change the status to "Archived"
