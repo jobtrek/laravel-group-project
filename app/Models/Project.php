@@ -79,6 +79,7 @@ class Project extends Model
         return $this->hasMany(ProjectReview::class, 'project_id');
     }
 
+    /** @return HasMany<ProjectPhase, $this> */
     public function phases(): HasMany
     {
         return $this->hasMany(ProjectPhase::class, 'project_id')->orderBy('order');
