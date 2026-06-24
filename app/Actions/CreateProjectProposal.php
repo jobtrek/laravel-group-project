@@ -22,7 +22,6 @@ class CreateProjectProposal
                 'status' => SubmittedState::getMorphClass(),
                 'current_stage' => SubmittedState::getMorphClass(),
                 'proposer_id' => $proposerId,
-                'leader_id' => $proposerId,
             ]);
 
             $project->members()->attach($data['membres']);
