@@ -1,5 +1,6 @@
 <?php
 
+use App\Enums\Stage;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
@@ -20,25 +21,25 @@ Route::get('/dashboard', function () {
 Route::get('/projects', [ProjectController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('projects');
 
-Route::get('/propositions', function () {
-    return view('propositions');
-})->middleware(['auth', 'verified'])->name('propositions');
+Route::get('/propositions', [ProjectController::class, 'stage'])
+    ->defaults('stage', Stage::Propositions)
+    ->middleware(['auth', 'verified'])->name('propositions');
 
-Route::get('/review', function () {
-    return view('review');
-})->middleware(['auth', 'verified'])->name('review');
+Route::get('/review', [ProjectController::class, 'stage'])
+    ->defaults('stage', Stage::Review)
+    ->middleware(['auth', 'verified'])->name('review');
 
-Route::get('/recolte', function () {
-    return view('recolte');
-})->middleware(['auth', 'verified'])->name('recolte');
+Route::get('/recolte', [ProjectController::class, 'stage'])
+    ->defaults('stage', Stage::Recolte)
+    ->middleware(['auth', 'verified'])->name('recolte');
 
-Route::get('/en-cours', function () {
-    return view('enCours');
-})->middleware(['auth', 'verified'])->name('en-cours');
+Route::get('/en-cours', [ProjectController::class, 'stage'])
+    ->defaults('stage', Stage::EnCours)
+    ->middleware(['auth', 'verified'])->name('en-cours');
 
-Route::get('/archive', function () {
-    return view('archive');
-})->middleware(['auth', 'verified'])->name('archive');
+Route::get('/archive', [ProjectController::class, 'stage'])
+    ->defaults('stage', Stage::Archive)
+    ->middleware(['auth', 'verified'])->name('archive');
 
 Route::middleware('auth')->group(function () {
     Route::get('/create', function () {
