@@ -18,12 +18,12 @@
                     <div class="flex flex-col gap-4 mt-4">
                         @foreach($projects as $project)
                             <x-projects.displayProjects
-                                :status="$project->status->label()"
+                                :status="$project->status"
                                 :title="$project->title"
-                                :chef="$project->leader?->name ?? $project->proposer->name"
+                                :chef="$project->leader?->name ?? $project->proposer?->name"
+                                :progress="0"
                                 :description="$project->description"
-                                progress="0"
-                                :deadline="$project->created_at->format('d M Y')"
+                                :creation-date="$project->created_at->format('d M Y')"
                             />
                         @endforeach
                     </div>
