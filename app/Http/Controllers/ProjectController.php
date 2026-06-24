@@ -22,7 +22,7 @@ class ProjectController extends Controller
 
     public function stage(Stage $stage)
     {
-        $projects = Project::whereIn('status', $stage->statuses())
+        $projects = Project::whereState('status', $stage->statuses())
             ->with(['proposer', 'leader'])
             ->get();
 

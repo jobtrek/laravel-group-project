@@ -3,10 +3,10 @@
     <div class="relative w-full max-w-7xl mx-auto sm:px-6 lg:px-8">
         <section class="flex flex-col gap-4 p-4">
             @if($stage->prev())
-                <x-projects.nav-arrow direction="left" :route="$stage->prev()['route']" :label="$stage->prev()['label']" />
+                <x-projects.nav-arrow direction="left" :route="$stage->prev()" :label="$stage->prev()" />
             @endif
             @if($stage->next())
-                <x-projects.nav-arrow direction="right" :route="$stage->next()['route']" :label="$stage->next()['label']" />
+                <x-projects.nav-arrow direction="right" :route="$stage->next()" :label="$stage->next()" />
             @endif
             <h3 class="text-2xl font-medium text-gray-900 mb-6">{{ $stage->title() }}</h3>
             @foreach($projects as $project)

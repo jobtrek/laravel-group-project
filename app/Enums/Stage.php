@@ -21,27 +21,28 @@ enum Stage: string
         };
     }
 
-    public function prev(): ?array
+    public function prev(): ?self
     {
         return match ($this) {
-            self::Review => ['route' => 'propositions', 'label' => 'Propositions'],
-            self::Recolte => ['route' => 'review', 'label' => 'Review'],
-            self::EnCours => ['route' => 'recolte', 'label' => 'Récolte'],
-            self::Archive => ['route' => 'en-cours', 'label' => 'En cours'],
+            self::Review => self::Propositions,
+            self::Recolte => self::Review,
+            self::EnCours => self::Recolte,
+            self::Archive => self::EnCours,
             default => null,
         };
     }
 
-    public function next(): ?array
+    public function next(): ?self
     {
         return match ($this) {
-            self::Propositions => ['route' => 'review', 'label' => 'Review'],
-            self::Review => ['route' => 'recolte', 'label' => 'Récolte'],
-            self::Recolte => ['route' => 'en-cours', 'label' => 'En cours'],
-            self::EnCours => ['route' => 'archive', 'label' => 'Archive'],
+            self::Propositions => self::Review,
+            self::Review => self::Recolte,
+            self::Recolte => self::EnCours,
+            self::EnCours => self::Archive,
             default => null,
         };
     }
+
 
     public function statuses(): array
     {
