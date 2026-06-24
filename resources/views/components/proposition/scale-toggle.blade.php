@@ -1,4 +1,4 @@
-@props(['toggleLabel' => 'See scale', 'hideLabel' => 'Hide scale'])
+@props(['toggleLabel' => 'Voir l\'échelle', 'hideLabel' => 'Masquer l\'échelle'])
 
 <div x-data="{ open: false }" class="mt-2">
     <button type="button" @click="open = !open"

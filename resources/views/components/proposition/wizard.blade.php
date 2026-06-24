@@ -51,20 +51,20 @@
     },
     validateStep1() {
         this.errors = {};
-        if (!this.titre || !this.titre.trim()) this.errors.titre = 'Title is required.';
-        if (!this.porteur) this.errors.porteur = 'Porteur is required.';
+        if (!this.titre || !this.titre.trim()) this.errors.titre = 'Le titre est requis.';
+        if (!this.porteur) this.errors.porteur = 'Le porteur est requis.';
         if (!this.membres.length || this.membres.every(m => !m)) {
-            this.errors.membres = 'At least one member is required.';
+            this.errors.membres = 'Au moins un membre est requis.';
         } else if (this.membres.some(m => !m)) {
-            this.errors.membres = 'Please fill or remove all empty member rows.';
+            this.errors.membres = 'Veuillez remplir ou supprimer toutes les lignes de membres vides.';
         }
-        if (!this.description || !this.description.trim()) this.errors.description = 'Description is required.';
+        if (!this.description || !this.description.trim()) this.errors.description = 'La description est requise.';
         if (!this.buts.length || this.buts.every(b => !b || !b.trim())) {
-            this.errors.buts = 'At least one goal is required.';
+            this.errors.buts = 'Au moins un objectif est requis.';
         } else if (this.buts.some(b => !b || !b.trim())) {
-            this.errors.buts = 'Please fill or remove all empty goal rows.';
+            this.errors.buts = 'Veuillez remplir ou supprimer toutes les lignes d\'objectifs vides.';
         }
-        if (!this.perimetre || !this.perimetre.trim()) this.errors.perimetre = 'Périmètre is required.';
+        if (!this.perimetre || !this.perimetre.trim()) this.errors.perimetre = 'Le périmètre est requis.';
         return Object.keys(this.errors).length === 0;
     },
     validateStep2() {
@@ -72,23 +72,23 @@
         let valid = true;
         this.phases.forEach((phase, i) => {
             const e = {};
-            if (!phase.titre || !phase.titre.trim()) e.titre = 'Phase title is required.';
-            if (!phase.duree || !phase.duree.trim()) e.duree = 'Duration is required.';
-            if (!phase.description || !phase.description.trim()) e.description = 'Description is required.';
+            if (!phase.titre || !phase.titre.trim()) e.titre = 'Le titre de la phase est requis.';
+            if (!phase.duree || !phase.duree.trim()) e.duree = 'La durée est requise.';
+            if (!phase.description || !phase.description.trim()) e.description = 'La description est requise.';
             if (!phase.objectifs.length || phase.objectifs.every(o => !o || !o.trim())) {
-                e.objectifs = 'At least one objective is required.';
+                e.objectifs = 'Au moins un objectif est requis.';
             } else if (phase.objectifs.some(o => !o || !o.trim())) {
-                e.objectifs = 'Please fill or remove all empty objective rows.';
+                e.objectifs = 'Veuillez remplir ou supprimer toutes les lignes d\'objectifs vides.';
             }
             if (!phase.livrables.length || phase.livrables.every(l => !l || !l.trim())) {
-                e.livrables = 'At least one deliverable is required.';
+                e.livrables = 'Au moins un livrable est requis.';
             } else if (phase.livrables.some(l => !l || !l.trim())) {
-                e.livrables = 'Please fill or remove all empty deliverable rows.';
+                e.livrables = 'Veuillez remplir ou supprimer toutes les lignes de livrables vides.';
             }
             if (!phase.ressources_necessaires.length || phase.ressources_necessaires.every(r => !r.resource_type || !r.resource_type.trim())) {
-                e.ressources = 'At least one resource with a type is required.';
+                e.ressources = 'Au moins une ressource avec un type est requise.';
             } else if (phase.ressources_necessaires.some(r => !r.resource_type || !r.resource_type.trim() || r.amount_needed === undefined || r.amount_needed === null || String(r.amount_needed).trim() === '')) {
-                e.ressources = 'Please fill or remove all empty resource rows, ensuring both type and amount are provided.';
+                e.ressources = 'Veuillez remplir ou supprimer toutes les lignes de ressources vides, en veillant à ce que le type et la quantité soient fournis.';
             }
             this.phaseErrors[i] = e;
             if (Object.keys(e).length) valid = false;
@@ -97,16 +97,16 @@
     },
     validateStep3() {
         this.errors = {};
-        if (this.portee === '' || this.portee === null) this.errors.portee = 'Portée is required.';
-        else if (this.portee < 0 || this.portee > 50) this.errors.portee = 'Portée must be between 0 and 50.';
-        if (!this.impact) this.errors.impact = 'Impact is required.';
-        if (this.confiance === '' || this.confiance === null) this.errors.confiance = 'Confiance is required.';
-        else if (this.confiance < 0 || this.confiance > 100) this.errors.confiance = 'Confiance must be between 0 and 100.';
-        if (!this.effort) this.errors.effort = 'Effort is required.';
+        if (this.portee === '' || this.portee === null) this.errors.portee = 'La portée est requise.';
+        else if (this.portee < 0 || this.portee > 50) this.errors.portee = 'La portée doit être comprise entre 0 et 50.';
+        if (!this.impact) this.errors.impact = 'L\'impact est requis.';
+        if (this.confiance === '' || this.confiance === null) this.errors.confiance = 'La confiance est requise.';
+        else if (this.confiance < 0 || this.confiance > 100) this.errors.confiance = 'La confiance doit être comprise entre 0 et 100.';
+        if (!this.effort) this.errors.effort = 'L\'effort est requis.';
         return Object.keys(this.errors).length === 0;
     }
 }">
-    <p class="text-sm text-gray-500 mb-4">Step <span x-text="step"></span> of 3</p>
+    <p class="text-sm text-gray-500 mb-4">Étape <span x-text="step"></span> sur 3</p>
     <x-proposition.step-1 :users="$users" />
     <x-proposition.step-2 />
     <x-proposition.step-3 />
