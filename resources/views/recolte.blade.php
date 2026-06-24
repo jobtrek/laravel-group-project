@@ -1,8 +1,5 @@
 <x-app-layout>
-<<<<<<< Updated upstream
     <x-projects.filter-bar :users="$users ?? []" />
-=======
->>>>>>> Stashed changes
     <div class="relative w-full max-w-7xl mx-auto sm:px-6 lg:px-8">
     <section class="flex flex-col gap-4 p-4">
         <h3 class="text-2xl font-medium text-gray-900 mb-6">Recolte</h3>
@@ -21,11 +18,7 @@
                             title="Refonte du site web"
                             chef="Marie Dupont"
                             description="Refonte totale de l'interface utilisateur avec Tailwind CSS et Laravel."
-<<<<<<< Updated upstream
                             progress="20"
-=======
-                            progress="65"
->>>>>>> Stashed changes
                             deadline="12 Oct 2024"
                         />
     </section>

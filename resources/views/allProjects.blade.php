@@ -25,13 +25,10 @@
                             text="En cours"
                             projets="7"
                             route="en-cours"/>
-<<<<<<< Updated upstream
                         <x-projects.countProjects
                             text="Archive"
                             projets="7"
                             route="archive"/>
-=======
->>>>>>> Stashed changes
                     </div>
                          <a href="{{ route('create') }}" class="bg-blue-700 text-white rounded-lg p-1">New proposal</a>
                     <div class="flex flex-col gap-4 mt-4">
@@ -40,11 +37,7 @@
                             title="Refonte du site web"
                             chef="Marie Dupont"
                             description="Refonte totale de l'interface utilisateur avec Tailwind CSS et Laravel."
-<<<<<<< Updated upstream
                             progress="100"
-=======
-                            progress="45"
->>>>>>> Stashed changes
                             deadline="12 Oct 2024"
                         />
                         <x-projects.displayProjects
