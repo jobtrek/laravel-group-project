@@ -79,6 +79,7 @@ class Project extends Model
         return $this->hasMany(ProjectReview::class, 'project_id');
     }
 
+    /** @return HasMany<ProjectPhase, $this> */
     public function phases(): HasMany
     {
         return $this->hasMany(ProjectPhase::class, 'project_id')->orderBy('order');
@@ -136,7 +137,6 @@ class Project extends Model
         });
     }
 
-
     public function getProgressAttribute(): float
     {
         $totalNeeded = 0;
@@ -154,6 +154,7 @@ class Project extends Model
         }
 
         return round(($totalFound / $totalNeeded) * 100, 2);
+    }
 
     public static function statusCounts()
     {
@@ -161,6 +162,5 @@ class Project extends Model
             ->selectRaw('count(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status');
-
     }
 }

@@ -2,17 +2,13 @@
 
 namespace App\Console\Commands;
 
-use Illuminate\Console\Attributes\Description;
-use Illuminate\Console\Attributes\Signature;
-use Illuminate\Console\Command;
-use Carbon\Carbon;
+use App\Mail\RecolteArchivingMail;
 use App\Models\Project;
 use App\Models\States\ArchivedState;
 use App\Models\States\CollectingState;
-use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Mail;
-use App\Mail\RecolteArchivingMail;
-
 
 class RecolteArchiving extends Command
 {
@@ -23,7 +19,7 @@ class RecolteArchiving extends Command
      */
     public function handle()
     {
-        // take all projects with status "Collecting" 
+        // take all projects with status "Collecting"
         $projects = Project::whereState('status', CollectingState::class)
             ->with('proposer', 'recolteManager')
             ->get();

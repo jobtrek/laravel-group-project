@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Stage;
 use App\Mail\ApprovedEmail;
 use App\Mail\DeniedEmail;
 use App\Models\Project;
@@ -17,6 +18,15 @@ class ProjectController extends Controller
         $counts = Project::statusCounts();
 
         return view('allProjects', compact('projects', 'counts'));
+    }
+
+    public function stage(Stage $stage)
+    {
+        $projects = Project::whereState('status', $stage->statuses())
+            ->with(['proposer', 'leader'])
+            ->get();
+
+        return view('stage', compact('projects', 'stage'));
     }
 
     public function approve(Project $project)
