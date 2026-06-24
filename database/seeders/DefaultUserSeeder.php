@@ -13,7 +13,7 @@ class DefaultUserSeeder extends Seeder
      */
     public function run(): void
     {
-        User::create([
+        User::updateOrCreate([
             'name' => 'John Doe',
             'email' => 'john@example.com',
             'password' => 'password',
