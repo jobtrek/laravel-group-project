@@ -23,7 +23,7 @@ class ProjectController extends Controller
     public function stage(Stage $stage)
     {
         $projects = Project::whereState('status', $stage->statuses())
-            ->with(['proposer', 'leader'])
+            ->with(['proposer', 'leader', 'evaluation'])
             ->paginate(10);
 
         return view('stage', compact('projects', 'stage'));
