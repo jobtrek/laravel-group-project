@@ -31,8 +31,9 @@
                     </div>
                 </div>
             </div>
-            <div class="pt-6"
-            {{ $projects->links() }}
+            <div class="pt-6">
+                {{ $projects->links() }}
+            </div>
         </div>
     </div>
 </x-app-layout>
