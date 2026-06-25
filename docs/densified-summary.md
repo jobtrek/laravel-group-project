@@ -158,7 +158,7 @@ Exception — Récolte: auto-archive at **12 months** (not 3).
 
 - **Everyone** can see le frigo and all stage archives.
 - Archive retention: **1-year hard limit** — not restored within 1 year → permanently deleted.
-- ⚠️ UNRESOLVED — restoration target: densified-summary says all go back to Proposition; codebase registers stage-specific restoration (Récolte→`CollectingState`, En cours→`ActiveState`). See `clarification/conflicts-2026-06-25.md` Conflict A.
+- All projects restored from archive will go back into proposition no matter their stage
 
 ---
 
