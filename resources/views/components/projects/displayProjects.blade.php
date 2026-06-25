@@ -5,8 +5,10 @@
     'importance' => 0,
     'progress' => 0,
     'creationDate' => '',
-    'updatedAt' => ''
+    'updatedAt' => null
 ])
+
+use Carbon\Carbon;
 
 <div class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm">
     <div class="flex flex-col items-start gap-2 py-2">
@@ -46,8 +48,10 @@
             </svg>
             {{ $creationDate }}
         </span>
-        <span class="text-xs text-gray-400 flex items-center gap-1 italic">
-       Dernière modification {{ $updatedAt->locale('fr')->diffForHumans() }}
-        </span>
+        @if($updatedAt instanceof \Carbon\Carbon)
+            <span class="text-xs text-gray-400 flex items-center gap-1 italic">
+                Dernière modification {{ $updatedAt->locale('fr')->diffForHumans() }}
+            </span>
+        @endif
     </div>
 </div>
