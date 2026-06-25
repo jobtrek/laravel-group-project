@@ -2,16 +2,7 @@
 
 namespace App\Models;
 
-use App\Models\States\ActiveState;
-use App\Models\States\ApprovedState;
-use App\Models\States\ArchivedState;
-use App\Models\States\CollectingState;
-use App\Models\States\CompletedState;
-use App\Models\States\DraftState;
-use App\Models\States\ModificationState;
 use App\Models\States\ProjectState;
-use App\Models\States\ReadyState;
-use App\Models\States\RefusedState;
 use App\Models\States\SubmittedState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -26,23 +17,6 @@ class Project extends Model
 {
     use HasFactory;
     use HasStates;
-
-    protected function registerStates(): void
-    {
-        $this->addState('status', ProjectState::class)
-            ->default(DraftState::class)
-            ->allowTransitions([
-                [DraftState::class,        SubmittedState::class],
-                [SubmittedState::class,    [ApprovedState::class, RefusedState::class, ModificationState::class, ArchivedState::class]],
-                [ModificationState::class, [SubmittedState::class, ArchivedState::class]],
-                [ApprovedState::class,     CollectingState::class],
-                [RefusedState::class,      SubmittedState::class],
-                [CollectingState::class,   [ReadyState::class, ArchivedState::class]],
-                [ReadyState::class,        [ActiveState::class, CollectingState::class, ArchivedState::class]],
-                [ActiveState::class,       [CompletedState::class, ArchivedState::class]],
-                [ArchivedState::class,     [SubmittedState::class, CollectingState::class, ActiveState::class]],
-            ]);
-    }
 
     protected $fillable = [
         'title',
@@ -72,16 +46,19 @@ class Project extends Model
         'status' => ProjectState::class,
     ];
 
+    /** @return BelongsTo<User, $this> */
     public function proposer(): BelongsTo
     {
         return $this->belongsTo(User::class, 'proposer_id');
     }
 
+    /** @return BelongsTo<User, $this> */
     public function leader(): BelongsTo
     {
         return $this->belongsTo(User::class, 'leader_id');
     }
 
+    /** @return BelongsTo<User, $this> */
     public function recolteManager(): BelongsTo
     {
         return $this->belongsTo(User::class, 'recolte_manager_id');
@@ -102,6 +79,7 @@ class Project extends Model
         return $this->hasMany(ProjectReview::class, 'project_id');
     }
 
+    /** @return HasMany<ProjectPhase, $this> */
     public function phases(): HasMany
     {
         return $this->hasMany(ProjectPhase::class, 'project_id')->orderBy('order');
@@ -121,8 +99,8 @@ class Project extends Model
                 'but' => $data['buts'],
                 'perimetre' => $data['perimetre'] ?? null,
                 'ressources_totales' => $data['ressources_totales'] ?? null,
-                'status' => DraftState::getMorphClass(),
-                'current_stage' => DraftState::getMorphClass(),
+                'status' => SubmittedState::getMorphClass(),
+                'current_stage' => SubmittedState::getMorphClass(),
                 'proposer_id' => $proposerId,
                 'leader_id' => $data['porteur'],
             ]);
@@ -157,5 +135,32 @@ class Project extends Model
 
             return $project;
         });
+    }
+
+    public function getProgressAttribute(): float
+    {
+        $totalNeeded = 0;
+        $totalFound = 0;
+
+        foreach ($this->phases as $phase) {
+            foreach ($phase->resources as $resource) {
+                $totalNeeded += (float) $resource->amount_needed;
+                $totalFound += (float) ($resource->amount_found ?? 0);
+            }
+        }
+
+        if ($totalNeeded <= 0) {
+            return 0;
+        }
+
+        return round(($totalFound / $totalNeeded) * 100, 2);
+    }
+
+    public static function statusCounts()
+    {
+        return self::select('status')
+            ->selectRaw('count(*) as total')
+            ->groupBy('status')
+            ->pluck('total', 'status');
     }
 }

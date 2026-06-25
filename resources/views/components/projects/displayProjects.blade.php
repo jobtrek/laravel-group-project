@@ -4,7 +4,7 @@
     'chef' => '',
     'description' => '',
     'progress' => 0,
-    'deadline' => '',
+    'creationDate' => '',
 ])
 
 <a class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm" href="{{ route('projects-details') }}">
@@ -23,17 +23,18 @@
         </p>
     </div>
     <p class="text-sm text-gray-500 leading-relaxed line-clamp-2">{{ $description }}</p>
-
+@if($status === 'collecting' || $status === 'active'):
     <div class="w-full bg-gray-200 rounded-full h-1.5">
-        <div class="bg-green-700 h-1.5 rounded-full" style="width: {{ $progress }}%"></div>
+        <div class="{{ $progress <= 20 ? 'bg-red-500' : 'bg-green-700' }} h-1.5 rounded-full" style="width: {{ $progress }}%"></div>
     </div>
+    @endif
     <div class="flex items-center justify-between mt-1">
 
         <span class="text-xs text-gray-400 flex items-center gap-1">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" d="M6.75 3v2.25M17.25 3v2.25M3 18.75V7.5a2.25 2.25 0 0 1 2.25-2.25h13.5A2.25 2.25 0 0 1 21 7.5v11.25m-18 0A2.25 2.25 0 0 0 5.25 21h13.5A2.25 2.25 0 0 0 21 18.75m-18 0v-7.5A2.25 2.25 0 0 1 5.25 9h13.5A2.25 2.25 0 0 1 21 11.25v7.5" />
             </svg>
-            {{ $deadline }}
+            {{ $creationDate }}
         </span>
     </div>
 </a>

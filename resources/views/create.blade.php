@@ -1,7 +1,7 @@
 <x-app-layout>
     <x-slot name="header">
         <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('Propose a project') }}
+            {{ __('Proposer un projet') }}
         </h2>
     </x-slot>
 
@@ -20,7 +20,7 @@
                         </div>
                     @endif
 
-                    <h3 class="text-2xl font-medium text-gray-900 mb-6">New Project Proposal</h3>
+                    <h3 class="text-2xl font-medium text-gray-900 mb-6">Nouvelle proposition de projet</h3>
 
                     <form method="POST" action="/propositions">
                         @csrf

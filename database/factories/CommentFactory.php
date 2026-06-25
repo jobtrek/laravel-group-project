@@ -2,11 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Models\comment;
+use App\Models\Comment;
+use App\Models\Project;
+use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
 /**
- * @extends Factory<comment>
+ * @extends Factory<Comment>
  */
 class CommentFactory extends Factory
 {
@@ -18,7 +20,10 @@ class CommentFactory extends Factory
     public function definition(): array
     {
         return [
-            //
+            'content' => $this->faker->paragraph(),
+            'stage' => $this->faker->randomElement(['planning', 'development', 'testing', 'deployment']),
+            'user_id' => User::factory(),
+            'project_id' => Project::factory(),
         ];
     }
 }

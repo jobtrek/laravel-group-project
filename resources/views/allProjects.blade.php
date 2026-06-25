@@ -1,55 +1,26 @@
 <x-app-layout>
-    <x-slot name="header">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            {{ __('View All projects') }}
-        </h2>
-    </x-slot>
     <div class="justify-center py-12">
         <div class="w-full max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <h3 class="text-2xl font-medium text-gray-900 mb-6">Projects</h3>
             <div class=" bg-white overflow-hidden shadow-sm sm:rounded-lg">
                 <div class="p-6 text-gray-900">
-                    <div class="flex justify-between gap-4">
-                        <x-projects.countProjects
-                            text="Total projects"
-                            projets="20"/>
-                        <x-projects.countProjects
-                            text="Under review"
-                            projets="6"/>
-                        <x-projects.countProjects
-                            text="Active"
-                            projets="9"/>
-                        <x-projects.countProjects
-                            text="Completed"
-                            projets="7"/>
+                    <div class="flex justify-between gap-4 mb-4">
+                        <x-projects.countProjects text="Propositions" :projets="$counts->get('submitted', 0)" route="propositions"/>
+                        <x-projects.countProjects text="Review" :projets="$counts->get('approved', 0)" route="review"/>
+                        <x-projects.countProjects text="Recolte" :projets="$counts->get('collecting', 0)" route="recolte"/>
+                        <x-projects.countProjects text="En cours" :projets="$counts->get('active', 0)" route="en-cours"/>
                     </div>
-                    <x-projects.inputSearch/>
-                    <div>
-                        <x-projects.buttons text="All"/>
-                        <x-projects.buttons text="Ideation"/>
-                        <x-projects.buttons text="Under review"/>
-                        <x-projects.buttons text="Active"/>
-                        <x-projects.buttons text="Completed"/>
-                        <x-projects.buttons text="paused"/>
-                    </div>
-                    <button class="bg-blue-700 text-white rounded-lg p-1" >New proposal</button>
-                    <div class="flex flex-col gap-4">
-                        <x-projects.displayProjects
-                            status="En retard"
-                            title="Refonte du site web"
-                            chef="Marie Dupont"
-                            description="Refonte totale de l'interface utilisateur avec Tailwind CSS et Laravel."
-                            progress="45"
-                            deadline="12 Oct 2024"
-                        />
-                        <x-projects.displayProjects
-                            status="En cours"
-                            title="Refonte du site web"
-                            chef="Marie Dupont"
-                            description="Refonte totale de l'interface utilisateur avec Tailwind CSS et Laravel."
-                            progress="45"
-                            deadline="12 Oct 2024"
-                        />
+                    <a href="{{ route('create') }}" class="bg-blue-700 text-white rounded-lg p-1">New proposal</a>
+                    <div class="flex flex-col gap-4 mt-4">
+                        @foreach($projects as $project)
+                            <x-projects.displayProjects
+                                :status="$project->status"
+                                :title="$project->title"
+                                :chef="$project->leader?->name ?? $project->proposer?->name"
+                                :progress="0"
+                                :description="$project->description"
+                                :creation-date="$project->created_at->format('d M Y')"
+                            />
+                        @endforeach
                     </div>
                 </div>
             </div>

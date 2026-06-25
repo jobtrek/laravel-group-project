@@ -1,4 +1,4 @@
-@props(['items', 'name', 'placeholder' => '', 'addLabel' => '+ Add'])
+@props(['items', 'name', 'placeholder' => '', 'addLabel' => '+ Ajouter'])
 
 <div class="space-y-2">
     <template x-for="(item, idx) in {{ $items }}" :key="idx">

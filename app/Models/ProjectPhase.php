@@ -35,6 +35,7 @@ class ProjectPhase extends Model
         return $this->belongsTo(Project::class);
     }
 
+    /** @return HasMany<PhaseResource, $this> */
     public function resources(): HasMany
     {
         return $this->hasMany(PhaseResource::class, 'phase_id');
