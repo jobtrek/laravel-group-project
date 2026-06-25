@@ -13,7 +13,7 @@ class RecolteController extends Controller
     public function moveFromRecoltToActiv(Request $request)
     {
         $recolteId = $request->input('recolte_id');
-        $project = Project::find($recolteId);
+        $project = Project::findOrFail($recolteId);
 
         if ($project->progress > 80) {
             $project->status = new ActiveState();
