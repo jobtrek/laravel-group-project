@@ -18,10 +18,10 @@
 ## The 4-module lifecycle
 
 ```
-Proposition  →  Direction  →  Récolte  →  En cours
+Proposition  →  Evaluation  →  Récolte  →  En cours
  (anyone)        (decide)       (≥80%)      (track)
      |               |              |            |
-     +---------------+--------------+------------+→ Archives (per stage)
+     +---------------+--------------+------------+→ Archivé (per stage)
                 "le frigo" = refused-only archive
 ```
 
@@ -29,12 +29,15 @@ Proposition  →  Direction  →  Récolte  →  En cours
 
 ## Module 1 — Proposition
 
-**State:** `SubmittedState` (default — no DraftState; proposals are submitted immediately on creation)
-
+**State:** `PropositionState` (default — no DraftState; proposals are submitted immediately on creation)
 - **Anyone** can propose a project.
 - The **porteur** = the person proposing / guaranteeing the project (same person).
 - The **project lead (chef de projet) is NOT the porteur** — two separate roles assigned separately.
 - Direction members **cannot self-validate** their own proposals.
+
+**Transitions:**
+- `PropositionState` → `EvaluationState` (submitted for review)
+- `RévisionState` → `PropositionState` (proposer resubmits after editing)
 
 ### Proposal form fields
 
@@ -74,9 +77,9 @@ Proposition  →  Direction  →  Récolte  →  En cours
 
 ---
 
-## Module 2 — Direction
+## Module 2 — Evaluation
 
-**State:** `SubmittedState`
+**State:** `EvaluationState`
 
 - Direction sees all submitted proposals, **sorted by evaluation score descending**.
 - **Three outcomes:** approve / refuse / request revision.
@@ -85,15 +88,15 @@ Proposition  →  Direction  →  Récolte  →  En cours
 
 | Outcome | Next state | Notes |
 |---------|-----------|-------|
-| Approve | `ApprovedState` → auto-advances to `CollectingState` | System moves immediately |
-| Refuse | `RefusedState` ("le frigo") | Mandatory comment required; full form data preserved |
-| Request revision | `ModificationState` | Proposer edits the **existing** form (not a new one) and resubmits |
-
+| Approve | `RécolteState` | Project moves directly to Récolte |
+| Refuse | `ArchivéState` ("le frigo") | Mandatory comment required; full form data preserved |
+| Request revision | `RévisionState` | Proposer edits the **existing** form (not a new one) and resubmits |
 ---
 
 ## Module 3 — Récolte
 
-**States:** `CollectingState` / `ReadyState`
+
+**State:** `RécolteState`
 
 - Managed by the **récolte manager** — a different person than the porteur.
 - **All people in Récolte can add/update resources — except the porteur.**
@@ -104,26 +107,25 @@ Proposition  →  Direction  →  Récolte  →  En cours
 
 | Threshold | Action |
 |-----------|--------|
-| ≥ 80% resources found | Project turns **green** → `ReadyState` → can be launched to En cours |
-| Resources drop below 80% after reaching ReadyState | Reverts to `CollectingState` |
-| 12 months elapsed | Auto-archive → `ArchivedState` |
+| ≥ 80% resources found | Project turns **green** → moves to `EncoursState` |
+| 12 months elapsed | Auto-archive → `ArchivéState` |
 
 ### Chef de projet assignment
 
-The Chef du projet is assigned when the person validates the project from direction. in the recolte area.
+The Chef de projet is assigned when the project is validated by Direction in the Récolte area.
 
 ---
 
 ## Module 4 — En cours
 
-**State:** `ActiveState`
+**State:** `EncoursState`
 
 - Shows per project: `titre`, `description`, budget, **who works on it**, resources found.
 - **Comment log** (historical): person name, date, content — reverse-chronological.
 - Comments by **chef de projet** primarily; collaborateurs may also comment.
 - Comments **cannot be edited or deleted** after posting.
 - Any comment **resets the inactivity clock**.
-- Chef de projet marks project **Completed** (`CompletedState`) — final mandatory comment required.
+- Chef de projet marks project **Completed** (`ComplétéState`) — final mandatory comment required; project moves from En cours dashboard to **Archivé dashboard**.
 
 ### Inactivity escalation
 
@@ -151,10 +153,10 @@ Exception — Récolte: auto-archive at **12 months** (not 3).
 
 | Archive | Stage | Auto-archive trigger |
 |---------|-------|---------------------|
-| Proposition archive | Proposition | 3 months in `SubmittedState` / `ModificationState` |
+| Proposition archive | Proposition | 3 months in `PropositionState` / `RévisionState` |
 | Le frigo | Direction | Manual refusal; full form fields preserved |
-| Récolte archive | Récolte | 12 months in `CollectingState` / `ReadyState` |
-| En cours archive | En cours | 3 months no comment, or manual completion |
+| Récolte archive | Récolte | 12 months in `RécolteState` |
+| En cours archive | En cours | 3 months no comment, or manual completion (`ComplétéState`) |
 
 - **Everyone** can see le frigo and all stage archives.
 - Archive retention: **1-year hard limit** — not restored within 1 year → permanently deleted.
@@ -170,7 +172,7 @@ Exception — Récolte: auto-archive at **12 months** (not 3).
 
 | Role | Key permissions |
 |------|----------------|
-| **Collaborateur** | Propose projects; edit own proposals; see all projects |
+| **Collaborateur** | Propose projects; edit own proposals; see own projects (except in En cours, which are visible to all) |
 | **Direction** | Approve / refuse / suspend proposals; comment in Direction module; see all |
 | **Récolte Manager** | Add/update resources on Récolte projects; see all |
 | **Chef de projet** | Comment on all En cours projects; launch projects from Récolte; mark complete; see all |
@@ -186,26 +188,27 @@ Exception — Récolte: auto-archive at **12 months** (not 3).
 
 | Class file | State name | Stage |
 |-----------|-----------|-------|
-| `SubmittedState.php` | `submitted` | Proposition / Direction |
-| `ModificationState.php` | `modification` | Revision (sent back to proposer) |
-| `ApprovedState.php` | `approved` | Transient (auto-advances to Collecting) |
-| `RefusedState.php` | `refused` | Le frigo |
-| `CollectingState.php` | `collecting` | Récolte |
-| `ReadyState.php` | `ready` | Récolte (≥80%) |
-| `ActiveState.php` | `active` | En cours |
-| `CompletedState.php` | `completed` | Terminal |
-| `ArchivedState.php` | `archived` | All stage archives |
+| `PropositionState.php` | `proposition` | Proposition |
+| `EvaluationState.php` | `evaluation` | Evaluation (Direction review) |
+| `RévisionState.php` | `révision` | Revision (sent back to proposer) |
+| `RécolteState.php` | `récolte` | Récolte |
+| `EncoursState.php` | `en_cours` | En cours |
+| `ComplétéState.php` | `complété` | Terminal (moves to Archivé dashboard) |
+| `ArchivéState.php` | `archivé` | All archives (le frigo + stage archives) |
 
-> **No `DraftState`** — default is `SubmittedState`. Proposals are submitted immediately on creation.
-> **No `SuspendedState`** — the correct class is `ModificationState`. Update any doc or code that references `SuspendedState`.
+> **No `DraftState`** — default is `PropositionState`. Proposals are submitted immediately on creation.
+> **No `ReadyState`** — at ≥80% resources, project moves directly from `RécolteState` to `EncoursState`.
+> **No `SuspendedState`** — the correct class is `RévisionState`. Update any doc or code that references `SuspendedState`.
 
 ### Registered transitions (from codebase)
 
 | From | To | Actor |
 |------|----|-------|
-| `SubmittedState` | `ApprovedState` | Direction |
+| `SubmittedState` | `ApprovedState` | Archivé |
 | `SubmittedState` | `RefusedState` | Direction |
-| `SubmittedState` | `ModificationState` | Direction |
+| `PropositionState` | `RévisionState` | Direction |
+| `PropositionState` | `EvaluationState` | Direction |
+| `RévisionState` | `PropositionState` | Direction |
 | `SubmittedState` | `ArchivedState` | System (3 months) |
 | `ModificationState` | `SubmittedState` | Proposer (after editing) |
 | `ModificationState` | `ArchivedState` | System (3 months) |
