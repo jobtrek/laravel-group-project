@@ -90,7 +90,7 @@ class Project extends Model
         return $this->hasOne(ProjectEvaluation::class, 'project_id');
     }
 
-    public function getImportanceAttribute(): ?string
+    public function getImportanceAttribute(): ?float
     {
         return $this->evaluation?->importance;
     }
@@ -149,8 +149,8 @@ class Project extends Model
 
         foreach ($this->phases as $phase) {
             foreach ($phase->resources as $resource) {
-                $totalNeeded += (float) $resource->amount_needed;
-                $totalFound += (float) ($resource->amount_found ?? 0);
+                $totalNeeded += (float)$resource->amount_needed;
+                $totalFound += (float)($resource->amount_found ?? 0);
             }
         }
 
