@@ -39,6 +39,14 @@ Proposition  →  Evaluation  →  Récolte  →  En cours
 - `PropositionState` → `EvaluationState` (submitted for review)
 - `RévisionState` → `PropositionState` (proposer resubmits after editing)
 
+### Age-based colour coding
+
+| Duration without activity | Colour |
+|---------------------------|--------|
+| +1 month | **Orange** |
+| +2 months | **Red** |
+| +3 months | **Auto-archived** |
+
 ### Proposal form fields
 
 | Field | Notes |
@@ -81,6 +89,14 @@ Proposition  →  Evaluation  →  Récolte  →  En cours
 
 **State:** `EvaluationState`
 
+### Age-based colour coding
+
+| Duration without activity | Colour |
+|---------------------------|--------|
+| +1 month | **Orange** |
+| +2 months | **Red** |
+| +3 months | **Auto-archived** |
+
 - Direction sees all submitted proposals, **sorted by evaluation score descending**.
 - **Three outcomes:** approve / refuse / request revision.
 - **Only Direction** can write comments in this module.
@@ -97,6 +113,14 @@ Proposition  →  Evaluation  →  Récolte  →  En cours
 
 
 **State:** `RécolteState`
+
+### Age-based colour coding
+
+| Duration without activity | Colour |
+|---------------------------|--------|
+| +1 month | **Orange** |
+| +2 months | **Red** |
+| +12 months | **Auto-archived** (exception — longer window than other modules) |
 
 - Managed by the **récolte manager** — a different person than the porteur.
 - **All people in Récolte can add/update resources — except the porteur.**
@@ -119,6 +143,14 @@ The Chef de projet is assigned when the project is validated by Direction in the
 ## Module 4 — En cours
 
 **State:** `EncoursState`
+
+### Age-based colour coding
+
+| Duration without comment | Colour |
+|--------------------------|--------|
+| +1 month | **Orange** → Email #1 to chef de projet |
+| +2 months | **Red** → Email #2 CC'd to follow-up role |
+| +3 months | **Auto-archived** |
 
 - Shows per project: `titre`, `description`, budget, **who works on it**, resources found.
 - **Comment log** (historical): person name, date, content — reverse-chronological.
@@ -204,26 +236,18 @@ Exception — Récolte: auto-archive at **12 months** (not 3).
 
 | From | To | Actor |
 |------|----|-------|
-| `SubmittedState` | `ApprovedState` | Archivé |
-| `SubmittedState` | `RefusedState` | Direction |
-| `PropositionState` | `RévisionState` | Direction |
-| `PropositionState` | `EvaluationState` | Direction |
-| `RévisionState` | `PropositionState` | Direction |
-| `SubmittedState` | `ArchivedState` | System (3 months) |
-| `ModificationState` | `SubmittedState` | Proposer (after editing) |
-| `ModificationState` | `ArchivedState` | System (3 months) |
-| `ApprovedState` | `CollectingState` | System (auto) |
-| `RefusedState` | `SubmittedState` | Direction / Admin (restore from frigo) |
-| `CollectingState` | `ReadyState` | System (≥80%) |
-| `CollectingState` | `ArchivedState` | System (12 months) |
-| `ReadyState` | `ActiveState` | Récolte Manager / Chef de projet |
-| `ReadyState` | `CollectingState` | System (drops below 80%) |
-| `ReadyState` | `ArchivedState` | System (12 months) |
-| `ActiveState` | `CompletedState` | Chef de projet |
-| `ActiveState` | `ArchivedState` | System (3 months no comment) |
-| `ArchivedState` | `SubmittedState` | Direction / Admin |
-| `ArchivedState` | `CollectingState` | Récolte Manager / Admin |
-| `ArchivedState` | `ActiveState` | Chef de projet / Admin |
+| `PropositionState` | `EvaluationState` | Proposer (submits for review) |
+| `EvaluationState` | `RécolteState` | Direction (approve) |
+| `EvaluationState` | `ArchivéState` | Direction (refuse — le frigo) |
+| `EvaluationState` | `RévisionState` | Direction (request revision) |
+| `RévisionState` | `PropositionState` | Proposer (resubmits after editing) |
+| `PropositionState` | `ArchivéState` | System (3 months inactive) |
+| `RévisionState` | `ArchivéState` | System (3 months inactive) |
+| `RécolteState` | `EncoursState` | System / Récolte Manager (≥80% resources) |
+| `RécolteState` | `ArchivéState` | System (12 months elapsed) |
+| `EncoursState` | `ComplétéState` | Chef de projet (moves to Archivé dashboard) |
+| `EncoursState` | `ArchivéState` | System (3 months no comment) |
+| `ArchivéState` | `PropositionState` | Direction / Admin (restore) |
 
 ---
 
@@ -236,7 +260,7 @@ Exception — Récolte: auto-archive at **12 months** (not 3).
 | Proposer edits existing form or new one on revision? | **Edits the existing form** |
 | Multiple roles per person allowed? | **Yes** |
 | Is validator Direction or RH? | **Direction — there is no separate RH role** |
-| All roles can see all projects? | **Yes** |
+| All roles can see all projects? | **Yes** 
 | Who can access le frigo and archives? | **Everyone** |
 | Full form fields preserved in le frigo? | **Yes** |
 | Archive retention before deletion? | **1 year** |
