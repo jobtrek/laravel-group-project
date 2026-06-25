@@ -2,11 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use Illuminate\Http\Request;
 use App\Models\Project;
 use App\Models\States\ActiveState;
-
-
+use Illuminate\Http\Request;
 
 class RecolteController extends Controller
 {
@@ -16,7 +14,7 @@ class RecolteController extends Controller
         $project = Project::findOrFail($recolteId);
 
         if ($project->progress >= 80) {
-            $project->status = ActiveState::class;
+            $project->status->transitionTo(ActiveState::class);
             $project->save();
 
             return redirect()->back()->with('success', 'Project moved to Active state successfully.');
