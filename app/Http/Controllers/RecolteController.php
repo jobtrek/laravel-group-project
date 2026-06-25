@@ -10,13 +10,13 @@ use App\Models\States\ActiveState;
 
 class RecolteController extends Controller
 {
-    public function moveFromRecoltToActiv(Request $request)
+    public function moveFromRecolteToActive(Request $request)
     {
         $recolteId = $request->input('recolte_id');
         $project = Project::findOrFail($recolteId);
 
-        if ($project->progress > 80) {
-            $project->status = new ActiveState();
+        if ($project->progress >= 80) {
+            $project->status = ActiveState::class;
             $project->save();
 
             return redirect()->back()->with('success', 'Project moved to Active state successfully.');
