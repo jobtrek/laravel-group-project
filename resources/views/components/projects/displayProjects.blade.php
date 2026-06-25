@@ -1,5 +1,5 @@
 @props([
-    'status' => 'Active',
+    'status' => '',
     'title' => '',
     'chef' => '',
     'description' => '',
@@ -7,12 +7,10 @@
     'deadline' => '',
 ])
 
-<div class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm">
+<a class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm" href="{{ route('projects-details') }}">
 
     <div class="flex items-start justify-between p-2">
-        <span class="text-xs font-medium bg-red-50 px-3 py-1 rounded-full">
-            {{ $status }}
-        </span>
+        <x-project_status :status="$status"/>
     </div>
 
     <div>
@@ -38,4 +36,4 @@
             {{ $deadline }}
         </span>
     </div>
-</div>
+</a>

@@ -43,7 +43,7 @@
                             deadline="12 Oct 2024"
                         />
                         <x-projects.displayProjects
-                            status="En retard"
+                            status="En cours"
                             title="Refonte du site web"
                             chef="Marie Dupont"
                             description="Refonte totale de l'interface utilisateur avec Tailwind CSS et Laravel."

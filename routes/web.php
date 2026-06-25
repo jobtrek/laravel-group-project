@@ -17,6 +17,10 @@ Route::get('/projects', function () {
     return view('allProjects');
 })->middleware(['auth', 'verified'])->name('projects');
 
+Route::get('/projects_details', function () {
+    return view('projectsDetails');
+})->middleware(['auth', 'verified'])->name('projects-details');
+
 Route::middleware('auth')->group(function () {
     Route::get('/create', function () {
         return view('create', ['users' => User::query()->select('id', 'name')->get()]);
