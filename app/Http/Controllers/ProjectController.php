@@ -7,9 +7,9 @@ use App\Mail\ApprovedEmail;
 use App\Mail\DeniedEmail;
 use App\Models\Project;
 use App\Service\ProjectService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
-use Illuminate\Http\Request;
 
 class ProjectController extends Controller
 {
