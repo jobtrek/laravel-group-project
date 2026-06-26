@@ -14,10 +14,10 @@ enum Stage: string
     {
         return match ($this) {
             self::Propositions => 'Propositions',
-            self::Review => 'Review',
+            self::Review => 'Evaluation',
             self::Recolte => 'Récolte',
             self::EnCours => 'En cours',
-            self::Archive => 'Archive',
+            self::Archive => 'Frigo',
         };
     }
 
