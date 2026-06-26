@@ -72,7 +72,7 @@ class ProjectController extends Controller
             'id' => 'required|exists:projects,id',
         ]);
 
-        $project = Project::with(['proposer', 'leader', 'evaluation', 'phases', 'phases.resources'])->findOrFail($request->id());
+        $project = Project::with(['proposer', 'leader', 'evaluation', 'phases', 'phases.resources'])->findOrFail($request->input('id'));
 
         return view('projectDetail', compact('project'));
     }
