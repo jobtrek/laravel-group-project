@@ -1,8 +1,12 @@
 <?php
 
+use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\EnCoursController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
+use App\Http\Controllers\RecolteController;
+use App\Http\Controllers\ReviewController;
 use App\Models\Project;
 use App\Models\States\ModificationState;
 use App\Models\States\SubmittedState;
@@ -20,25 +24,21 @@ Route::get('/dashboard', function () {
 Route::get('/projects', [ProjectController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('projects');
 
-Route::get('/propositions', function () {
-    return view('propositions');
-})->middleware(['auth', 'verified'])->name('propositions');
+// Each closure is now replaced by its dedicated controller
+Route::get('/propositions', [PropositionController::class, 'index'])
+    ->middleware(['auth', 'verified'])->name('propositions');
 
-Route::get('/review', function () {
-    return view('review');
-})->middleware(['auth', 'verified'])->name('review');
+Route::get('/review', [ReviewController::class, 'index'])
+    ->middleware(['auth', 'verified'])->name('review');
 
-Route::get('/recolte', function () {
-    return view('recolte');
-})->middleware(['auth', 'verified'])->name('recolte');
+Route::get('/recolte', [RecolteController::class, 'index'])
+    ->middleware(['auth', 'verified'])->name('recolte');
 
-Route::get('/en-cours', function () {
-    return view('enCours');
-})->middleware(['auth', 'verified'])->name('en-cours');
+Route::get('/en-cours', [EnCoursController::class, 'index'])
+    ->middleware(['auth', 'verified'])->name('en-cours');
 
-Route::get('/archive', function () {
-    return view('archive');
-})->middleware(['auth', 'verified'])->name('archive');
+Route::get('/archive', [ArchiveController::class, 'index'])
+    ->middleware(['auth', 'verified'])->name('archive');
 
 Route::middleware('auth')->group(function () {
     Route::get('/create', function () {
@@ -55,7 +55,6 @@ Route::middleware('auth')->group(function () {
         $projects = Project::with('evaluation')
             ->whereState('status', [SubmittedState::class, ModificationState::class])
             ->get();
-
         return view('testDirectionFront', ['projects' => $projects]);
     })->name('direction.projects');
 

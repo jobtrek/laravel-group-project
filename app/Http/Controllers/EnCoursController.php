@@ -2,15 +2,13 @@
 
 namespace App\Http\Controllers;
 
-use App\Actions\CreateProjectProposal;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
-use App\Http\Requests\PropositionRequest;
 use App\Models\Project;
-use App\Models\States\SubmittedState;
+use App\Models\States\ActiveState;
 use App\Models\User;
 
-class PropositionController extends Controller
+class EnCoursController extends Controller
 {
     public function __construct(
         private readonly ProjectFilter $filter
@@ -20,19 +18,12 @@ class PropositionController extends Controller
     {
         $projects = $this->filter->apply(
             Project::with(['proposer', 'leader', 'evaluation'])
-                ->whereState('status', SubmittedState::class),
+                ->whereState('status', ActiveState::class),
             $request
         )->get();
 
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
-        return view('propositions', compact('projects', 'users'));
-    }
-
-    public function store(PropositionRequest $request, CreateProjectProposal $action)
-    {
-        $action->execute($request->validated(), auth()->id());
-
-        return redirect()->route('dashboard');
+        return view('enCours', compact('projects', 'users'));
     }
 }
