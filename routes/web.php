@@ -21,6 +21,8 @@ Route::get('/dashboard', function () {
 Route::get('/projects', [ProjectController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('projects');
 
+    Route::get('/projectsDetail', [ProjectController::class, 'detailPage'])->name('projects.detail');->middleware(['auth', 'verified'])->name('projects');
+
 Route::get('/propositions', [ProjectController::class, 'stage'])
     ->defaults('stage', Stage::Propositions)
     ->middleware(['auth', 'verified'])->name('propositions');
