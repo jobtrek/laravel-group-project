@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\EnCoursController;
+use App\Enums\Stage;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
@@ -24,7 +25,6 @@ Route::get('/dashboard', function () {
 Route::get('/projects', [ProjectController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('projects');
 
-// Each closure is now replaced by its dedicated controller
 Route::get('/propositions', [PropositionController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('propositions');
 
@@ -37,8 +37,7 @@ Route::get('/recolte', [RecolteController::class, 'index'])
 Route::get('/en-cours', [EnCoursController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('en-cours');
 
-Route::get('/archive', [ArchiveController::class, 'index'])
-    ->middleware(['auth', 'verified'])->name('archive');
+Route::get('/archive', [ArchiveController::class, 'index']);
 
 Route::middleware('auth')->group(function () {
     Route::get('/create', function () {

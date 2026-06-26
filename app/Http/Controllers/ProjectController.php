@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
+use App\Enums\Stage;
 use App\Mail\ApprovedEmail;
 use App\Mail\DeniedEmail;
 use App\Models\Project;
@@ -26,11 +27,22 @@ class ProjectController extends Controller
             $request
         )->get();
 
+        $projects = Project::with(['proposer', 'leader', 'evaluation'])->paginate(10);
         $counts = Project::statusCounts();
         $users  = User::query()->select('id', 'name')->orderBy('name')->get();
 
         return view('allProjects', compact('projects', 'counts', 'users'));
     }
+
+    public function stage(Stage $stage)
+    {
+        $projects = Project::whereState('status', $stage->statuses())
+            ->with(['proposer', 'leader', 'evaluation'])
+            ->paginate(10);
+
+        return view('stage', compact('projects', 'stage'));
+    }
+
     public function approve(Project $project)
     {
         ProjectService::approve($project);

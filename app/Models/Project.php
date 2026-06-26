@@ -79,6 +79,7 @@ class Project extends Model
         return $this->hasMany(ProjectReview::class, 'project_id');
     }
 
+    /** @return HasMany<ProjectPhase, $this> */
     public function phases(): HasMany
     {
         return $this->hasMany(ProjectPhase::class, 'project_id')->orderBy('order');
@@ -87,6 +88,11 @@ class Project extends Model
     public function evaluation(): HasOne
     {
         return $this->hasOne(ProjectEvaluation::class, 'project_id');
+    }
+
+    public function getImportanceAttribute(): ?float
+    {
+        return $this->evaluation?->importance;
     }
 
     public static function createProposal(array $data, int $proposerId): self
@@ -134,6 +140,25 @@ class Project extends Model
 
             return $project;
         });
+    }
+
+    public function getProgressAttribute(): float
+    {
+        $totalNeeded = 0;
+        $totalFound = 0;
+
+        foreach ($this->phases as $phase) {
+            foreach ($phase->resources as $resource) {
+                $totalNeeded += (float) $resource->amount_needed;
+                $totalFound += (float) ($resource->amount_found ?? 0);
+            }
+        }
+
+        if ($totalNeeded <= 0) {
+            return 0;
+        }
+
+        return round(($totalFound / $totalNeeded) * 100, 2);
     }
 
     public static function statusCounts()
