@@ -1,12 +1,11 @@
 <?php
 
-use App\Enums\Stage;
+use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\EnCoursController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
 use App\Http\Controllers\RecolteController;
-use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\ReviewController;
 use App\Models\Project;
 use App\Models\States\EvaluationState;
@@ -26,6 +25,10 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/frigo', [ArchiveController::class, 'index'])->name('frigo');
 });
 
+Route::get('/projects_details', function () {
+    return view('projectsDetails');
+})->middleware(['auth', 'verified'])->name('projects-details');
+
 Route::middleware('auth')->group(function () {
     Route::get('/create', fn () => view('create', [
         'users' => User::query()->select('id', 'name')->get(),
@@ -35,6 +38,7 @@ Route::middleware('auth')->group(function () {
         $projects = Project::with('evaluation')
             ->whereState('status', [PropositionState::class, EvaluationState::class])
             ->get();
+
         return view('testDirectionFront', ['projects' => $projects]);
     })->name('direction.projects');
 
