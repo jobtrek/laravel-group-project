@@ -59,7 +59,7 @@ $bgColor = '';
                 default                                              => 'bg-green-400',
                 };
 ?>
-            <span class="text-xs rounded-full text-gray-700 {{ $bgColor }} flex items-center gap-1 italic">
+            <span class="text-xs px-1.5 py-0.5 rounded-full text-gray-700 {{ $bgColor }} flex items-center gap-1 italic">
                 Mis à jours {{ $updatedAt->locale('fr')->diffForHumans() }}
             </span>
         @endif
