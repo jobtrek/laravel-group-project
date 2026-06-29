@@ -3,13 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\Project;
-use App\Models\States\EncoursState;
 use App\Models\States\ApprovedState;
 use App\Models\States\ArchiveState;
-use App\Models\States\RecolteState;
 use App\Models\States\CompleteState;
+use App\Models\States\EncoursState;
 use App\Models\States\EvaluationState;
 use App\Models\States\ReadyState;
+use App\Models\States\RecolteState;
 use App\Models\States\RefusedState;
 use App\Models\States\SubmittedState;
 use App\Models\User;
