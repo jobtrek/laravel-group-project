@@ -49,7 +49,7 @@ enum Stage: string
             self::Propositions => ['proposition', 'révision'],
             self::Evaluation => ['évaluation'],
             self::Recolte => ['récolte'],
-            self::EnCours => ['En cours'],
+            self::EnCours => ['en cours'],
             self::Archive => ['archivé', 'complété'],
         };
     }

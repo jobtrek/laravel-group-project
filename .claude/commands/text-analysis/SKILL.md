@@ -22,7 +22,7 @@ Cross-reference overlapping markdown notes, surface conflicts loudly, and produc
 | 5 | Always produce the densified summary, marking unresolved conflicts inline |
 
 For full step-by-step detail, load:
-`.claude/commands/test-analysis/references/workflow.md`
+`.claude/commands/text-analysis/references/workflow.md`
 
 ---
 

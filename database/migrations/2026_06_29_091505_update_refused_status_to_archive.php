@@ -17,8 +17,7 @@ return new class extends Migration
 
     public function down(): void
     {
-        DB::table('projects')
-            ->where('status', 'archivé')
-            ->update(['status' => 'refused']);
+        // Intentionally left empty — cannot safely distinguish originally-refused
+        // projects from legitimately archived ones after the up() migration ran.
     }
 };

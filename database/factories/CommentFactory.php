@@ -7,7 +7,8 @@ use App\Models\Comment;
 use App\Models\Project;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-
+use App\Models\States\RevisionState;
+use App\Models\States\EncoursState;
 /**
  * @extends Factory<Comment>
  */
@@ -22,7 +23,7 @@ class CommentFactory extends Factory
     {
         return [
             'content' => $this->faker->paragraph(),
-            'stage' => $this->faker->randomElement(array_column(Stage::cases(), 'value')),
+            'stage' => $this->faker->randomElement([RevisionState::getMorphClass(), EncoursState::getMorphClass()]),
             'user_id' => User::factory(),
             'project_id' => Project::factory(),
         ];

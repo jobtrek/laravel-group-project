@@ -11,7 +11,7 @@
         'évaluation'  => 'Évaluation',
         'révision'    => 'Révision',
         'récolte'     => 'Récolte',
-        'En cours'    => 'En cours',
+        'en cours'    => 'En cours',
         'complété'    => 'Complété',
         'archivé'     => 'Archivé',
     ];
