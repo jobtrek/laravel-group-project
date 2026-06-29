@@ -1,4 +1,5 @@
 @props([
+    'project' => null,
     'status' => '',
     'title' => '',
     'chef' => '',
@@ -9,14 +10,14 @@
 ])
 <?php
 
+
+      
 use Carbon\Carbon;
 
 ?>
-<div class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm">
+<a class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm href="{{ route('projects-details') }}">
     <div class="flex flex-col items-start gap-2 py-2">
-        <span class="text-xs font-medium bg-red-50 px-3 py-1 rounded-full">
-            {{ $status }}
-        </span>
+        <x-project_status :status="$status"/>
         <h3 class="text-base font-medium leading-snug">Importance : {{ $importance }}</h3>
     </div>
 
@@ -56,4 +57,4 @@ use Carbon\Carbon;
             </span>
         @endif
     </div>
-</div>
+</a>
