@@ -8,6 +8,8 @@
         'user_name_msg' => 'Jac',
         'comment_msg' => "Le projet progresse globalement de manière satisfaisante et les principales fonctionnalités ont été mises en place conformément aux objectifs définis. Cependant, la partie dédiée aux commandes en ligne rencontre encore plusieurs dysfonctionnements qui empêchent son utilisation optimale par les utilisateurs. En effet, certains processus liés à la passation des commandes ne fonctionnent pas correctement, ce qui peut entraîner des erreurs lors de la sélection des produits, de la validation du panier ou de la confirmation de la commande. Ces problèmes impactent directement l'expérience utilisateur et nécessitent des corrections ainsi que des tests complémentaires afin de garantir la fiabilité du système. La priorité pour la prochaine phase du développement sera donc d'identifier précisément les causes de ces anomalies, de mettre en œuvre les correctifs nécessaires et de réaliser une série de tests fonctionnels afin d'assurer un parcours de commande fluide, sécurisé et efficace pour l'ensemble des utilisateurs.",
         'input_date' => '20/06/2026',
+        'phase_number' => 1,
+        'phase_name' => ''
     ])
 
 
@@ -63,7 +65,7 @@
                     <div class="mt-4 rounded-lg border border-gray-200 p-3">
                         <p class="text-sm font-semibold text-gray-800">Phases :</p>
                         <div>
-                            <a href="/phase_details">click me</a>
+                            <x-Phase-details.phase_button phase_name="BABA" phase_number="{{ 1 }}"/>
                         </div>
                     </div>
                     <div class="mt-2 rounded-lg border border-gray-200 p-4">

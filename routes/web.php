@@ -45,6 +45,10 @@ Route::get('/projects_details', function () {
     return view('projectsDetails');
 })->middleware(['auth', 'verified'])->name('projects-details');
 
+Route::get('/phase_details', function () {
+    return view('phase_details');
+})->middleware(['auth', 'verified'])->name('phase_details');
+
 Route::middleware('auth')->group(function () {
     Route::get('/create', function () {
         return view('create', ['users' => User::query()->select('id', 'name')->get()]);
