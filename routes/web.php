@@ -5,8 +5,8 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
 use App\Models\Project;
-use App\Models\States\ModificationState;
-use App\Models\States\SubmittedState;
+use App\Models\States\EvaluationState;
+use App\Models\States\PropositionState;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -25,9 +25,9 @@ Route::get('/propositions', [ProjectController::class, 'stage'])
     ->defaults('stage', Stage::Propositions)
     ->middleware(['auth', 'verified'])->name('propositions');
 
-Route::get('/review', [ProjectController::class, 'stage'])
-    ->defaults('stage', Stage::Review)
-    ->middleware(['auth', 'verified'])->name('review');
+Route::get('/evaluation', [ProjectController::class, 'stage'])
+    ->defaults('stage', Stage::Evaluation)
+    ->middleware(['auth', 'verified'])->name('evaluation');
 
 Route::get('/recolte', [ProjectController::class, 'stage'])
     ->defaults('stage', Stage::Recolte)
@@ -37,9 +37,9 @@ Route::get('/en-cours', [ProjectController::class, 'stage'])
     ->defaults('stage', Stage::EnCours)
     ->middleware(['auth', 'verified'])->name('en-cours');
 
-Route::get('/archive', [ProjectController::class, 'stage'])
+Route::get('/frigo', [ProjectController::class, 'stage'])
     ->defaults('stage', Stage::Archive)
-    ->middleware(['auth', 'verified'])->name('archive');
+    ->middleware(['auth', 'verified'])->name('frigo');
 
 Route::middleware('auth')->group(function () {
     Route::get('/create', function () {
@@ -54,7 +54,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/direction/projects', function () {
         $projects = Project::with('evaluation')
-            ->whereState('status', [SubmittedState::class, ModificationState::class])
+            ->whereState('status', [PropositionState::class, EvaluationState::class])
             ->get();
 
         return view('testDirectionFront', ['projects' => $projects]);

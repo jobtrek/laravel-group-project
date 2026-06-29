@@ -29,6 +29,13 @@ class ProjectController extends Controller
         return view('stage', compact('projects', 'stage'));
     }
 
+    public function review(Project $project)
+    {
+        ProjectService::review($project);
+
+        return Redirect::back()->with('status', 'project-in-review');
+    }
+
     public function approve(Project $project)
     {
         ProjectService::approve($project);

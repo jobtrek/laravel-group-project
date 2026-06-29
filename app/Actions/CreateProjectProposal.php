@@ -6,7 +6,7 @@ namespace App\Actions;
 
 use App\Models\Project;
 use App\Models\ProjectPhase;
-use App\Models\States\SubmittedState;
+use App\Models\States\PropositionState;
 use Illuminate\Support\Facades\DB;
 
 class CreateProjectProposal
@@ -19,8 +19,8 @@ class CreateProjectProposal
                 'description' => $data['description'],
                 'but' => $data['buts'],
                 'perimetre' => $data['perimetre'] ?? null,
-                'status' => SubmittedState::getMorphClass(),
-                'current_stage' => SubmittedState::getMorphClass(),
+                'status' => PropositionState::getMorphClass(),
+                'current_stage' => PropositionState::getMorphClass(),
                 'proposer_id' => $proposerId,
                 'leader_id' => $data['porteur'],
             ]);
