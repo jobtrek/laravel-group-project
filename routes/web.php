@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\ArchiveController;
+use App\Enums\Stage;
 use App\Http\Controllers\EnCoursController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
 use App\Http\Controllers\RecolteController;
+use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\ReviewController;
 use App\Models\Project;
 use App\Models\States\EvaluationState;
@@ -29,8 +30,7 @@ Route::get('/propositions', [PropositionController::class, 'index'])
 
     ->middleware(['auth', 'verified'])->name('propositions');
 
-Route::get('/evaluation', [ProjectController::class, 'stage'])
-    ->defaults('stage', Stage::Evaluation)
+Route::get('/evaluation', [ReviewController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('evaluation');
 
 Route::get('/recolte', [RecolteController::class, 'index'])
@@ -39,13 +39,10 @@ Route::get('/recolte', [RecolteController::class, 'index'])
 Route::get('/en-cours', [EnCoursController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('en-cours');
 
-Route::get('/frigo', [ProjectController::class, 'stage'])
-    ->defaults('stage', Stage::Archive)
+Route::get('/frigo', [ArchiveController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('frigo');
 
-Route::get('/projects_details', function () {
-    return view('projectsDetails');
-})->middleware(['auth', 'verified'])->name('projects-details');
+Route::get('/projects_details/{project}', [ProjectController::class, 'detailPage'])->middleware(['auth', 'verified'])->name('projects-details');
 
 Route::middleware('auth')->group(function () {
     Route::get('/create', function () {
@@ -62,7 +59,6 @@ Route::middleware('auth')->group(function () {
         $projects = Project::with('evaluation')
             ->whereState('status', [PropositionState::class, EvaluationState::class])
             ->get();
-
         return view('testDirectionFront', ['projects' => $projects]);
     })->name('direction.projects');
 
@@ -71,5 +67,6 @@ Route::middleware('auth')->group(function () {
     Route::post('/projects/{project}/request-more-info', [ProjectController::class, 'requestMoreInfo'])->name('projects.request-more-info');
     Route::patch('/projects/{project}/resubmit', [ProjectController::class, 'reSubmit'])->name('projects.resubmit');
 });
+
 
 require __DIR__ . '/auth.php';

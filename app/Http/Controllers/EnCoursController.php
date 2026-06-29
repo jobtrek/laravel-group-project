@@ -6,7 +6,7 @@ use App\Enums\Stage;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Models\Project;
-use App\Models\States\ActiveState;
+use App\Models\States\EncoursState;
 use App\Models\User;
 
 class EnCoursController extends Controller
@@ -19,7 +19,7 @@ class EnCoursController extends Controller
     {
         $projects = $this->filter->apply(
             Project::with(['proposer', 'leader', 'evaluation'])
-                ->whereState('status', ActiveState::class),
+                ->whereState('status', EncoursState::class),
             $request
         )->paginate(10);
 
