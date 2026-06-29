@@ -3,7 +3,6 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Stage;
-
 use App\Mail\ApprovedEmail;
 use App\Mail\DeniedEmail;
 use App\Models\Project;

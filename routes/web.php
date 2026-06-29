@@ -68,4 +68,4 @@ Route::middleware('auth')->group(function () {
     Route::patch('/projects/{project}/resubmit', [ProjectController::class, 'reSubmit'])->name('projects.resubmit');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
