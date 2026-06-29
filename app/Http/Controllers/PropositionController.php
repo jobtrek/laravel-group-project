@@ -8,8 +8,8 @@ use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Http\Requests\PropositionRequest;
 use App\Models\Project;
-use App\Models\States\ModificationState;
-use App\Models\States\SubmittedState;
+use App\Models\States\RevisionState;
+use App\Models\States\PropositionState;
 use App\Models\User;
 
 class PropositionController extends Controller
@@ -22,7 +22,7 @@ class PropositionController extends Controller
     {
         $projects = $this->filter->apply(
             Project::with(['proposer', 'leader', 'evaluation'])
-                ->whereState('status', [SubmittedState::class, ModificationState::class]),
+                ->whereState('status', [PropositionState::class, RevisionState::class]),
             $request
         )->paginate(10);
 
