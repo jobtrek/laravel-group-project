@@ -10,11 +10,11 @@
 <?php
 
 use Carbon\Carbon;
-$bg_color = match (true) {
-    $updatedAt->greaterThanOrEqualTo(now()->subMonth())       => 'yellow',
-    $updatedAt->greaterThanOrEqualTo(now()->subMonth(2))        => 'orange',
-    $updatedAt->greaterThanOrEqualTo(now()->subMonth(3))       => 'red',
-    default                                                  => 'green',
+$textColor = match (true) {
+    $updatedAt->greaterThanOrEqualTo(now()->subMonth())  => 'text-green-400',
+    $updatedAt->greaterThanOrEqualTo(now()->subMonth(2)) => 'text-yellow-400',
+    $updatedAt->greaterThanOrEqualTo(now()->subMonth(3)) => 'text-orange-400',
+    default                                              => 'text-red-400',
 };
 ?>
 <div class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm">
@@ -56,7 +56,7 @@ $bg_color = match (true) {
             {{ $creationDate }}
         </span>
         @if($updatedAt instanceof \Carbon\Carbon)
-            <span class="text-xs text-gray-400 flex items-center gap-1 italic">
+            <span class="text-xs {{ $textColor }} flex items-center gap-1 italic">
                 Dernière modification {{ $updatedAt->locale('fr')->diffForHumans() }}
             </span>
         @endif
