@@ -27,8 +27,7 @@ Route::get('/projects', [ProjectController::class, 'index'])
 Route::get('/propositions', [PropositionController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('propositions');
 
-Route::get('/evaluation', [ProjectController::class, 'stage'])
-    ->defaults('stage', Stage::Evaluation)
+Route::get('/evaluation', [ReviewController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('evaluation');
 
 Route::get('/recolte', [RecolteController::class, 'index'])
@@ -37,8 +36,7 @@ Route::get('/recolte', [RecolteController::class, 'index'])
 Route::get('/en-cours', [EnCoursController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('en-cours');
 
-Route::get('/frigo', [ProjectController::class, 'stage'])
-    ->defaults('stage', Stage::Archive)
+Route::get('/frigo', [ArchiveController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('frigo');
 
 Route::middleware('auth')->group(function () {
