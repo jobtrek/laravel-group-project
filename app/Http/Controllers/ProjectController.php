@@ -74,7 +74,7 @@ class ProjectController extends Controller
 
     public function detailPage(Project $project)
     {
-        $project->load(['proposer', 'leader', 'evaluation', 'phases', 'phases.resources']);
+        $project->load(['proposer', 'leader', 'evaluation', 'phases', 'phases.resources', 'members', 'comments', 'comments.user']);
 
         return view('projectsDetails', compact('project'));
     }
