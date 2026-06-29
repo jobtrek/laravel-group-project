@@ -3,14 +3,13 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Stage;
+use App\Http\Requests\GetProjectByIdRequest;
 use App\Mail\ApprovedEmail;
 use App\Mail\DeniedEmail;
 use App\Models\Project;
 use App\Service\ProjectService;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
-use App\Http\Requests\GetProjectByIdRequest;
 
 class ProjectController extends Controller
 {
