@@ -1,4 +1,5 @@
 @props([
+    'project' => null,
     'status' => '',
     'title' => '',
     'chef' => '',
@@ -9,14 +10,14 @@
 ])
 <?php
 
+
+      
 use Carbon\Carbon;
 $bgColor = '';
 ?>
-<div class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm">
+<a class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm href="{{ route('projects-details') }}">
     <div class="flex flex-col items-start gap-2 py-2">
-        <span class="text-xs font-medium bg-red-50 px-3 py-1 rounded-full">
-            {{ $status }}
-        </span>
+        <x-project_status :status="$status"/>
         <h3 class="text-base font-medium leading-snug">Importance : {{ $importance }}</h3>
     </div>
 
@@ -30,7 +31,7 @@ $bgColor = '';
             {{ $chef }}
         </p>
     </div>
-    @if((string)$status === 'collecting' || (string)$status === 'active')
+    @if((string)$status === 'récolte' || (string)$status === 'en cours')
         <div class="flex items-center gap-2 w-full">
             <div class="w-full bg-gray-200 rounded-full h-1.5">
                 <div class="{{ $progress <= 20 ? 'bg-red-500' : 'bg-green-700' }} h-1.5 rounded-full"
@@ -64,4 +65,4 @@ $bgColor = '';
             </span>
         @endif
     </div>
-</div>
+</a>

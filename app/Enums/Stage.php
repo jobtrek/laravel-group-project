@@ -2,19 +2,29 @@
 
 namespace App\Enums;
 
+use App\Models\States\ActiveState;
+use App\Models\States\ApprovedState;
+use App\Models\States\ArchivedState;
+use App\Models\States\CollectingState;
+use App\Models\States\CompletedState;
+use App\Models\States\ModificationState;
+use App\Models\States\ReadyState;
+use App\Models\States\RefusedState;
+use App\Models\States\SubmittedState;
+
 enum Stage: string
 {
     case Propositions = 'propositions';
-    case Review = 'review';
+    case Evaluation = 'evaluation';
     case Recolte = 'recolte';
     case EnCours = 'en-cours';
-    case Archive = 'archive';
+    case Archive = 'frigo';
 
     public function title(): string
     {
         return match ($this) {
             self::Propositions => 'Propositions',
-            self::Review => 'Evaluation',
+            self::Evaluation => 'Evaluation',
             self::Recolte => 'Récolte',
             self::EnCours => 'En cours',
             self::Archive => 'Frigo',
@@ -24,8 +34,8 @@ enum Stage: string
     public function prev(): ?self
     {
         return match ($this) {
-            self::Review => self::Propositions,
-            self::Recolte => self::Review,
+            self::Evaluation => self::Propositions,
+            self::Recolte => self::Evaluation,
             self::EnCours => self::Recolte,
             self::Archive => self::EnCours,
             default => null,
@@ -35,8 +45,8 @@ enum Stage: string
     public function next(): ?self
     {
         return match ($this) {
-            self::Propositions => self::Review,
-            self::Review => self::Recolte,
+            self::Propositions => self::Evaluation,
+            self::Evaluation => self::Recolte,
             self::Recolte => self::EnCours,
             self::EnCours => self::Archive,
             default => null,
@@ -46,11 +56,11 @@ enum Stage: string
     public function statuses(): array
     {
         return match ($this) {
-            self::Propositions => ['submitted', 'modification'],
-            self::Review => ['approved'],
-            self::Recolte => ['collecting', 'ready'],
-            self::EnCours => ['active'],
-            self::Archive => ['archived', 'completed', 'refused'],
+            self::Propositions => ['proposition', 'révision'],
+            self::Evaluation => ['evaluation'],
+            self::Recolte => ['récolte'],
+            self::EnCours => ['en cours'],
+            self::Archive => ['archivé', 'complété'],
         };
     }
 }

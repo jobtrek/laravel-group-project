@@ -3,10 +3,11 @@
 namespace App\Service;
 
 use App\Models\Project;
-use App\Models\States\ApprovedState;
-use App\Models\States\ModificationState;
-use App\Models\States\RefusedState;
-use App\Models\States\SubmittedState;
+use App\Models\States\ArchiveState;
+use App\Models\States\EvaluationState;
+use App\Models\States\PropositionState;
+use App\Models\States\RecolteState;
+use App\Models\States\RevisionState;
 use App\Models\User;
 
 class ProjectService
@@ -19,27 +20,33 @@ class ProjectService
         return compact('projects', 'users');
     }
 
+    public static function review(Project $project): void
+    {
+        $project->status->transitionTo(EvaluationState::class);
+        $project->save();
+    }
+
     public static function approve(Project $project): void
     {
-        $project->status->transitionTo(ApprovedState::class);
+        $project->status->transitionTo(RecolteState::class);
         $project->save();
     }
 
     public static function deny(Project $project): void
     {
-        $project->status->transitionTo(RefusedState::class);
+        $project->status->transitionTo(ArchiveState::class);
         $project->save();
     }
 
     public static function requestMoreInfo(Project $project): void
     {
-        $project->status->transitionTo(ModificationState::class);
+        $project->status->transitionTo(RevisionState::class);
         $project->save();
     }
 
     public static function reSubmit(Project $project): void
     {
-        $project->status->transitionTo(SubmittedState::class);
+        $project->status->transitionTo(PropositionState::class);
         $project->save();
     }
 }

@@ -2,37 +2,45 @@
 
 namespace App\Http\Controllers;
 
-use App\Enums\Stage;
+use App\Filters\ProjectFilter;
+use App\Http\Requests\FilterProjectsRequest;
 use App\Mail\ApprovedEmail;
 use App\Mail\DeniedEmail;
 use App\Models\Project;
+use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 
 class ProjectController extends Controller
 {
-    public function index()
-    {
-        $projects = Project::with(['proposer', 'leader', 'evaluation'])->paginate(10);
-        $counts = Project::statusCounts();
+    public function __construct(
+        private readonly ProjectFilter $filter
+    ) {}
 
-        return view('allProjects', compact('projects', 'counts'));
+    public function index(FilterProjectsRequest $request)
+    {
+        $projects = $this->filter->apply(
+            Project::with(['proposer', 'leader', 'evaluation']),
+            $request
+        )->paginate(10)->withQueryString();
+
+        $counts = Project::statusCounts();
+        $users = User::query()->select('id', 'name')->orderBy('name')->get();
+
+        return view('allProjects', compact('projects', 'counts', 'users'));
     }
 
-    public function stage(Stage $stage)
+    public function review(Project $project)
     {
-        $projects = Project::whereState('status', $stage->statuses())
-            ->with(['proposer', 'leader', 'evaluation'])
-            ->paginate(10);
+        ProjectService::review($project);
 
-        return view('stage', compact('projects', 'stage'));
+        return Redirect::back()->with('status', 'project-in-review');
     }
 
     public function approve(Project $project)
     {
         ProjectService::approve($project);
-
         if ($proposer = $project->proposer) {
             Mail::to($proposer->email)->send(new ApprovedEmail($proposer->name));
         }
@@ -43,7 +51,6 @@ class ProjectController extends Controller
     public function deny(Project $project)
     {
         ProjectService::deny($project);
-
         if ($proposer = $project->proposer) {
             Mail::to($proposer->email)->send(new DeniedEmail($proposer->name));
         }
