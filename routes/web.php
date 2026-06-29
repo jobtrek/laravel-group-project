@@ -1,12 +1,11 @@
 <?php
 
-use App\Enums\Stage;
+use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\EnCoursController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
 use App\Http\Controllers\RecolteController;
-use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\ReviewController;
 use App\Models\Project;
 use App\Models\States\EvaluationState;
@@ -24,7 +23,6 @@ Route::get('/dashboard', function () {
 
 Route::get('/projects', [ProjectController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('projects');
-
 
 Route::get('/propositions', [PropositionController::class, 'index'])
 
@@ -59,6 +57,7 @@ Route::middleware('auth')->group(function () {
         $projects = Project::with('evaluation')
             ->whereState('status', [PropositionState::class, EvaluationState::class])
             ->get();
+
         return view('testDirectionFront', ['projects' => $projects]);
     })->name('direction.projects');
 
@@ -68,5 +67,4 @@ Route::middleware('auth')->group(function () {
     Route::patch('/projects/{project}/resubmit', [ProjectController::class, 'reSubmit'])->name('projects.resubmit');
 });
 
-
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
