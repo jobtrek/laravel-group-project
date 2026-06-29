@@ -1,9 +1,12 @@
 <?php
 
-use App\Enums\Stage;
+use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\EnCoursController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
+use App\Http\Controllers\RecolteController;
+use App\Http\Controllers\ReviewController;
 use App\Models\Project;
 use App\Models\States\EvaluationState;
 use App\Models\States\PropositionState;
@@ -21,20 +24,17 @@ Route::get('/dashboard', function () {
 Route::get('/projects', [ProjectController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('projects');
 
-Route::get('/propositions', [ProjectController::class, 'stage'])
-    ->defaults('stage', Stage::Propositions)
+Route::get('/propositions', [PropositionController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('propositions');
 
 Route::get('/evaluation', [ProjectController::class, 'stage'])
     ->defaults('stage', Stage::Evaluation)
     ->middleware(['auth', 'verified'])->name('evaluation');
 
-Route::get('/recolte', [ProjectController::class, 'stage'])
-    ->defaults('stage', Stage::Recolte)
+Route::get('/recolte', [RecolteController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('recolte');
 
-Route::get('/en-cours', [ProjectController::class, 'stage'])
-    ->defaults('stage', Stage::EnCours)
+Route::get('/en-cours', [EnCoursController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('en-cours');
 
 Route::get('/frigo', [ProjectController::class, 'stage'])
