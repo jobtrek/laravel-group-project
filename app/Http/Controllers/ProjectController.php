@@ -14,7 +14,7 @@ class ProjectController extends Controller
 {
     public function index()
     {
-        $projects = Project::with(['proposer', 'leader'])->get();
+        $projects = Project::with(['proposer', 'leader', 'evaluation'])->paginate(10);
         $counts = Project::statusCounts();
 
         return view('allProjects', compact('projects', 'counts'));
@@ -23,8 +23,8 @@ class ProjectController extends Controller
     public function stage(Stage $stage)
     {
         $projects = Project::whereState('status', $stage->statuses())
-            ->with(['proposer', 'leader'])
-            ->get();
+            ->with(['proposer', 'leader', 'evaluation'])
+            ->paginate(10);
 
         return view('stage', compact('projects', 'stage'));
     }
