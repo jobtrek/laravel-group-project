@@ -41,6 +41,10 @@ Route::get('/frigo', [ProjectController::class, 'stage'])
     ->defaults('stage', Stage::Archive)
     ->middleware(['auth', 'verified'])->name('frigo');
 
+Route::get('/projects_details', function () {
+    return view('projectsDetails');
+})->middleware(['auth', 'verified'])->name('projects-details');
+
 Route::middleware('auth')->group(function () {
     Route::get('/create', function () {
         return view('create', ['users' => User::query()->select('id', 'name')->get()]);
