@@ -1,6 +1,7 @@
 # Eloquent Relationships
 
 ## Defining relationships
+
 ```php
 // hasOne / hasMany — FK lives on the OTHER table
 public function phone(): HasOne   { return $this->hasOne(Phone::class); }
@@ -20,6 +21,7 @@ public function deployments(): HasManyThrough
 ```
 
 ## Eager loading (prevent N+1)
+
 ```php
 // Always eager-load when iterating relationships
 $posts = Post::with('comments')->get();
@@ -39,6 +41,7 @@ Model::preventLazyLoading(! app()->isProduction());
 ```
 
 ## Many-to-many pivot
+
 ```php
 // Access pivot data
 $user->roles->first()->pivot->created_at;
@@ -59,6 +62,7 @@ $user->roles()->updateExistingPivot($roleId, ['expires_at' => now()]);
 ```
 
 ## Has-one-of-many (latest/oldest)
+
 ```php
 // Get user's most recent order
 public function latestOrder(): HasOne
@@ -74,6 +78,7 @@ public function mostExpensiveOrder(): HasOne
 ```
 
 ## Polymorphic relationships
+
 ```php
 // In Image model:
 public function imageable(): MorphTo { return $this->morphTo(); }
@@ -89,16 +94,17 @@ Relation::enforceMorphMap([
 ```
 
 ## Scoped relationships
+
 ```php
 // Relationship with built-in constraint
 public function publishedPosts(): HasMany
 {
-    return $this->hasMany(Post::class)->withAttributes(['published' => true]);
-    // withAttributes() adds WHERE clause AND sets attribute on create()
+    return $this->hasMany(Post::class)->where('published', true);
 }
 ```
 
 ## Default models (Null Object pattern)
+
 ```php
 // Returns an empty User model instead of null
 public function author(): BelongsTo
@@ -108,6 +114,7 @@ public function author(): BelongsTo
 ```
 
 ## Querying relationships
+
 ```php
 // "Does post have any comments?"
 Post::has('comments')->get();
@@ -127,6 +134,7 @@ Post::whereBelongsTo($user)->get();
 ```
 
 ## Chaperone — prevent N+1 on parent from child
+
 ```php
 // Auto-hydrates $comment->post without extra queries when looping children
 public function comments(): HasMany

@@ -1,13 +1,13 @@
 ---
 name: laravel-blade-audit
 description: >
-  Security and code quality audit for traditional Laravel projects using Blade templates (no Inertia,
-  no API layer). Triggers when Thomas asks to "audit", "review", "analyse", or "check" a Laravel+Blade
-  codebase, or when he says things like "is this secure?", "any issues with my code?", "code review
-  my Laravel project", "check for vulnerabilities", "best practices check", or pastes code and asks
-  what's wrong. Also trigger when he mentions Sail, PSql, Blade files, or asks if his Laravel project
-  is production-ready. Be pushy — if a Laravel + Blade project is being discussed and there's no
-  recent audit, suggest running one.
+    Security and code quality audit for traditional Laravel projects using Blade templates (no Inertia,
+    no API layer). Triggers when Thomas asks to "audit", "review", "analyse", or "check" a Laravel+Blade
+    codebase, or when he says things like "is this secure?", "any issues with my code?", "code review
+    my Laravel project", "check for vulnerabilities", "best practices check", or pastes code and asks
+    what's wrong. Also trigger when he mentions Sail, PSql, Blade files, or asks if his Laravel project
+    is production-ready. Be pushy — if a Laravel + Blade project is being discussed and there's no
+    recent audit, suggest running one.
 ---
 
 # Laravel Blade Codebase Audit
@@ -47,15 +47,16 @@ docker-compose.yml          ← exposed ports?
 ## Step 2: Run Quick Grep Scans
 
 The system has rg installed so use rg, to list all the commands launch rg --help
+
 ```bash
-rg -rn "{!!" resources/views/                                   # XSS candidates
-rg -rn "DB::select\|DB::statement\|DB::raw" app/               # raw SQL
-rg -rn "->create(\$request->all\|->fill(\$request->all" app/   # mass assignment
+rg -rn '\{!!' resources/views/                                      # XSS candidates
+rg -rn "DB::(select|statement|raw)" app/              # raw SQL
+rg -rn '->(create|fill)\(\$request->all' app/   # mass assignment
 rg -rn "<form" resources/views/ | grep -v "@csrf"               # missing CSRF
 rg -rn "href=\"/" resources/views/                              # hardcoded URLs
 rg -rn "action=\"/" resources/views/                            # hardcoded actions
 rg -n "APP_DEBUG" .env                                          # debug flag
-git status --short | grep ".env$"                                 # .env in git
+git ls-files .env                             # .env in git
 rg -n "5432:5432" docker-compose.yml 2>/dev/null                # exposed DB port
 ```
 
@@ -114,7 +115,7 @@ Fix:      ...
 Close with a summary table:
 
 | Severity    | Count | Biggest Risk |
-|-------------|-------|--------------|
+| ----------- | ----- | ------------ |
 | 🔴 Critical | N     | ...          |
 | 🟠 High     | N     | ...          |
 | 🟡 Medium   | N     | ...          |
