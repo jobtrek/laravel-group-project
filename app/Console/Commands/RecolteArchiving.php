@@ -30,7 +30,7 @@ class RecolteArchiving extends Command
 
             if ($isOlderThanOneYear) {
                 // change the status to "Archived"
-                $project->status = ArchiveState::class;
+                $project->status->transitionTo(ArchiveState::class);
                 $project->archived_at = Carbon::now();
                 $project->save();
 

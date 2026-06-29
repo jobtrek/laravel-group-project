@@ -6,7 +6,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
 use App\Models\Project;
 use App\Models\States\EvaluationState;
-use App\Models\States\SubmittedState;
+use App\Models\States\PropositionState;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -54,7 +54,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/direction/projects', function () {
         $projects = Project::with('evaluation')
-            ->whereState('status', [SubmittedState::class, EvaluationState::class])
+            ->whereState('status', [PropositionState::class, EvaluationState::class])
             ->get();
 
         return view('testDirectionFront', ['projects' => $projects]);
