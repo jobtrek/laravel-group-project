@@ -3,7 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Stage;
-use App\Http\Requests\GetProjectByIdRequest;
+
 use App\Mail\ApprovedEmail;
 use App\Mail\DeniedEmail;
 use App\Models\Project;
@@ -66,12 +66,9 @@ class ProjectController extends Controller
         return Redirect::back()->with('status', 'project-resubmitted');
     }
 
-    public function detailPage(GetProjectByIdRequest $request)
+    public function detailPage(Project $project)
     {
-        $data = $request->validated();
-
-        $project = Project::with(['proposer', 'leader', 'evaluation', 'phases', 'phases.resources'])
-            ->findOrFail($data['id']);
+        $project->load(['proposer', 'leader', 'evaluation', 'phases', 'phases.resources']);
 
         return view('projects.detail', compact('project'));
     }

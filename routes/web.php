@@ -21,7 +21,7 @@ Route::get('/dashboard', function () {
 Route::get('/projects', [ProjectController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('projects');
 
-Route::get('/projectsDetail', [ProjectController::class, 'detailPage'])->middleware(['auth', 'verified'])->name('projects.detail');
+Route::get('/projectsDetail/{project', [ProjectController::class, 'detailPage'])->middleware(['auth', 'verified'])->name('projects.detail');
 
 Route::get('/propositions', [ProjectController::class, 'stage'])
     ->defaults('stage', Stage::Propositions)
@@ -68,4 +68,4 @@ Route::middleware('auth')->group(function () {
     Route::patch('/projects/{project}/resubmit', [ProjectController::class, 'reSubmit'])->name('projects.resubmit');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
