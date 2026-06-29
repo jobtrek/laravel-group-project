@@ -10,11 +10,10 @@
 <?php
 
 use Carbon\Carbon;
-$month = now()->subMonth()
 $bg_color = match (true) {
-    $updatedAt->greaterThanOrEqualTo($month)       => 'yellow',
-    $updatedAt->greaterThanOrEqualTo($month * 2)        => 'orange',
-    $updatedAt->greaterThanOrEqualTo($month * 3)       => 'red',
+    $updatedAt->greaterThanOrEqualTo(now()->subMonth())       => 'yellow',
+    $updatedAt->greaterThanOrEqualTo(now()->subMonth(2))        => 'orange',
+    $updatedAt->greaterThanOrEqualTo(now()->subMonth(3))       => 'red',
     default                                                  => 'green',
 };
 ?>
