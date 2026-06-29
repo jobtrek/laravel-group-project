@@ -10,7 +10,13 @@
 <?php
 
 use Carbon\Carbon;
-
+$month = now()->subMonth()
+$bg_color = match (true) {
+    $updatedAt->greaterThanOrEqualTo($month)       => 'yellow',
+    $updatedAt->greaterThanOrEqualTo($month * 2)        => 'orange',
+    $updatedAt->greaterThanOrEqualTo($month * 3)       => 'red',
+    default                                                  => 'green',
+};
 ?>
 <div class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm">
     <div class="flex flex-col items-start gap-2 py-2">
