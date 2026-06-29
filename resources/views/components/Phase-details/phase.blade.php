@@ -9,7 +9,6 @@
     <p class="text-sm font-semibold text-gray-800">Details</p>
     <x-projects_Details.details/>
 </div>
-</div>
 <div class="mt-3 flex flex-col gap-3">
 
     <div class="rounded-lg border border-gray-200 p-3 flex flex-col justify-between">
