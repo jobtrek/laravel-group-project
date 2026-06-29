@@ -1,16 +1,16 @@
 <?php
 
-use App\Http\Controllers\ArchiveController;
-use App\Http\Controllers\EnCoursController;
 use App\Enums\Stage;
+use App\Http\Controllers\EnCoursController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
 use App\Http\Controllers\RecolteController;
+use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\ReviewController;
 use App\Models\Project;
-use App\Models\States\ModificationState;
-use App\Models\States\SubmittedState;
+use App\Models\States\EvaluationState;
+use App\Models\States\PropositionState;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -28,8 +28,8 @@ Route::get('/projects', [ProjectController::class, 'index'])
 Route::get('/propositions', [PropositionController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('propositions');
 
-Route::get('/review', [ReviewController::class, 'index'])
-    ->middleware(['auth', 'verified'])->name('review');
+Route::get('/evaluation', [ReviewController::class, 'index'])
+    ->middleware(['auth', 'verified'])->name('evaluation');
 
 Route::get('/recolte', [RecolteController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('recolte');
@@ -37,7 +37,8 @@ Route::get('/recolte', [RecolteController::class, 'index'])
 Route::get('/en-cours', [EnCoursController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('en-cours');
 
-Route::get('/archive', [ArchiveController::class, 'index']);
+Route::get('/frigo', [ArchiveController::class, 'index'])
+    ->middleware(['auth', 'verified'])->name('frigo');
 
 Route::middleware('auth')->group(function () {
     Route::get('/create', function () {
@@ -52,7 +53,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/direction/projects', function () {
         $projects = Project::with('evaluation')
-            ->whereState('status', [SubmittedState::class, ModificationState::class])
+            ->whereState('status', [PropositionState::class, EvaluationState::class])
             ->get();
         return view('testDirectionFront', ['projects' => $projects]);
     })->name('direction.projects');

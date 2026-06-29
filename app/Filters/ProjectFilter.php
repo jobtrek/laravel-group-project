@@ -13,30 +13,30 @@ class ProjectFilter
         return $query
             ->when(
                 $request->filled('score_min'),
-                fn(Builder $q) => $q->whereRelation(
+                fn (Builder $q) => $q->whereRelation(
                     'evaluation', 'importance', '>=', $request->integer('score_min')
                 )
             )
             ->when(
                 $request->filled('date_from'),
-                fn(Builder $q) => $q->whereDate('projects.created_at', '>=', $request->input('date_from'))
+                fn (Builder $q) => $q->whereDate('projects.created_at', '>=', $request->input('date_from'))
             )
             ->when(
                 $request->filled('date_to'),
-                fn(Builder $q) => $q->whereDate('projects.created_at', '<=', $request->input('date_to'))
+                fn (Builder $q) => $q->whereDate('projects.created_at', '<=', $request->input('date_to'))
             )
             ->when(
                 $request->filled('proposer_id'),
-                fn(Builder $q) => $q->where('proposer_id', $request->integer('proposer_id'))
+                fn (Builder $q) => $q->where('proposer_id', $request->integer('proposer_id'))
             )
             ->when(
                 $request->filled('sort'),
 
-                fn(Builder $q) => ProjectSort::from($request->input('sort'))->apply($q)
+                fn (Builder $q) => ProjectSort::from($request->input('sort'))->apply($q)
             )
             ->when(
                 ! $request->filled('sort'),
-                fn(Builder $q) => $q->orderBy('created_at', 'desc')
+                fn (Builder $q) => $q->orderBy('projects.created_at', 'desc')
             );
     }
 }

@@ -2,14 +2,14 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Stage;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Models\Project;
-use App\Models\States\CollectingState;
-use App\Models\States\ReadyState;
 use App\Models\User;
-use App\Models\States\ActiveState;
-
+use App\Models\States\RecolteState;
+use App\Models\States\EncoursState;
+use Illuminate\Http\Request;
 
 class RecolteController extends Controller
 {
@@ -21,21 +21,26 @@ class RecolteController extends Controller
     {
         $projects = $this->filter->apply(
             Project::with(['proposer', 'leader', 'evaluation'])
-                ->whereState('status', [CollectingState::class, ReadyState::class]),
+                ->whereState('status', [RecolteState::class]),
             $request
-        )->get();
+        )->paginate(10);
 
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
-        return view('recolte', compact('projects', 'users'));
+        return view('stage', [
+            'stage' => Stage::Recolte,
+            'projects' => $projects,
+            'users' => $users,
+        ]);
     }
+
     public function moveFromRecolteToActive(Request $request)
     {
         $recolteId = $request->input('recolte_id');
         $project = Project::findOrFail($recolteId);
 
         if ($project->progress >= 80) {
-            $project->status->transitionTo(ActiveState::class);
+            $project->status->transitionTo(EncoursState::class);
             $project->save();
 
             return redirect()->back()->with('success', 'Project moved to Active state successfully.');

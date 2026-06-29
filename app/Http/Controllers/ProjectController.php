@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
-use App\Enums\Stage;
 use App\Mail\ApprovedEmail;
 use App\Mail\DeniedEmail;
 use App\Models\Project;
@@ -22,25 +21,21 @@ class ProjectController extends Controller
     public function index(FilterProjectsRequest $request)
     {
         $projects = $this->filter->apply(
-            // No whereState() here — allProjects shows every state
             Project::with(['proposer', 'leader', 'evaluation']),
             $request
-        )->get();
+        )->paginate(10)->withQueryString();
 
-        $projects = Project::with(['proposer', 'leader', 'evaluation'])->paginate(10);
         $counts = Project::statusCounts();
-        $users  = User::query()->select('id', 'name')->orderBy('name')->get();
+        $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
         return view('allProjects', compact('projects', 'counts', 'users'));
     }
 
-    public function stage(Stage $stage)
+    public function review(Project $project)
     {
-        $projects = Project::whereState('status', $stage->statuses())
-            ->with(['proposer', 'leader', 'evaluation'])
-            ->paginate(10);
+        ProjectService::review($project);
 
-        return view('stage', compact('projects', 'stage'));
+        return Redirect::back()->with('status', 'project-in-review');
     }
 
     public function approve(Project $project)

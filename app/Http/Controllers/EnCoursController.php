@@ -2,10 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Stage;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Models\Project;
-use App\Models\States\ActiveState;
+use App\Models\States\EncoursState;
 use App\Models\User;
 
 class EnCoursController extends Controller
@@ -18,12 +19,16 @@ class EnCoursController extends Controller
     {
         $projects = $this->filter->apply(
             Project::with(['proposer', 'leader', 'evaluation'])
-                ->whereState('status', ActiveState::class),
+                ->whereState('status', EncoursState::class),
             $request
-        )->get();
+        )->paginate(10);
 
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
-        return view('enCours', compact('projects', 'users'));
+        return view('stage', [
+            'stage' => Stage::EnCours,
+            'projects' => $projects,
+            'users' => $users,
+        ]);
     }
 }

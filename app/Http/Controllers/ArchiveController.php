@@ -1,13 +1,13 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers;
 
+use App\Enums\Stage;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Models\Project;
-use App\Models\States\ArchivedState;
-use App\Models\States\CompletedState;
-use App\Models\States\RefusedState;
+use App\Models\States\ArchiveState;
+use App\Models\States\CompleteState;
 use App\Models\User;
 
 class ArchiveController extends Controller
@@ -20,12 +20,16 @@ class ArchiveController extends Controller
     {
         $projects = $this->filter->apply(
             Project::with(['proposer', 'leader', 'evaluation'])
-                ->whereState('status', [ArchivedState::class, CompletedState::class, RefusedState::class]),
+                ->whereState('status', [ArchiveState::class, CompleteState::class]),
             $request
-        )->get();
+        )->paginate(10);
 
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
-        return view('archive', compact('projects', 'users'));
+        return view('stage', [
+            'stage' => Stage::Archive,
+            'projects' => $projects,
+            'users' => $users,
+        ]);
     }
 }

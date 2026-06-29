@@ -12,41 +12,23 @@ abstract class ProjectState extends State
     public static function config(): StateConfig
     {
         return parent::config()
-            ->default(SubmittedState::class)
+            ->default(PropositionState::class)
             ->allowTransitions([
-                // From Submitted
-                [SubmittedState::class, ApprovedState::class],
-                [SubmittedState::class, RefusedState::class],
-                [SubmittedState::class, ModificationState::class],
-                [SubmittedState::class, ArchivedState::class],
+                [PropositionState::class, EvaluationState::class],
 
-                // From Modification
-                [ModificationState::class, SubmittedState::class],
-                [ModificationState::class, ArchivedState::class],
+                [EvaluationState::class, RevisionState::class],
+                [EvaluationState::class, ArchiveState::class],
+                [EvaluationState::class, RecolteState::class],
 
-                // From Approved
-                [ApprovedState::class, CollectingState::class],
+                [RevisionState::class, PropositionState::class],
 
-                // From Refused
-                [RefusedState::class, SubmittedState::class],
+                [RecolteState::class, EncoursState::class],
+                [RecolteState::class, ArchiveState::class],
 
-                // From Collecting
-                [CollectingState::class, ReadyState::class],
-                [CollectingState::class, ArchivedState::class],
+                [EncoursState::class, CompleteState::class],
+                [EncoursState::class, ArchiveState::class],
 
-                // From Ready
-                [ReadyState::class, ActiveState::class],
-                [ReadyState::class, CollectingState::class],
-                [ReadyState::class, ArchivedState::class],
-
-                // From Active
-                [ActiveState::class, CompletedState::class],
-                [ActiveState::class, ArchivedState::class],
-
-                // From Archived
-                [ArchivedState::class, SubmittedState::class],
-                [ArchivedState::class, CollectingState::class],
-                [ArchivedState::class, ActiveState::class],
+                [ArchiveState::class, PropositionState::class],
             ]);
     }
 }
