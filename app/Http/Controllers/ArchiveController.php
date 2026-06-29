@@ -9,6 +9,7 @@ use App\Models\States\ArchivedState;
 use App\Models\States\CompletedState;
 use App\Models\States\RefusedState;
 use App\Models\User;
+use App\Enums\Stage;
 
 class ArchiveController extends Controller
 {
@@ -22,10 +23,14 @@ class ArchiveController extends Controller
             Project::with(['proposer', 'leader', 'evaluation'])
                 ->whereState('status', [ArchivedState::class, CompletedState::class, RefusedState::class]),
             $request
-        )->get();
+        )->paginate(10);
 
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
-        return view('archive', compact('projects', 'users'));
+        return view('stage', [
+            'stage'    => Stage::Archive,
+            'projects' => $projects,
+            'users'    => $users,
+        ]);
     }
 }

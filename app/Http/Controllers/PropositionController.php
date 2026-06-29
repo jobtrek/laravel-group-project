@@ -8,7 +8,9 @@ use App\Http\Requests\FilterProjectsRequest;
 use App\Http\Requests\PropositionRequest;
 use App\Models\Project;
 use App\Models\States\SubmittedState;
+use App\Models\States\ModificationState;
 use App\Models\User;
+use App\Enums\Stage;
 
 class PropositionController extends Controller
 {
@@ -20,13 +22,17 @@ class PropositionController extends Controller
     {
         $projects = $this->filter->apply(
             Project::with(['proposer', 'leader', 'evaluation'])
-                ->whereState('status', SubmittedState::class),
+                ->whereState('status', [SubmittedState::class, ModificationState::class]),
             $request
-        )->get();
+        )->paginate(10);
 
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
-        return view('propositions', compact('projects', 'users'));
+        return view('stage', [
+            'stage'    => Stage::Propositions,
+            'projects' => $projects,
+            'users'    => $users,
+        ]);
     }
 
     public function store(PropositionRequest $request, CreateProjectProposal $action)

@@ -12,7 +12,7 @@
                         <x-projects.countProjects text="Récolte" :projets="$counts->get('collecting', 0)"
                                                   route="recolte"/>
                         <x-projects.countProjects text="En cours" :projets="$counts->get('active', 0)"
-                                                  route="en-cours"/>
+                                                  route="enCours"/>
                         <x-projects.countProjects text="Frigo" :projets="$counts->get('active', 0)"
                                                   route="archive"/>
                     </div>

@@ -7,6 +7,8 @@ use App\Http\Requests\FilterProjectsRequest;
 use App\Models\Project;
 use App\Models\States\ModificationState;
 use App\Models\States\SubmittedState;
+use App\Models\States\ApprovedState;
+use App\Enums\Stage;
 use App\Models\User;
 
 class ReviewController extends Controller
@@ -19,12 +21,16 @@ class ReviewController extends Controller
     {
         $projects = $this->filter->apply(
             Project::with(['proposer', 'leader', 'evaluation'])
-                ->whereState('status', [SubmittedState::class, ModificationState::class]),
+                ->whereState('status', [ApprovedState::class]),
             $request
-        )->get();
+        )->paginate(10);
 
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
-        return view('review', compact('projects', 'users'));
+        return view('stage', [
+            'stage'    => Stage::Review,
+            'projects' => $projects,
+            'users'    => $users,
+        ]);
     }
 }

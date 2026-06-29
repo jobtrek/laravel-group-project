@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Stage;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Models\Project;
@@ -9,6 +10,7 @@ use App\Models\States\CollectingState;
 use App\Models\States\ReadyState;
 use App\Models\User;
 use App\Models\States\ActiveState;
+use Illuminate\Http\Request;
 
 
 class RecolteController extends Controller
@@ -17,18 +19,23 @@ class RecolteController extends Controller
         private readonly ProjectFilter $filter
     ) {}
 
-    public function index(FilterProjectsRequest $request)
+       public function index(FilterProjectsRequest $request)
     {
         $projects = $this->filter->apply(
             Project::with(['proposer', 'leader', 'evaluation'])
                 ->whereState('status', [CollectingState::class, ReadyState::class]),
             $request
-        )->get();
+        )->paginate(10);
 
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
-        return view('recolte', compact('projects', 'users'));
+        return view('stage', [ 
+            'stage'    => Stage::Recolte,
+            'projects' => $projects,
+            'users'    => $users,
+        ]);
     }
+
     public function moveFromRecolteToActive(Request $request)
     {
         $recolteId = $request->input('recolte_id');

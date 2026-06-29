@@ -2,12 +2,22 @@
 
 namespace App\Enums;
 
+use App\Models\States\ActiveState;
+use App\Models\States\ApprovedState;
+use App\Models\States\ArchivedState;
+use App\Models\States\CollectingState;
+use App\Models\States\CompletedState;
+use App\Models\States\ModificationState;
+use App\Models\States\ReadyState;
+use App\Models\States\RefusedState;
+use App\Models\States\SubmittedState;
+
 enum Stage: string
 {
     case Propositions = 'propositions';
     case Review = 'review';
     case Recolte = 'recolte';
-    case EnCours = 'en-cours';
+    case EnCours = 'enCours';
     case Archive = 'archive';
 
     public function title(): string
@@ -46,11 +56,11 @@ enum Stage: string
     public function statuses(): array
     {
         return match ($this) {
-            self::Propositions => ['submitted', 'modification'],
-            self::Review => ['approved'],
-            self::Recolte => ['collecting', 'ready'],
-            self::EnCours => ['active'],
-            self::Archive => ['archived', 'completed', 'refused'],
+            self::Propositions => [SubmittedState::class, ModificationState::class],
+            self::Review       => [ApprovedState::class],
+            self::Recolte      => [CollectingState::class, ReadyState::class],
+            self::EnCours      => [ActiveState::class],
+            self::Archive      => [ArchivedState::class, CompletedState::class, RefusedState::class],
         };
     }
 }
