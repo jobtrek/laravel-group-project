@@ -47,7 +47,7 @@ enum Stage: string
     {
         return match ($this) {
             self::Propositions => ['proposition', 'révision'],
-            self::Evaluation => ['evaluation'],
+            self::Evaluation => ['évaluation'],
             self::Recolte => ['récolte'],
             self::EnCours => ['en cours'],
             self::Archive => ['archivé', 'complété'],

@@ -4,10 +4,10 @@ namespace App\Models\States;
 
 class EncoursState extends ProjectState
 {
-    public static string $name = 'En cours';
+    public static string $name = 'en cours';
 
     public function label(): string
     {
-        return 'En cours';
+        return 'en cours';
     }
 }
