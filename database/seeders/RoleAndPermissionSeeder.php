@@ -20,9 +20,9 @@ class RoleAndPermissionSeeder extends Seeder
         $permissions = [
             'view projects',
             'access direction page',
-            'validate project',
-            'refuse project',
-            'return project',
+            'approve',
+            'deny',
+            'review',
         ];
 
         foreach ($permissions as $permission){
@@ -38,10 +38,10 @@ class RoleAndPermissionSeeder extends Seeder
         $userRole->givePermissionTo('view projects');
         $adminRole->givePermissionTo(Permission::all());
 
-        $directionRole->givePermissionTo(['access direction page',
-            'validate project',
-            'refuse project',
-            'return project'
+        $directionRole->givePermissionTo([
+            'approve',
+            'deny',
+            'review'
         ]);
     }
 }
