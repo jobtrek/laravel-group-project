@@ -18,6 +18,7 @@
                     <a href="{{ route('create') }}" class="bg-blue-700 text-white rounded-lg p-1">New proposal</a>
                     <div class="flex flex-col gap-4 mt-4">
                         @foreach($projects as $project)
+                            @if($project->status != 'refused')
                             <x-projects.displayProjects
                                     :status="$project->status"
                                     :title="$project->title"
@@ -27,6 +28,7 @@
                                     :creation-date="$project->created_at->format('d M Y')"
                                     :updated_at="$project->updated_at"
                             />
+                            @endif
                         @endforeach
                     </div>
                 </div>
