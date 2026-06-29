@@ -10,12 +10,7 @@
 <?php
 
 use Carbon\Carbon;
-$bgColor = match (true) {
-    $updatedAt->greaterThanOrEqualTo(now()->subMonth())  => 'bg-green-400',
-    $updatedAt->greaterThanOrEqualTo(now()->subMonth(2)) => 'bg-yellow-400',
-    $updatedAt->greaterThanOrEqualTo(now()->subMonth(3)) => 'bg-orange-400',
-    default                                              => 'bg-red-400',
-};
+$bgColor = '';
 ?>
 <div class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm">
     <div class="flex flex-col items-start gap-2 py-2">
@@ -56,6 +51,14 @@ $bgColor = match (true) {
             {{ $creationDate }}
         </span>
         @if($updatedAt instanceof \Carbon\Carbon)
+            <?php $bgColor = match (true) {
+                    $updatedAt->lessThan(now()->subMonth(3)) => 'bg-red-400',
+                    $updatedAt->lessThan(now()->subMonth(2)) => 'bg-orange-400',
+                $updatedAt->lessThan(now()->subMonth()) => 'bg-yellow-400',
+
+                default                                              => 'bg-green-400',
+                };
+?>
             <span class="text-xs rounded-full text-gray-700 {{ $bgColor }} flex items-center gap-1 italic">
                 Mis à jours {{ $updatedAt->locale('fr')->diffForHumans() }}
             </span>
