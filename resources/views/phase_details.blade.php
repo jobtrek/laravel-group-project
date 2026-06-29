@@ -13,5 +13,5 @@
     <p>{{ $membres_phase }}</p>
     <p>{{ $description_phase }}</p>
     <p>{{ $buts_phase }}</p>
-    <p>{{ $buts_phase }}</p>
+    <p>{{ $perimetre }}</p>
 </x-app-layout>

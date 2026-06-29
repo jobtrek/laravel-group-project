@@ -10,7 +10,6 @@
         </svg>
         {{ $team_name_user }}
     </p>
-
-    <p class="justify-between mt-1 text-sm text-gray-600">{{
-    $user_status ? $user_status = 'Chef de projet' : $user_status = 'Membre'  }}</p>
+    <p class="justify-between mt-1 text-sm text-gray-600">{{ $user_status ? 'Chef de projet' : 'Membre' }}</p>
 </div>
+

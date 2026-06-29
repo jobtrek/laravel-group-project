@@ -1,4 +1,5 @@
 @props([
+    'project' => null,
     'status' => '',
     'title' => '',
     'chef' => '',
