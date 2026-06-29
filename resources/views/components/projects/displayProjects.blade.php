@@ -30,7 +30,7 @@ use Carbon\Carbon;
             {{ $chef }}
         </p>
     </div>
-    @if((string)$status === 'collecting' || (string)$status === 'active')
+    @if((string)$status === 'récolte' || (string)$status === 'en cours')
         <div class="flex items-center gap-2 w-full">
             <div class="w-full bg-gray-200 rounded-full h-1.5">
                 <div class="{{ $progress <= 20 ? 'bg-red-500' : 'bg-green-700' }} h-1.5 rounded-full"
