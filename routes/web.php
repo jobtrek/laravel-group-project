@@ -13,10 +13,10 @@ use App\Models\States\PropositionState;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn() => view('welcome'));
+Route::get('/', fn () => view('welcome'));
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', fn() => redirect()->route('projects'))->name('dashboard');
+    Route::get('/dashboard', fn () => redirect()->route('projects'))->name('dashboard');
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
     Route::get('/propositions', [PropositionController::class, 'index'])->name('propositions');
     Route::get('/evaluation', [ReviewController::class, 'index'])->name('evaluation');
@@ -24,7 +24,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/en-cours', [EnCoursController::class, 'index'])->name('en-cours');
     Route::get('/frigo', [ArchiveController::class, 'index'])->name('frigo');
 });
-
 
 Route::get('/dashboard', function () {
     return redirect()->route('projects');
@@ -52,7 +51,7 @@ Route::get('/frigo', [ArchiveController::class, 'index'])
 Route::get('/projects_details/{project}', [ProjectController::class, 'detailPage'])->middleware(['auth', 'verified'])->name('projects-details');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/create', fn() => view('create', [
+    Route::get('/create', fn () => view('create', [
         'users' => User::query()->select('id', 'name')->get(),
     ]))->name('create');
 
@@ -80,4 +79,4 @@ Route::middleware('auth')->group(function () {
     });
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
