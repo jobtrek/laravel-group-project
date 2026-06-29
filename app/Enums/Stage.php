@@ -17,7 +17,7 @@ enum Stage: string
     case Propositions = 'propositions';
     case Review = 'review';
     case Recolte = 'recolte';
-    case EnCours = 'enCours';
+    case EnCours = 'en-cours';
     case Archive = 'archive';
 
     public function title(): string

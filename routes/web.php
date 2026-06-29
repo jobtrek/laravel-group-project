@@ -33,8 +33,8 @@ Route::get('/review', [ReviewController::class, 'index'])
 Route::get('/recolte', [RecolteController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('recolte');
 
-Route::get('/enCours', [EnCoursController::class, 'index'])
-    ->middleware(['auth', 'verified'])->name('enCours');
+Route::get('/en-cours', [EnCoursController::class, 'index'])
+    ->middleware(['auth', 'verified'])->name('en-cours');
 
 Route::get('/archive', [ArchiveController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('archive');
