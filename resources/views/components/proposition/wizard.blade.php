@@ -9,7 +9,6 @@
     impact: @js(old('impact', '')),
     confiance: @js(old('confiance', '')),
     effort: @js(old('effort', '')),
-    porteur: @js(old('porteur', '')),
     membres: @js(old('membres', [''])),
     buts: @js(old('buts', [''])),
     phases: @js(old('phases', [
@@ -52,7 +51,6 @@
     validateStep1() {
         this.errors = {};
         if (!this.titre || !this.titre.trim()) this.errors.titre = 'Le titre est requis.';
-        if (!this.porteur) this.errors.porteur = 'Le porteur est requis.';
         if (!this.membres.length || this.membres.every(m => !m)) {
             this.errors.membres = 'Au moins un membre est requis.';
         } else if (this.membres.some(m => !m)) {
