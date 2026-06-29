@@ -10,6 +10,7 @@ use App\Service\ProjectService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\GetProjectByIdRequest;
 
 class ProjectController extends Controller
 {
@@ -66,14 +67,13 @@ class ProjectController extends Controller
         return Redirect::back()->with('status', 'project-resubmitted');
     }
 
-    public function detailPage(Request $request)
+    public function detailPage(GetProjectByIdRequest $request)
     {
-        $request->validate([
-            'id' => 'required|exists:projects,id',
-        ]);
+        $data = $request->validated();
 
-        $project = Project::with(['proposer', 'leader', 'evaluation', 'phases', 'phases.resources'])->findOrFail($request->input('id'));
+        $project = Project::with(['proposer', 'leader', 'evaluation', 'phases', 'phases.resources'])
+            ->findOrFail($data['id']);
 
-        return view('projectDetail', compact('project'));
+        return view('projects.detail', compact('project'));
     }
 }
