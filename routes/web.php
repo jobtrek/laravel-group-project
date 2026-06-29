@@ -5,7 +5,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
 use App\Models\Project;
-use App\Models\States\ModificationState;
+use App\Models\States\EvaluationState;
 use App\Models\States\SubmittedState;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -54,7 +54,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/direction/projects', function () {
         $projects = Project::with('evaluation')
-            ->whereState('status', [SubmittedState::class, ModificationState::class])
+            ->whereState('status', [SubmittedState::class, EvaluationState::class])
             ->get();
 
         return view('testDirectionFront', ['projects' => $projects]);
@@ -66,4 +66,4 @@ Route::middleware('auth')->group(function () {
     Route::patch('/projects/{project}/resubmit', [ProjectController::class, 'reSubmit'])->name('projects.resubmit');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

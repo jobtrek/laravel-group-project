@@ -4,7 +4,7 @@ namespace App\Service;
 
 use App\Models\Project;
 use App\Models\States\ApprovedState;
-use App\Models\States\ModificationState;
+use App\Models\States\EvaluationState;
 use App\Models\States\RefusedState;
 use App\Models\States\SubmittedState;
 use App\Models\User;
@@ -33,7 +33,7 @@ class ProjectService
 
     public static function requestMoreInfo(Project $project): void
     {
-        $project->status->transitionTo(ModificationState::class);
+        $project->status->transitionTo(EvaluationState::class);
         $project->save();
     }
 

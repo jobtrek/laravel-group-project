@@ -41,17 +41,17 @@ DraftState
 
 **Allowed transitions (from `Project::registerStates()`):**
 
-| From | To |
-|------|----|
-| `DraftState` | `SubmittedState` |
-| `SubmittedState` | `ApprovedState`, `RefusedState`, `ModificationState`, `ArchivedState` |
-| `ModificationState` | `SubmittedState`, `ArchivedState` |
-| `ApprovedState` | `CollectingState` |
-| `RefusedState` | `SubmittedState` |
-| `CollectingState` | `ReadyState`, `ArchivedState` |
-| `ReadyState` | `ActiveState`, `CollectingState`, `ArchivedState` |
-| `ActiveState` | `CompletedState`, `ArchivedState` |
-| `ArchivedState` | `SubmittedState`, `CollectingState`, `ActiveState` |
+| From                | To                                                                    |
+|---------------------|-----------------------------------------------------------------------|
+| `DraftState`        | `SubmittedState`                                                      |
+| `SubmittedState`    | `ApprovedState`, `RefusedState`, `ModificationState`, `ArchivedState` |
+| `ModificationState` | `SubmittedState`, `ArchivedState`                                     |
+| `ApprovedState`     | `CollectingState`                                                     |
+| `RefusedState`      | `SubmittedState`                                                      |
+| `CollectingState`   | `ReadyState`, `ArchivedState`                                         |
+| `ReadyState`        | `ActiveState`, `CollectingState`, `ArchivedState`                     |
+| `ActiveState`       | `CompletedState`, `ArchivedState`                                     |
+| `ArchivedState`     | `SubmittedState`, `CollectingState`, `ActiveState`                    |
 
 ---
 
@@ -147,7 +147,7 @@ public function approve(Request $request, Project $project): RedirectResponse
 {
     $this->authorize('approve', $project);
 
-    // ApprovedState auto-advances to CollectingState (see section 6)
+    // ApprovedState auto-advances to RecolteState (see section 6)
     $project->status->transitionTo(ApprovedState::class);
 
     return redirect()->back();
@@ -183,17 +183,17 @@ $pending = Project::whereState('status', SubmittedState::class)->get();
 ### Fetch projects in any of several states
 
 ```php
-use App\Models\States\{CollectingState, ReadyState};
+use App\Models\States\{RecolteState, ReadyState};
 
-$inRecolte = Project::whereState('status', [CollectingState::class, ReadyState::class])->get();
+$inRecolte = Project::whereState('status', [RecolteState::class, ReadyState::class])->get();
 ```
 
 ### Exclude a state
 
 ```php
-use App\Models\States\ArchivedState;
+use App\Models\States\ArchiveState;
 
-$active = Project::whereNotState('status', ArchivedState::class)->get();
+$active = Project::whereNotState('status', ArchiveState::class)->get();
 ```
 
 ### Combine with other scopes
@@ -236,9 +236,9 @@ if ($project->status->equals(DraftState::class)) { /* … */ }
 ### `isOneOf()` for multiple states
 
 ```php
-use App\Models\States\{CollectingState, ReadyState};
+use App\Models\States\{RecolteState, ReadyState};
 
-if ($project->status->isOneOf([CollectingState::class, ReadyState::class])) {
+if ($project->status->isOneOf([RecolteState::class, ReadyState::class])) {
     // show the récolte panel
 }
 ```
@@ -523,10 +523,10 @@ Project::whereNotState('status', ArchivedState::class)->get();
 
 ### "What triggers auto-archive?"
 
-| State | Trigger | Threshold |
-|-------|---------|-----------|
-| `SubmittedState` | No direction action | 3 months |
-| `ModificationState` | No proposer revision | 3 months |
-| `CollectingState` | No resources & time elapsed | 12 months |
-| `ReadyState` | Time elapsed (récolte horizon) | 12 months |
-| `ActiveState` | No comment added | 3 months |
+| State               | Trigger                        | Threshold |
+|---------------------|--------------------------------|-----------|
+| `SubmittedState`    | No direction action            | 3 months  |
+| `ModificationState` | No proposer revision           | 3 months  |
+| `CollectingState`   | No resources & time elapsed    | 12 months |
+| `ReadyState`        | Time elapsed (récolte horizon) | 12 months |
+| `ActiveState`       | No comment added               | 3 months  |

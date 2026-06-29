@@ -3,12 +3,12 @@
 namespace Database\Factories;
 
 use App\Models\Project;
-use App\Models\States\ActiveState;
+use App\Models\States\EncoursState;
 use App\Models\States\ApprovedState;
-use App\Models\States\ArchivedState;
-use App\Models\States\CollectingState;
-use App\Models\States\CompletedState;
-use App\Models\States\ModificationState;
+use App\Models\States\ArchiveState;
+use App\Models\States\RecolteState;
+use App\Models\States\CompleteState;
+use App\Models\States\EvaluationState;
 use App\Models\States\ReadyState;
 use App\Models\States\RefusedState;
 use App\Models\States\SubmittedState;
@@ -31,12 +31,12 @@ class ProjectFactory extends Factory
             SubmittedState::class,
             ApprovedState::class,
             RefusedState::class,
-            ModificationState::class,
-            ArchivedState::class,
-            CollectingState::class,
+            EvaluationState::class,
+            ArchiveState::class,
+            RecolteState::class,
             ReadyState::class,
-            ActiveState::class,
-            CompletedState::class,
+            EncoursState::class,
+            CompleteState::class,
         ];
 
         return [
