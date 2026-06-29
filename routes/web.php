@@ -25,9 +25,9 @@ Route::get('/propositions', [ProjectController::class, 'stage'])
     ->defaults('stage', Stage::Propositions)
     ->middleware(['auth', 'verified'])->name('propositions');
 
-Route::get('/review', [ProjectController::class, 'stage'])
-    ->defaults('stage', Stage::Review)
-    ->middleware(['auth', 'verified'])->name('review');
+Route::get('/evaluation', [ProjectController::class, 'stage'])
+    ->defaults('stage', Stage::Evaluation)
+    ->middleware(['auth', 'verified'])->name('evaluation');
 
 Route::get('/recolte', [ProjectController::class, 'stage'])
     ->defaults('stage', Stage::Recolte)
@@ -37,9 +37,9 @@ Route::get('/en-cours', [ProjectController::class, 'stage'])
     ->defaults('stage', Stage::EnCours)
     ->middleware(['auth', 'verified'])->name('en-cours');
 
-Route::get('/archive', [ProjectController::class, 'stage'])
+Route::get('/frigo', [ProjectController::class, 'stage'])
     ->defaults('stage', Stage::Archive)
-    ->middleware(['auth', 'verified'])->name('archive');
+    ->middleware(['auth', 'verified'])->name('frigo');
 
 Route::middleware('auth')->group(function () {
     Route::get('/create', function () {
@@ -66,4 +66,4 @@ Route::middleware('auth')->group(function () {
     Route::patch('/projects/{project}/resubmit', [ProjectController::class, 'reSubmit'])->name('projects.resubmit');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
