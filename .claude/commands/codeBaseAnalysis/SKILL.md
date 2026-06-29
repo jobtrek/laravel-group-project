@@ -37,7 +37,7 @@ routes/
 database/migrations/        ← nullable columns, index coverage
 config/
 ├── app.php                 ← APP_DEBUG, APP_ENV
-└── session.php             ← session driver, secure cookies
+The states are currently being updated; refer to 'docs/Source_of_truth.md' for details.
 .env / .env.example         ← secrets committed?
 docker-compose.yml          ← exposed ports?
 ```
