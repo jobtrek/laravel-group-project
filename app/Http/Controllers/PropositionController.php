@@ -3,14 +3,14 @@
 namespace App\Http\Controllers;
 
 use App\Actions\CreateProjectProposal;
+use App\Enums\Stage;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Http\Requests\PropositionRequest;
 use App\Models\Project;
-use App\Models\States\SubmittedState;
 use App\Models\States\ModificationState;
+use App\Models\States\SubmittedState;
 use App\Models\User;
-use App\Enums\Stage;
 
 class PropositionController extends Controller
 {
@@ -29,9 +29,9 @@ class PropositionController extends Controller
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
         return view('stage', [
-            'stage'    => Stage::Propositions,
+            'stage' => Stage::Propositions,
             'projects' => $projects,
-            'users'    => $users,
+            'users' => $users,
         ]);
     }
 

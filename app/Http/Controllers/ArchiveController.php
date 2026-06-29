@@ -1,7 +1,8 @@
-<?php 
+<?php
 
 namespace App\Http\Controllers;
 
+use App\Enums\Stage;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Models\Project;
@@ -9,7 +10,6 @@ use App\Models\States\ArchivedState;
 use App\Models\States\CompletedState;
 use App\Models\States\RefusedState;
 use App\Models\User;
-use App\Enums\Stage;
 
 class ArchiveController extends Controller
 {
@@ -28,9 +28,9 @@ class ArchiveController extends Controller
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
         return view('stage', [
-            'stage'    => Stage::Archive,
+            'stage' => Stage::Archive,
             'projects' => $projects,
-            'users'    => $users,
+            'users' => $users,
         ]);
     }
 }

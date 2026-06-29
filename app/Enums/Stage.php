@@ -57,10 +57,10 @@ enum Stage: string
     {
         return match ($this) {
             self::Propositions => [SubmittedState::class, ModificationState::class],
-            self::Review       => [ApprovedState::class],
-            self::Recolte      => [CollectingState::class, ReadyState::class],
-            self::EnCours      => [ActiveState::class],
-            self::Archive      => [ArchivedState::class, CompletedState::class, RefusedState::class],
+            self::Review => [ApprovedState::class],
+            self::Recolte => [CollectingState::class, ReadyState::class],
+            self::EnCours => [ActiveState::class],
+            self::Archive => [ArchivedState::class, CompletedState::class, RefusedState::class],
         };
     }
 }

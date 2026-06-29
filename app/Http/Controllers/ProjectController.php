@@ -2,9 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Stage;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
-use App\Enums\Stage;
 use App\Mail\ApprovedEmail;
 use App\Mail\DeniedEmail;
 use App\Models\Project;
@@ -29,7 +29,7 @@ class ProjectController extends Controller
 
         $projects = Project::with(['proposer', 'leader', 'evaluation'])->paginate(10);
         $counts = Project::statusCounts();
-        $users  = User::query()->select('id', 'name')->orderBy('name')->get();
+        $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
         return view('allProjects', compact('projects', 'counts', 'users'));
     }
@@ -49,6 +49,7 @@ class ProjectController extends Controller
         if ($proposer = $project->proposer) {
             Mail::to($proposer->email)->send(new ApprovedEmail($proposer->name));
         }
+
         return Redirect::back()->with('status', 'project-approved');
     }
 
@@ -58,18 +59,21 @@ class ProjectController extends Controller
         if ($proposer = $project->proposer) {
             Mail::to($proposer->email)->send(new DeniedEmail($proposer->name));
         }
+
         return Redirect::back()->with('status', 'project-denied');
     }
 
     public function requestMoreInfo(Project $project)
     {
         ProjectService::requestMoreInfo($project);
+
         return Redirect::back()->with('status', 'more-info-requested');
     }
 
     public function reSubmit(Project $project)
     {
         ProjectService::reSubmit($project);
+
         return Redirect::back()->with('status', 'project-resubmitted');
     }
 }

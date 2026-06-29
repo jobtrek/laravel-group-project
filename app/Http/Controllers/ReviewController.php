@@ -2,13 +2,11 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Stage;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Models\Project;
-use App\Models\States\ModificationState;
-use App\Models\States\SubmittedState;
 use App\Models\States\ApprovedState;
-use App\Enums\Stage;
 use App\Models\User;
 
 class ReviewController extends Controller
@@ -28,9 +26,9 @@ class ReviewController extends Controller
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
         return view('stage', [
-            'stage'    => Stage::Review,
+            'stage' => Stage::Review,
             'projects' => $projects,
-            'users'    => $users,
+            'users' => $users,
         ]);
     }
 }
