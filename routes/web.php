@@ -1,12 +1,15 @@
 <?php
 
-use App\Enums\Stage;
+use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\EnCoursController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
+use App\Http\Controllers\RecolteController;
+use App\Http\Controllers\ReviewController;
 use App\Models\Project;
-use App\Models\States\ModificationState;
-use App\Models\States\SubmittedState;
+use App\Models\States\EvaluationState;
+use App\Models\States\PropositionState;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -21,27 +24,28 @@ Route::get('/dashboard', function () {
 Route::get('/projects', [ProjectController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('projects');
 
-Route::get('/projectsDetail/{project', [ProjectController::class, 'detailPage'])->middleware(['auth', 'verified'])->name('projects.detail');
 
-Route::get('/propositions', [ProjectController::class, 'stage'])
-    ->defaults('stage', Stage::Propositions)
+Route::get('/propositions', [PropositionController::class, 'index'])
+
     ->middleware(['auth', 'verified'])->name('propositions');
 
-Route::get('/review', [ProjectController::class, 'stage'])
-    ->defaults('stage', Stage::Review)
-    ->middleware(['auth', 'verified'])->name('review');
+Route::get('/evaluation', [ProjectController::class, 'stage'])
+    ->defaults('stage', Stage::Evaluation)
+    ->middleware(['auth', 'verified'])->name('evaluation');
 
-Route::get('/recolte', [ProjectController::class, 'stage'])
-    ->defaults('stage', Stage::Recolte)
+Route::get('/recolte', [RecolteController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('recolte');
 
-Route::get('/en-cours', [ProjectController::class, 'stage'])
-    ->defaults('stage', Stage::EnCours)
+Route::get('/en-cours', [EnCoursController::class, 'index'])
     ->middleware(['auth', 'verified'])->name('en-cours');
 
-Route::get('/archive', [ProjectController::class, 'stage'])
+Route::get('/frigo', [ProjectController::class, 'stage'])
     ->defaults('stage', Stage::Archive)
-    ->middleware(['auth', 'verified'])->name('archive');
+    ->middleware(['auth', 'verified'])->name('frigo');
+
+Route::get('/projects_details', function () {
+    return view('projectsDetails');
+})->middleware(['auth', 'verified'])->name('projects-details');
 
 Route::middleware('auth')->group(function () {
     Route::get('/create', function () {
@@ -56,7 +60,7 @@ Route::middleware('auth')->group(function () {
 
     Route::get('/direction/projects', function () {
         $projects = Project::with('evaluation')
-            ->whereState('status', [SubmittedState::class, ModificationState::class])
+            ->whereState('status', [PropositionState::class, EvaluationState::class])
             ->get();
 
         return view('testDirectionFront', ['projects' => $projects]);
@@ -68,4 +72,4 @@ Route::middleware('auth')->group(function () {
     Route::patch('/projects/{project}/resubmit', [ProjectController::class, 'reSubmit'])->name('projects.resubmit');
 });
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -3,7 +3,7 @@
 use App\Jobs\SendMailProcess;
 use App\Jobs\SendStrongerMailProcess;
 use App\Models\Project;
-use App\Models\States\ActiveState;
+use App\Models\States\EncoursState;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -14,7 +14,7 @@ Artisan::command('inspire', function () {
 
 Artisan::command('mail:send-reminders', function () {
     $projects = Project::with('leader')
-        ->whereState('status', ActiveState::class)
+        ->whereState('status', EncoursState::class)
         ->whereNotNull('leader_id')
         ->where('updated_at', '<', now()->subMonth())
         ->get();
@@ -29,7 +29,7 @@ Artisan::command('mail:send-reminders', function () {
 
 Artisan::command('mail:send-warnings', function () {
     $overdueProjects = Project::with('members')
-        ->whereState('status', ActiveState::class)
+        ->whereState('status', EncoursState::class)
         ->whereNotNull('last_reminder_at')
         ->where('last_reminder_at', '<', now()->subWeek())
         ->whereColumn('updated_at', '<', 'last_reminder_at')
