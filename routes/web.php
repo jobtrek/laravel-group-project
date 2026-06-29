@@ -1,11 +1,12 @@
 <?php
 
-use App\Http\Controllers\ArchiveController;
+use App\Enums\Stage;
 use App\Http\Controllers\EnCoursController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
 use App\Http\Controllers\RecolteController;
+use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\ReviewController;
 use App\Models\Project;
 use App\Models\States\EvaluationState;
@@ -34,7 +35,6 @@ Route::middleware('auth')->group(function () {
         $projects = Project::with('evaluation')
             ->whereState('status', [PropositionState::class, EvaluationState::class])
             ->get();
-
         return view('testDirectionFront', ['projects' => $projects]);
     })->name('direction.projects');
 
