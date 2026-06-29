@@ -90,6 +90,11 @@ class Project extends Model
         return $this->hasOne(ProjectEvaluation::class, 'project_id');
     }
 
+    public function getImportanceAttribute(): ?float
+    {
+        return $this->evaluation?->importance;
+    }
+
     public static function createProposal(array $data, int $proposerId): self
     {
         return DB::transaction(function () use ($data, $proposerId) {
