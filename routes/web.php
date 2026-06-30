@@ -25,9 +25,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/frigo', [ArchiveController::class, 'index'])->name('frigo');
 });
 
-Route::get('/projects_details', function () {
-    return view('projectsDetails');
-})->middleware(['auth', 'verified'])->name('projects-details');
+Route::get('/projects_details/{project}', [ProjectController::class, 'detailPage'])->middleware(['auth', 'verified'])->name('projects-details');
 
 Route::middleware('auth')->group(function () {
     Route::get('/create', fn () => view('create', [

@@ -15,7 +15,7 @@
 use Carbon\Carbon;
 
 ?>
-<a class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm" href="{{ route('projects-details') }}">
+<a class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm" href="{{ route('projects-details', $project) }}">
     <div class="flex flex-col items-start gap-2 py-2">
         <x-project_status :status="$status"/>
         <h3 class="text-base font-medium leading-snug">Importance : {{ $importance }}</h3>
