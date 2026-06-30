@@ -2,12 +2,11 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
 use Spatie\Permission\PermissionRegistrar;
-
+use Gate;
 class RoleAndPermissionSeeder extends Seeder
 {
     /**
@@ -18,14 +17,12 @@ class RoleAndPermissionSeeder extends Seeder
         app()[PermissionRegistrar::class]->forgetCachedPermissions();
 
         $permissions = [
-            'view projects',
-            'access direction page',
             'approve',
             'deny',
             'review',
         ];
 
-        foreach ($permissions as $permission){
+        foreach ($permissions as $permission) {
             Permission::firstOrCreate([
                 'name' => $permission,
                 'guard_name' => 'web']);
@@ -38,13 +35,13 @@ class RoleAndPermissionSeeder extends Seeder
         $projectManager = Role::firstOrCreate(['name' => 'project_manager', 'guard_name' => 'web']);
         $resourcesSupport = Role::firstOrCreate(['name' => 'resources_support', 'guard_name' => 'web']);
 
-        $userRole->givePermissionTo('view projects');
-        $adminRole->givePermissionTo(Permission::all());
-
+        Gate::before(function ($user, $ability) {
+            return $user->hasPermissionTo('manage everything') ? true : null;
+        });
         $directionRole->givePermissionTo([
             'approve',
             'deny',
-            'review'
+            'review',
         ]);
     }
 }
