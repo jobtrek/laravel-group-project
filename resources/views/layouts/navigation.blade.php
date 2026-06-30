@@ -16,12 +16,6 @@
                         {{ __('Home') }}
                     </x-nav-link>
                 </div>
-                <!-- DEBUG : Testing Direction page -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('direction.projects')" :active="request()->routeIs('direction.projects')">
-                        {{ __('Direction') }}
-                    </x-nav-link>
-                </div>
             </div>
 
             <!-- Settings Dropdown -->

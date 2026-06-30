@@ -34,6 +34,9 @@ class RoleAndPermissionSeeder extends Seeder
         $userRole = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
         $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         $directionRole = Role::firstOrCreate(['name' => 'direction', 'guard_name' => 'web']);
+        $projectLeader = Role::firstOrCreate(['name' => 'project_leader', 'guard_name' => 'web']);
+        $projectManager = Role::firstOrCreate(['name' => 'project_manager', 'guard_name' => 'web']);
+        $resourcesSupport = Role::firstOrCreate(['name' => 'resources_support', 'guard_name' => 'web']);
 
         $userRole->givePermissionTo('view projects');
         $adminRole->givePermissionTo(Permission::all());

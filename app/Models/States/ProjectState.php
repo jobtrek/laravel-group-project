@@ -15,10 +15,6 @@ abstract class ProjectState extends State
             ->default(PropositionState::class)
             ->allowTransitions([
                 [PropositionState::class, EvaluationState::class],
-                // DEBUG: Delete before merge
-                [PropositionState::class, RecolteState::class],
-                [PropositionState::class, ArchiveState::class],
-
 
                 [EvaluationState::class, RevisionState::class],
                 [EvaluationState::class, ArchiveState::class],
