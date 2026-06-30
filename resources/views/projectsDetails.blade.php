@@ -56,11 +56,6 @@
                         <div class="rounded-lg border border-gray-200 p-3 flex flex-col justify-between">
                             <div class="flex items-center justify-between">
                                 <p class="text-sm font-semibold text-gray-800">Buts</p>
-                                <button onclick="document.getElementById('input-container').classList.toggle('hidden')"
-                                        class="rounded-md bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 text-sm font-medium text-white transition-colors shadow-sm">+ Ajouter un but</button>
-                            </div>
-                            <div id="input-container" class="hidden mt-3">
-                                <x-projects-details.inputAddtask/>
                             </div>
                         </div>
                         <div class="rounded-lg border border-gray-200 p-3">
