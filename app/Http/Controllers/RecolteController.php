@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Enums\Stage;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
+use App\Models\PhaseResource;
 use App\Models\Project;
 use App\Models\States\EncoursState;
 use App\Models\States\RecolteState;
@@ -47,5 +48,22 @@ class RecolteController extends Controller
         } else {
             return redirect()->back()->with('error', 'Project cannot be moved to Active state. Progress must be greater than 80%.');
         }
+    }
+
+    public function updateProgress(Request $request)
+    {
+        $request->validate([
+            'phase_resource_id' => 'required|exists:phase_resources,id',
+            'amount_found' => 'required|numeric|min:0',
+        ]);
+        $phaseResourceId = $request->input('phase_resource_id');
+
+        $resource = PhaseResource::findOrFail($phaseResourceId);
+
+        $resource->update([
+            'amount_found' => $request->input('amount_found'),
+        ]);
+
+        return redirect()->back()->with('success', 'Project progress updated successfully.');
     }
 }
