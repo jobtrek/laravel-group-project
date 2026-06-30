@@ -45,7 +45,7 @@ class ProjectFactory extends Factory
             'perimetre' => $this->faker->paragraph(),
             'status' => $statusClass,
             'current_stage' => $statusClass::getMorphClass(),
-            'proposer_id' => User::inRandomOrder()->first()?->id ?? User::factory(),
+            'proposer_id' => fn () => User::inRandomOrder()->first()?->id ?? User::factory(),
             'leader_id' => User::inRandomOrder()->first()?->id,
             'recolte_manager_id' => User::inRandomOrder()->first()?->id,
         ];

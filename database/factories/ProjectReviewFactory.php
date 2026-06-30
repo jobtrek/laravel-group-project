@@ -20,7 +20,7 @@ class ProjectReviewFactory extends Factory
     public function definition(): array
     {
         return [
-            'project_id' => Project::inRandomOrder()->first()?->id,
+            'project_id' => fn () => Project::inRandomOrder()->first()?->id ?? Project::factory(),
             'user_id' => User::inRandomOrder()->first()?->id,
             'review_status' => $this->faker->randomElement(['pending', 'approved', 'rejected']),
         ];
