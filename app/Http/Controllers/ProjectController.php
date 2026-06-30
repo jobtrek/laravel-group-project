@@ -72,6 +72,7 @@ class ProjectController extends Controller
         return Redirect::back()->with('status', 'project-resubmitted');
     }
 
+
     public function detailPage(Project $project)
     {
         $project->load(['proposer', 'leader', 'evaluation', 'phases', 'phases.resources', 'members', 'comments', 'comments.user']);
