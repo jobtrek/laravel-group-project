@@ -18,7 +18,7 @@
                     <div class="flex flex-col gap-4 mt-4">
                         @foreach($projects as $project)
                             @if($project->status != 'archivé')
-                                <x-projects.displayProjects :status="$project->status" :title="$project->title"
+                                <x-projects.displayProjects :project="$project" :status="$project->status" :title="$project->title"
                                     :chef="$project->leader?->name ?? $project->proposer?->name" :progress="$project->progress"
                                     :importance="$project->importance" :creation-date="$project->created_at->format('d M Y')"
                                     :updated_at="$project->updated_at" />
