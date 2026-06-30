@@ -1,4 +1,6 @@
-<?php declare(strict_types=1);
+<?php
+
+declare(strict_types=1);
 
 namespace App\Actions;
 
@@ -22,10 +24,10 @@ class RequestMoreInfoAction
         DB::transaction(function () use ($project, $fieldComments, $directionUserId): void {
             foreach ($fieldComments as $fieldKey => $content) {
                 Comment::create([
-                    'content'    => $content,
-                    'field_key'  => $fieldKey,
-                    'stage'      => 'review',
-                    'user_id'    => $directionUserId,
+                    'content' => $content,
+                    'field_key' => $fieldKey,
+                    'stage' => 'review',
+                    'user_id' => $directionUserId,
                     'project_id' => $project->id,
                 ]);
             }

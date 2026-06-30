@@ -32,6 +32,7 @@ class ReviewController extends Controller
             'users' => $users,
         ]);
     }
+
     public function showForm(Project $project): View
     {
         $project->load(['proposer', 'evaluation', 'phases.resources', 'members']);
