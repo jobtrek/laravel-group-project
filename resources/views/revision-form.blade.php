@@ -41,8 +41,6 @@
 
             <form method="POST" action="{{ route('projects.revision-submit', $project) }}">
                 @csrf
-
-                {{-- GENERAL INFO --}}
                 @if ($comments->hasAny(['title', 'description', 'but', 'perimetre']))
                     <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
                         Informations générales
@@ -52,7 +50,7 @@
                         <x-revision.flagged-field label="Titre du projet" :comment="$comments['title']->content">
                             <input type="text" name="corrections[title]" value="{{ $old['title'] ?? $project->title }}" required
                                 maxlength="100" class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm
-                                                               focus:ring-indigo-500 focus:border-indigo-500">
+                                                                               focus:ring-indigo-500 focus:border-indigo-500">
                         </x-revision.flagged-field>
                     @endif
 
@@ -60,7 +58,7 @@
                         <x-revision.flagged-field label="Description" :comment="$comments['description']->content">
                             <textarea name="corrections[description]" rows="5" required
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm
-                                                               focus:ring-indigo-500 focus:border-indigo-500 resize-none">{{ $old['description'] ?? $project->description }}</textarea>
+                                                                               focus:ring-indigo-500 focus:border-indigo-500 resize-none">{{ $old['description'] ?? $project->description }}</textarea>
                         </x-revision.flagged-field>
                     @endif
 
@@ -71,7 +69,7 @@
                                     <div class="flex gap-2">
                                         <input type="text" :name="'corrections[but][' + idx + ']'" x-model="items[idx]" required
                                             class="block w-full rounded-md border-gray-300 shadow-sm text-sm
-                                                                           focus:ring-indigo-500 focus:border-indigo-500">
+                                                                                           focus:ring-indigo-500 focus:border-indigo-500">
                                         <button type="button" @click="items.splice(idx, 1)" x-show="items.length > 1"
                                             class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
                                     </div>
@@ -88,12 +86,11 @@
                         <x-revision.flagged-field label="Périmètre" :comment="$comments['perimetre']->content">
                             <textarea name="corrections[perimetre]" rows="4"
                                 class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm
-                                                               focus:ring-indigo-500 focus:border-indigo-500 resize-none">{{ $old['perimetre'] ?? $project->perimetre }}</textarea>
+                                                                               focus:ring-indigo-500 focus:border-indigo-500 resize-none">{{ $old['perimetre'] ?? $project->perimetre }}</textarea>
                         </x-revision.flagged-field>
                     @endif
                 @endif
 
-                {{-- EVALUATION ICE --}}
                 @if ($comments->hasAny(['evaluation.portee', 'evaluation.impact', 'evaluation.confiance', 'evaluation.effort']))
                     <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mt-8 mb-3">
                         Évaluation ICE
@@ -104,7 +101,7 @@
                             <input type="number" name="corrections[evaluation.portee]"
                                 value="{{ $old['evaluation.portee'] ?? $project->evaluation->portee }}" min="0" max="50"
                                 required class="mt-1 block w-32 rounded-md border-gray-300 shadow-sm text-sm
-                                                               focus:ring-indigo-500 focus:border-indigo-500">
+                                                                               focus:ring-indigo-500 focus:border-indigo-500">
                         </x-revision.flagged-field>
                     @endif
 
@@ -112,7 +109,7 @@
                         @php $currentImpact = $old['evaluation.impact'] ?? $project->evaluation->impact; @endphp
                         <x-revision.flagged-field label="Impact (1 – 5)" :comment="$comments['evaluation.impact']->content">
                             <select name="corrections[evaluation.impact]" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm
-                                                               focus:ring-indigo-500 focus:border-indigo-500">
+                                                                               focus:ring-indigo-500 focus:border-indigo-500">
                                 <option value="">Sélectionner…</option>
                                 <option value="1" @selected($currentImpact == 1)>1 — Invisible au niveau de la fondation</option>
                                 <option value="2" @selected($currentImpact == 2)>2 — Effet mesurable mais limité</option>
@@ -131,8 +128,9 @@
                             <div class="flex items-center gap-2 mt-1">
                                 <input type="number" name="corrections[evaluation.confiance]"
                                     value="{{ $old['evaluation.confiance'] ?? $project->evaluation->confiance }}" min="0"
-                                    max="100" required class="block w-24 rounded-md border-gray-300 shadow-sm text-sm
-                                                                   focus:ring-indigo-500 focus:border-indigo-500">
+                                    max="100" required
+                                    class="block w-24 rounded-md border-gray-300 shadow-sm text-sm
+                                                                                   focus:ring-indigo-500 focus:border-indigo-500">
                                 <span class="text-sm text-gray-500">%</span>
                             </div>
                         </x-revision.flagged-field>
@@ -142,7 +140,7 @@
                         @php $currentEffort = $old['evaluation.effort'] ?? $project->evaluation->effort; @endphp
                         <x-revision.flagged-field label="Effort (1 – 5)" :comment="$comments['evaluation.effort']->content">
                             <select name="corrections[evaluation.effort]" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm
-                                                               focus:ring-indigo-500 focus:border-indigo-500">
+                                                                               focus:ring-indigo-500 focus:border-indigo-500">
                                 <option value="">Sélectionner…</option>
                                 <option value="1" @selected($currentEffort == 1)>1 — Quelques jours (≤ 1 semaine ETP)</option>
                                 <option value="2" @selected($currentEffort == 2)>2 — Quelques semaines (1 à 4 semaines ETP)
@@ -177,16 +175,18 @@
                         @if ($comments->has("phases.{$i}.titre"))
                             <x-revision.flagged-field label="Titre" :comment="$comments['phases.' . $i . '.titre']->content">
                                 <input type="text" name="corrections[phases.{{ $i }}.titre]"
-                                    value="{{ $old["phases.{$i}.titre"] ?? $phase->name }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm
-                                                                               focus:ring-indigo-500 focus:border-indigo-500">
+                                    value="{{ $old["phases.{$i}.titre"] ?? $phase->name }}" required
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm
+                                                                                                       focus:ring-indigo-500 focus:border-indigo-500">
                             </x-revision.flagged-field>
                         @endif
 
                         @if ($comments->has("phases.{$i}.duree"))
                             <x-revision.flagged-field label="Durée" :comment="$comments['phases.' . $i . '.duree']->content">
                                 <input type="text" name="corrections[phases.{{ $i }}.duree]"
-                                    value="{{ $old["phases.{$i}.duree"] ?? $phase->duration }}" required class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm
-                                                                               focus:ring-indigo-500 focus:border-indigo-500">
+                                    value="{{ $old["phases.{$i}.duree"] ?? $phase->duration }}" required
+                                    class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm
+                                                                                                       focus:ring-indigo-500 focus:border-indigo-500">
                             </x-revision.flagged-field>
                         @endif
 
@@ -194,7 +194,7 @@
                             <x-revision.flagged-field label="Description" :comment="$comments['phases.' . $i . '.description']->content">
                                 <textarea name="corrections[phases.{{ $i }}.description]" rows="4" required
                                     class="mt-1 block w-full rounded-md border-gray-300 shadow-sm text-sm
-                                                                               focus:ring-indigo-500 focus:border-indigo-500 resize-none">{{ $old["phases.{$i}.description"] ?? $phase->description }}</textarea>
+                                                                                                       focus:ring-indigo-500 focus:border-indigo-500 resize-none">{{ $old["phases.{$i}.description"] ?? $phase->description }}</textarea>
                             </x-revision.flagged-field>
                         @endif
 
@@ -207,7 +207,7 @@
                                             <input type="text" :name="'corrections[phases.{{ $i }}.objectifs][' + idx + ']'"
                                                 x-model="items[idx]" required
                                                 class="block w-full rounded-md border-gray-300 shadow-sm text-sm
-                                                                                           focus:ring-indigo-500 focus:border-indigo-500">
+                                                                                                                   focus:ring-indigo-500 focus:border-indigo-500">
                                             <button type="button" @click="items.splice(idx, 1)" x-show="items.length > 1"
                                                 class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
                                         </div>
@@ -229,7 +229,7 @@
                                             <input type="text" :name="'corrections[phases.{{ $i }}.livrables][' + idx + ']'"
                                                 x-model="items[idx]" required
                                                 class="block w-full rounded-md border-gray-300 shadow-sm text-sm
-                                                                                           focus:ring-indigo-500 focus:border-indigo-500">
+                                                                                                                   focus:ring-indigo-500 focus:border-indigo-500">
                                             <button type="button" @click="items.splice(idx, 1)" x-show="items.length > 1"
                                                 class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
                                         </div>
@@ -251,20 +251,19 @@
                                 $initResources = $old["phases.{$i}.ressources"] ?? $defaultResources;
                             @endphp
                             <x-revision.flagged-field label="Ressources nécessaires" :comment="$comments['phases.' . $i . '.ressources']->content">
-                                <div x-data="{ items: @js($old["phases.{$i}.livrables"] ?? $phase->livrables ?? []) }"
-                                    class="mt-1 space-y-2"> class="mt-1 space-y-2"> <template x-for="(res, ri) in resources"
-                                        :key="ri">
+                                <div x-data="{ resources: @js($initResources) }" class="mt-1 space-y-2">
+                                    <template x-for="(res, ri) in resources" :key="ri">
                                         <div class="flex gap-2 items-center">
                                             <input type="text"
                                                 :name="'corrections[phases.{{ $i }}.ressources][' + ri + '][resource_type]'"
                                                 x-model="res.resource_type" placeholder="Type de ressource" required
                                                 class="block w-full rounded-md border-gray-300 shadow-sm text-sm
-                                                                                           focus:ring-indigo-500 focus:border-indigo-500">
+                                                                                                                   focus:ring-indigo-500 focus:border-indigo-500">
                                             <input type="number"
                                                 :name="'corrections[phases.{{ $i }}.ressources][' + ri + '][amount_needed]'"
                                                 x-model="res.amount_needed" placeholder="Montant (CHF)" min="0" step="0.01" required
                                                 class="block w-36 rounded-md border-gray-300 shadow-sm text-sm
-                                                                                           focus:ring-indigo-500 focus:border-indigo-500">
+                                                                                                                   focus:ring-indigo-500 focus:border-indigo-500">
                                             <button type="button" @click="resources.splice(ri, 1)" x-show="resources.length > 1"
                                                 class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
                                         </div>
