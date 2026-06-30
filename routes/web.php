@@ -44,6 +44,9 @@ Route::get('/projects_details', function () {
     return view('projectsDetails');
 })->middleware(['auth', 'verified'])->name('projects-details');
 
+Route::get('/projects/{project}/direction-review', [ReviewController::class, 'showForm'])
+    ->name('projects.direction-review');
+
 Route::middleware('auth')->group(function () {
     Route::get('/create', function () {
         return view('create', ['users' => User::query()->select('id', 'name')->get()]);

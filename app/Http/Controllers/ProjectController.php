@@ -11,6 +11,9 @@ use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
+use App\Http\Requests\RequestMoreInfoRequest;
+use App\Actions\RequestMoreInfoAction;
+use Illuminate\Http\RedirectResponse;
 
 class ProjectController extends Controller
 {
@@ -56,11 +59,20 @@ class ProjectController extends Controller
         return Redirect::back()->with('status', 'project-denied');
     }
 
-    public function requestMoreInfo(Project $project)
-    {
-        ProjectService::requestMoreInfo($project);
-        return Redirect::back()->with('status', 'more-info-requested');
-    }
+    public function requestMoreInfo(
+    RequestMoreInfoRequest $request,
+    Project $project,
+    RequestMoreInfoAction $action, 
+    ): RedirectResponse {
+    $action->execute(
+        project: $project,
+        fieldComments: $request->validated()['field_comments'],
+        directionUserId: auth()->id(),
+    );
+
+    return redirect()->route('evaluation')
+        ->with('success', 'Demande d\'informations envoyée au proposeur.');
+}
 
     public function reSubmit(Project $project)
     {

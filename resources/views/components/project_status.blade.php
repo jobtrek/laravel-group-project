@@ -19,18 +19,22 @@
     ];
 
     $labels = [
-    'submitted'    => 'Proposition',
-    'modification' => 'Modification',
-    'approved'     => 'Review',
-    'collecting'   => 'Récolte',
-    'ready'        => 'Prêt',
-    'active'       => 'En cours',
-    'completed'    => 'Complété',
-    'archived'     => 'Archivée',
-    'refused'      => 'Refusé',
-];
+        'proposition'  => 'Proposition', // Added this to catch the lowercase string!
+        'submitted'    => 'Proposition',
+        'modification' => 'Modification',
+        'approved'     => 'Review',
+        'collecting'   => 'Récolte',
+        'ready'        => 'Prêt',
+        'active'       => 'En cours',
+        'completed'    => 'Complété',
+        'archived'     => 'Archivée',
+        'refused'      => 'Refusé',
+    ];
+    
     $displaytext = $labels[$status] ?? $status;
 @endphp
-<span class="{{ $styles[$displaytext] }}">
+
+{{-- Added the ?? operator here as a safety net so it never crashes again --}}
+<span class="{{ $styles[$displaytext] ?? 'inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-800' }}">
     {{ $displaytext }}
 </span>
