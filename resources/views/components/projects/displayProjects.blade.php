@@ -12,6 +12,7 @@
 <?php
 
 use Carbon\Carbon;
+$bgColor = '';
 use App\Http\Controllers\ProjectController;
 
 ?>
@@ -80,8 +81,16 @@ use App\Http\Controllers\ProjectController;
             {{ $creationDate }}
         </span>
         @if($updatedAt instanceof \Carbon\Carbon)
-            <span class="text-xs text-gray-400 flex items-center gap-1 italic">
-                Dernière modification {{ $updatedAt->locale('fr')->diffForHumans() }}
+            <?php $bgColor = match (true) {
+                    $updatedAt->lessThan(now()->subMonth(3)) => 'bg-red-400',
+                    $updatedAt->lessThan(now()->subMonth(2)) => 'bg-orange-400',
+                $updatedAt->lessThan(now()->subMonth()) => 'bg-yellow-400',
+
+                default                                              => 'bg-green-400',
+                };
+?>
+            <span class="text-xs px-1.5 py-0.5 rounded-full text-gray-700 {{ $bgColor }} flex items-center gap-1 italic">
+                Mis à jours {{ $updatedAt->locale('fr')->diffForHumans() }}
             </span>
         @endif
     </div>
