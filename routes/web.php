@@ -36,14 +36,6 @@ Route::middleware('auth')->group(function () {
         'users' => User::query()->select('id', 'name')->get(),
     ]))->name('create');
 
-    Route::get('/direction/projects', function () {
-        $projects = Project::with('evaluation')
-            ->whereState('status', [PropositionState::class, EvaluationState::class])
-            ->get();
-
-        return view('testDirectionFront', ['projects' => $projects]);
-    })->name('direction.projects');
-
     Route::post('/propositions', [PropositionController::class, 'store'])->name('proposition.store');
 
     Route::controller(ProfileController::class)->group(function () {
