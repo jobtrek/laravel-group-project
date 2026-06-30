@@ -3,7 +3,7 @@
 namespace App\Models;
 
 use App\Models\States\ProjectState;
-use App\Models\States\SubmittedState;
+use App\Models\States\PropositionState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -90,6 +90,11 @@ class Project extends Model
         return $this->hasOne(ProjectEvaluation::class, 'project_id');
     }
 
+    public function getImportanceAttribute(): ?float
+    {
+        return $this->evaluation?->importance;
+    }
+
     public static function createProposal(array $data, int $proposerId): self
     {
         return DB::transaction(function () use ($data, $proposerId) {
@@ -99,8 +104,8 @@ class Project extends Model
                 'but' => $data['buts'],
                 'perimetre' => $data['perimetre'] ?? null,
                 'ressources_totales' => $data['ressources_totales'] ?? null,
-                'status' => SubmittedState::getMorphClass(),
-                'current_stage' => SubmittedState::getMorphClass(),
+                'status' => PropositionState::getMorphClass(),
+                'current_stage' => PropositionState::getMorphClass(),
                 'proposer_id' => $proposerId,
                 'leader_id' => $data['porteur'],
             ]);
@@ -158,7 +163,8 @@ class Project extends Model
 
     public static function statusCounts()
     {
-        return self::select('status')
+        return DB::table('projects')
+            ->select('status')
             ->selectRaw('count(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status');
