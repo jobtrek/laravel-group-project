@@ -17,7 +17,7 @@ class RevisionController extends Controller
             abort(403);
         }
 
-        if (! ($project->status instanceof RevisionState)) {
+        if (! $project->status->is(RevisionState::class)) {
             return redirect()->route('propositions');
         }
 
@@ -44,7 +44,7 @@ class RevisionController extends Controller
             abort(403);
         }
 
-        if (! ($project->status instanceof RevisionState)) {
+        if (! $project->status->is(RevisionState::class)) {
             return redirect()->route('propositions');
         }
 

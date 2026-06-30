@@ -23,7 +23,16 @@ class SubmitRevisionAction
             $evaluationDirty = false;
             $phaseUpdates = []; // [phaseIndex => [attr => value]]
 
+            $allowedKeys = $project->comments()
+                ->where('stage', 'review')
+                ->pluck('field_key')
+                ->toArray();
+
             foreach ($corrections as $fieldKey => $value) {
+                if (! in_array($fieldKey, $allowedKeys, true)) {
+                    continue;
+                }
+
                 if (in_array($fieldKey, ['title', 'description', 'perimetre'], true)) {
                     $project->{$fieldKey} = $value;
                     $projectDirty = true;
@@ -32,13 +41,17 @@ class SubmitRevisionAction
                     $projectDirty = true;
                 } elseif (str_starts_with($fieldKey, 'evaluation.')) {
                     $attr = substr($fieldKey, strlen('evaluation.'));
-                    $project->evaluation->{$attr} = $value;
-                    $evaluationDirty = true;
+                    if (in_array($attr, ['portee', 'impact', 'confiance', 'effort'], true) && $project->evaluation) {
+                        $project->evaluation->{$attr} = $value;
+                        $evaluationDirty = true;
+                    }
                 } elseif (str_starts_with($fieldKey, 'phases.')) {
                     $parts = explode('.', $fieldKey, 3);
-                    $phaseIndex = (int) $parts[1];
-                    $attr = $parts[2];
-                    $phaseUpdates[$phaseIndex][$attr] = $value;
+                    if (count($parts) === 3) {
+                        $phaseIndex = (int) $parts[1];
+                        $attr = $parts[2];
+                        $phaseUpdates[$phaseIndex][$attr] = $value;
+                    }
                 }
             }
 
@@ -86,13 +99,13 @@ class SubmitRevisionAction
         $phase->resources()->delete();
 
         foreach ($resources as $resource) {
-            if (empty($resource['resource_type'])) {
+            if (! is_array($resource) || empty($resource['resource_type'])) {
                 continue;
             }
 
             $phase->resources()->create([
                 'resource_type' => $resource['resource_type'],
-                'amount_needed' => $resource['amount_needed'],
+                'amount_needed' => $resource['amount_needed'] ?? 0,
             ]);
         }
     }
