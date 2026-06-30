@@ -158,7 +158,10 @@ class Project extends Model
             return 0;
         }
 
-        return round(($totalFound / $totalNeeded) * 100, 2);
+        return min(
+            round(($totalFound / $totalNeeded) * 100, 2),
+            100
+        );
     }
 
     public static function statusCounts()
