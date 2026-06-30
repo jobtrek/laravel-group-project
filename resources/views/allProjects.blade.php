@@ -1,5 +1,5 @@
 <x-app-layout>
-    <x-projects.filter-bar :users="$users ?? []" />
+    <x-projects.filter-bar :users="$users ?? []"/>
     <div class="justify-center py-12">
         <div class="w-full max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class=" bg-white overflow-hidden shadow-sm sm:rounded-lg">
@@ -21,7 +21,7 @@
                     <a href="{{ route('create') }}" class="bg-blue-700 text-white rounded-lg p-1">New proposal</a>
                     <div class="flex flex-col gap-4 mt-4">
                         @foreach($projects as $project)
-                            @if($project && $project->status != 'archivé')
+                            @if($project && $project->status !== 'archivé')
                                 <x-projects.displayProjects
                                         :project="$project"
                                         :status="$project->status"

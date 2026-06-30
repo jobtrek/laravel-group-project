@@ -56,7 +56,7 @@ Route::middleware('auth')->group(function () {
         Route::patch('/deny', 'deny')->middleware('permission:deny')->name('projects.deny');
         Route::post('/request-more-info', 'requestMoreInfo')->middleware('permission:review')->name('projects.request-more-info');
         Route::patch('/resubmit', 'reSubmit')->name('projects.resubmit');
-        Route::patch('/review', 'review')->name('projects.review');
+        Route::patch('/review', 'review')->middleware('permission:review')->name('projects.review');
     });
 });
 

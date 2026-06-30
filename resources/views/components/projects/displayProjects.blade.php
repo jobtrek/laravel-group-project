@@ -12,7 +12,7 @@
 <?php
 
 use Carbon\Carbon;
-use App\Http\Controllers\ProjectController
+use App\Http\Controllers\ProjectController;
 
 ?>
 <div class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm cursor-pointer"
@@ -35,22 +35,23 @@ use App\Http\Controllers\ProjectController
         </div>
         <div class="flex gap-2">
             @if((string)$status === 'proposition')
-                <form action="{{ route('projects.review', $project) }}" method="POST" @click.stop>
+                <form action="{{ route('projects.review', $project) }}" method="POST" onclick="event.stopPropagation()">
                     @csrf
                     @method('PATCH')
-                    <x-projects.buttons text="Evaluer" class="bg-blue-700 text-white p-2" type="submit"/>
+                    <x-projects.buttons text=" Evaluer" class="bg-blue-700 text-white p-2" type="submit"/>
                 </form>
             @elseif((string)$status === 'évaluation')
-                <form action="{{ route('projects.deny', $project) }}" method="POST" @click.stop>
+                <form action="{{ route('projects.deny', $project) }}" method="POST" onclick="event.stopPropagation()">
                     @csrf
                     @method('PATCH')
                     <x-projects.buttons text="Refuser" class="bg-red-700 text-white p-2" type="submit"/>
                 </form>
-                <form action="{{ route('projects.direction-review', $project) }}" method="GET" @click.stop>
-                    @csrf
+                <form action="{{ route('projects.direction-review', $project) }}" method="GET"
+                      onclick="event.stopPropagation()">
                     <x-projects.buttons text="Révision" class="bg-yellow-500 text-white p-2" type="submit"/>
                 </form>
-                <form action="{{ route('projects.approve', $project) }}" method="POST" @click.stop>
+                <form action="{{ route('projects.approve', $project) }}" method="POST"
+                      onclick="event.stopPropagation()">
                     @csrf
                     @method('PATCH')
                     <x-projects.buttons text="Accepter" class="bg-green-600 text-white p-2" type="submit"/>
