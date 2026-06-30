@@ -8,6 +8,7 @@ use App\Http\Requests\FilterProjectsRequest;
 use App\Models\Project;
 use App\Models\States\EvaluationState;
 use App\Models\User;
+use Illuminate\View\View;
 
 class ReviewController extends Controller
 {
@@ -30,5 +31,12 @@ class ReviewController extends Controller
             'projects' => $projects,
             'users' => $users,
         ]);
+    }
+
+    public function showForm(Project $project): View
+    {
+        $project->load(['proposer', 'evaluation', 'phases.resources', 'members']);
+
+        return view('review-form', compact('project'));
     }
 }

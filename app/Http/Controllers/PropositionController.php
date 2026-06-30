@@ -8,8 +8,8 @@ use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Http\Requests\PropositionRequest;
 use App\Models\Project;
-use App\Models\States\RevisionState;
 use App\Models\States\PropositionState;
+use App\Models\States\RevisionState;
 use App\Models\User;
 
 class PropositionController extends Controller

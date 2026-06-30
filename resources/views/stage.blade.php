@@ -11,6 +11,7 @@
             <h3 class="text-2xl font-medium text-gray-900 mb-6">{{ $stage->title() }}</h3>
             @foreach($projects as $project)
                 <x-projects.displayProjects
+                :project="$project"
                         :status="$project->status"
                         :title="$project->title"
                         :chef="$project->leader?->name ?? $project->proposer?->name"

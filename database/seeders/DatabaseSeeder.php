@@ -17,7 +17,6 @@ class DatabaseSeeder extends Seeder
             ProjectMemberSeeder::class,
             ProjectPhaseSeeder::class,
             PhaseResourceSeeder::class,
-            ProjectEvaluationSeeder::class,
             ProjectReviewSeeder::class,
             CommentSeeder::class,
         ]);

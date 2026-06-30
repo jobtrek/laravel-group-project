@@ -2,13 +2,16 @@
 
 namespace App\Http\Controllers;
 
+use App\Actions\RequestMoreInfoAction;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
+use App\Http\Requests\RequestMoreInfoRequest;
 use App\Mail\ApprovedEmail;
 use App\Mail\DeniedEmail;
 use App\Models\Project;
 use App\Models\User;
 use App\Service\ProjectService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 
@@ -44,6 +47,7 @@ class ProjectController extends Controller
         if ($proposer = $project->proposer) {
             Mail::to($proposer->email)->send(new ApprovedEmail($proposer->name));
         }
+
         return Redirect::back()->with('status', 'project-approved');
     }
 
@@ -53,18 +57,36 @@ class ProjectController extends Controller
         if ($proposer = $project->proposer) {
             Mail::to($proposer->email)->send(new DeniedEmail($proposer->name));
         }
+
         return Redirect::back()->with('status', 'project-denied');
     }
 
-    public function requestMoreInfo(Project $project)
-    {
-        ProjectService::requestMoreInfo($project);
-        return Redirect::back()->with('status', 'more-info-requested');
+    public function requestMoreInfo(
+        RequestMoreInfoRequest $request,
+        Project $project,
+        RequestMoreInfoAction $action,
+    ): RedirectResponse {
+        $action->execute(
+            project: $project,
+            fieldComments: $request->validated()['field_comments'],
+            directionUserId: auth()->id(),
+        );
+
+        return redirect()->route('evaluation')
+            ->with('success', 'Demande d\'informations envoyée au proposeur.');
     }
 
     public function reSubmit(Project $project)
     {
         ProjectService::reSubmit($project);
+
         return Redirect::back()->with('status', 'project-resubmitted');
+    }
+
+    public function detailPage(Project $project)
+    {
+        $project->load(['proposer', 'leader', 'evaluation', 'phases', 'phases.resources', 'members', 'comments', 'comments.user']);
+
+        return view('projectsDetails', compact('project'));
     }
 }
