@@ -8,6 +8,7 @@ use App\Http\Requests\FilterProjectsRequest;
 use App\Models\Project;
 use App\Models\States\EncoursState;
 use App\Models\States\RecolteState;
+use App\Models\States\ArchiveState;
 use App\Models\User;
 use Illuminate\Http\Request;
 
@@ -47,5 +48,17 @@ class RecolteController extends Controller
         } else {
             return redirect()->back()->with('error', 'Project cannot be moved to Active state. Progress must be greater than 80%.');
         }
+    }
+
+    public function moveFromRecolteToArchive(Request $request)
+    {
+        $recolteId = $request->input('recolte_id');
+        $project = Project::findOrFail($recolteId);
+
+
+        $project->status->transitionTo(ArchiveState::class);
+        $project->save();
+
+        return redirect()->back()->with('success', 'Project moved to Archive state successfully.');
     }
 }
