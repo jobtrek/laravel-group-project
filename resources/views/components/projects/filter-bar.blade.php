@@ -1,20 +1,21 @@
 @props([
-    'users' => [], 
+    'users' => [],
 ])
 
 <form method="GET" action="{{ request()->url() }}"
       class="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 flex flex-wrap gap-3 items-end">
 
-    {{-- Status --}}
-    <div class="flex flex-col gap-1 min-w-[150px]">
-        <label for="status" class="text-xs font-medium text-gray-500">Statut</label>
-        <select name="status" id="status"
+    <div class="flex flex-col gap-1 min-w-[180px]">
+        <label for="sort" class="text-xs font-medium text-gray-500">Trier par</label>
+        <select name="sort" id="sort"
                 class="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-200">
-            <option value="">Tous</option>
-            <option value="modification"   {{ request('status') === 'modification'  ? 'selected' : '' }}>Modification</option>
-            <option value="approved"       {{ request('status') === 'approved'      ? 'selected' : '' }}>Approuvé</option>
-            <option value="refused"        {{ request('status') === 'refused'       ? 'selected' : '' }}>Refusé</option>
-            <option value="archived"       {{ request('status') === 'archived'      ? 'selected' : '' }}>Archivé</option>
+            <option value="">Par défaut</option>
+            <option value="az"               {{ request('sort') === 'az'               ? 'selected' : '' }}>A → Z</option>
+            <option value="za"               {{ request('sort') === 'za'               ? 'selected' : '' }}>Z → A</option>
+            <option value="recent"           {{ request('sort') === 'recent'           ? 'selected' : '' }}>Plus récent</option>
+            <option value="oldest"           {{ request('sort') === 'oldest'           ? 'selected' : '' }}>Plus ancien</option>
+            <option value="importance_desc"  {{ request('sort') === 'importance_desc'  ? 'selected' : '' }}>Importance haute → basse</option>
+            <option value="importance_asc"   {{ request('sort') === 'importance_asc'   ? 'selected' : '' }}>Importance basse → haute</option>
         </select>
     </div>
 
@@ -57,7 +58,7 @@
     @endif
 
     <div class="flex gap-2 ml-auto">
-        @if(request()->hasAny(['status', 'score_min', 'date_from', 'date_to', 'proposer_id']))
+        @if(request()->hasAny(['sort', 'score_min', 'date_from', 'date_to', 'proposer_id']))
             <a href="{{ request()->url() }}"
                class="flex items-center gap-1 border border-gray-200 text-gray-500 rounded-lg px-4 py-2 text-sm hover:bg-gray-50 transition">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
