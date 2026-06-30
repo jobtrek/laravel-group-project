@@ -2,13 +2,13 @@
 
 namespace Database\Factories;
 
-use App\Enums\Stage;
 use App\Models\Comment;
 use App\Models\Project;
+use App\Models\States\EncoursState;
+use App\Models\States\RevisionState;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
-use App\Models\States\RevisionState;
-use App\Models\States\EncoursState;
+
 /**
  * @extends Factory<Comment>
  */

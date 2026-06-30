@@ -18,15 +18,13 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ProjectFactory extends Factory
 {
-
     protected $model = Project::class;
+
     /**
      * Define the model's default state.
      *
      * @return array<string, mixed>
      */
-
-
     public function definition(): array
     {
         $statusClass = $this->faker->randomElement([
@@ -52,7 +50,6 @@ class ProjectFactory extends Factory
             'recolte_manager_id' => User::factory(),
         ];
     }
-
 
     public function configure(): static
     {
