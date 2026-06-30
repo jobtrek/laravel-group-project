@@ -24,8 +24,8 @@ class CommentFactory extends Factory
         return [
             'content' => $this->faker->paragraph(),
             'stage' => $this->faker->randomElement([RevisionState::getMorphClass(), EncoursState::getMorphClass()]),
-            'user_id' => User::factory(),
-            'project_id' => Project::factory(),
+            'user_id' => User::inRandomOrder()->first()?->id,
+            'project_id' => Project::inRandomOrder()->first()?->id,
         ];
     }
 }

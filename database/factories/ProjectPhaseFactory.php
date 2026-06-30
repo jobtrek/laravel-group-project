@@ -25,7 +25,7 @@ class ProjectPhaseFactory extends Factory
             'objectifs' => $this->faker->randomElements(['Objective 1', 'Objective 2', 'Objective 3'], 2),
             'livrables' => $this->faker->randomElements(['Deliverable 1', 'Deliverable 2', 'Deliverable 3'], 2),
             'order' => $this->faker->numberBetween(1, 10),
-            'project_id' => Project::factory(),
+            'project_id' => Project::inRandomOrder()->first()?->id
         ];
     }
 }

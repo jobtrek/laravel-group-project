@@ -24,7 +24,7 @@ class PhaseResourceFactory extends Factory
             'work_rate' => $this->faker->numberBetween(10, 100),
             'amount_needed' => $this->faker->randomFloat(2, 1000, 10000),
             'amount_found' => $this->faker->randomFloat(2, 0, 5000),
-            'phase_id' => ProjectPhase::factory(),
+            'phase_id' => ProjectPhase::inRandomOrder()->first()?->id,
         ];
     }
 }
