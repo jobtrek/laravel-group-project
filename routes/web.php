@@ -50,9 +50,11 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(ProjectController::class)->prefix('/projects/{project}')->group(function () {
-        Route::patch('/approve', 'approve')->name('projects.approve');
-        Route::patch('/deny', 'deny')->name('projects.deny');
-        Route::post('/request-more-info', 'requestMoreInfo')->name('projects.request-more-info');
+        Route::patch('/approve', 'approve')
+            ->middleware('permission:approve')
+            ->name('projects.approve');
+        Route::patch('/deny', 'deny')->middleware('permission:deny')->name('projects.deny');
+        Route::post('/request-more-info', 'requestMoreInfo')->middleware('permission:review')->name('projects.request-more-info');
         Route::patch('/resubmit', 'reSubmit')->name('projects.resubmit');
     });
 });
