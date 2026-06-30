@@ -47,6 +47,7 @@ class ProjectController extends Controller
         if ($proposer = $project->proposer) {
             Mail::to($proposer->email)->send(new ApprovedEmail($proposer->name));
         }
+
         return Redirect::back()->with('status', 'project-approved');
     }
 
@@ -56,6 +57,7 @@ class ProjectController extends Controller
         if ($proposer = $project->proposer) {
             Mail::to($proposer->email)->send(new DeniedEmail($proposer->name));
         }
+
         return Redirect::back()->with('status', 'project-denied');
     }
 
@@ -77,6 +79,7 @@ class ProjectController extends Controller
     public function reSubmit(Project $project)
     {
         ProjectService::reSubmit($project);
+
         return Redirect::back()->with('status', 'project-resubmitted');
     }
 }

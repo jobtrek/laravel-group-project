@@ -33,7 +33,8 @@ class RequestMoreInfoAction
             $project->status->transitionTo(RevisionState::class);
         });
 
-        // After the DB transaction commits successfully, queue the notification.
-        Mail::to($project->proposer)->queue(new RequestMoreInfoMail($project));
+        if ($project->proposer) {
+            Mail::to($project->proposer)->queue(new RequestMoreInfoMail($project));
+        }
     }
 }

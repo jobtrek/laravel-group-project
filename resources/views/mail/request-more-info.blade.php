@@ -27,10 +27,12 @@
         once the proposer revision page is built.
     --}}
 
-    <p style="color:#6b7280; font-size:13px;">
-        Si vous ne pouvez pas cliquer sur le bouton, copiez cette URL dans votre navigateur :<br>
-        {{ route('propositions') }}
-    </p>
+        <a
+            href="{{ route('propositions') }}"
+            style="background:#4f46e5; color:#fff; padding:12px 24px; border-radius:6px; text-decoration:none; font-weight:600;"
+        >
+            Voir ma proposition
+        </a>
 
 </body>
 </html>

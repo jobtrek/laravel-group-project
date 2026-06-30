@@ -6,9 +6,9 @@ use App\Enums\Stage;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Models\Project;
-use App\Models\User;
-use App\Models\States\RecolteState;
 use App\Models\States\EncoursState;
+use App\Models\States\RecolteState;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class RecolteController extends Controller

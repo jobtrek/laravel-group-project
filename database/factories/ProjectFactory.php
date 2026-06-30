@@ -3,15 +3,13 @@
 namespace Database\Factories;
 
 use App\Models\Project;
-use App\Models\States\ApprovedState;
 use App\Models\States\ArchiveState;
 use App\Models\States\CompleteState;
 use App\Models\States\EncoursState;
 use App\Models\States\EvaluationState;
-use App\Models\States\ReadyState;
+use App\Models\States\PropositionState;
 use App\Models\States\RecolteState;
-use App\Models\States\RefusedState;
-use App\Models\States\SubmittedState;
+use App\Models\States\RevisionState;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -20,6 +18,8 @@ use Illuminate\Database\Eloquent\Factories\Factory;
  */
 class ProjectFactory extends Factory
 {
+    protected $model = Project::class;
+
     /**
      * Define the model's default state.
      *
@@ -27,17 +27,15 @@ class ProjectFactory extends Factory
      */
     public function definition(): array
     {
-        $statusStates = [
-            SubmittedState::class,
-            ApprovedState::class,
-            RefusedState::class,
+        $statusClass = $this->faker->randomElement([
+            PropositionState::class,
             EvaluationState::class,
-            ArchiveState::class,
+            RevisionState::class,
             RecolteState::class,
-            ReadyState::class,
             EncoursState::class,
             CompleteState::class,
-        ];
+            ArchiveState::class,
+        ]);
 
         return [
             'title' => $this->faker->sentence(3),
@@ -45,11 +43,58 @@ class ProjectFactory extends Factory
             'budget_global' => $this->faker->randomFloat(2, 1000, 100000),
             'but' => json_encode(['goal' => $this->faker->sentence()]),
             'perimetre' => $this->faker->paragraph(),
-            'status' => $this->faker->randomElement($statusStates),
-            'current_stage' => $this->faker->randomElement($statusStates),
+            'status' => $statusClass,
+            'current_stage' => $statusClass::getMorphClass(),
             'proposer_id' => User::factory(),
             'leader_id' => User::factory(),
             'recolte_manager_id' => User::factory(),
         ];
+    }
+
+    public function configure(): static
+    {
+        return $this->afterCreating(function (Project $project) {
+            $project->evaluation()->create([
+                'portee' => fake()->numberBetween(0, 50),
+                'impact' => fake()->numberBetween(1, 5),
+                'confiance' => fake()->numberBetween(0, 100),
+                'effort' => fake()->numberBetween(1, 5),
+            ]);
+        });
+    }
+
+    public function proposition(): static
+    {
+        return $this->state(['status' => PropositionState::class, 'current_stage' => PropositionState::getMorphClass()]);
+    }
+
+    public function evaluation(): static
+    {
+        return $this->state(['status' => EvaluationState::class, 'current_stage' => EvaluationState::getMorphClass()]);
+    }
+
+    public function revision(): static
+    {
+        return $this->state(['status' => RevisionState::class, 'current_stage' => RevisionState::getMorphClass()]);
+    }
+
+    public function recolte(): static
+    {
+        return $this->state(['status' => RecolteState::class, 'current_stage' => RecolteState::getMorphClass()]);
+    }
+
+    public function enCours(): static
+    {
+        return $this->state(['status' => EncoursState::class, 'current_stage' => EncoursState::getMorphClass()]);
+    }
+
+    public function complete(): static
+    {
+        return $this->state(['status' => CompleteState::class, 'current_stage' => CompleteState::getMorphClass()]);
+    }
+
+    public function archive(): static
+    {
+        return $this->state(['status' => ArchiveState::class, 'current_stage' => ArchiveState::getMorphClass()]);
     }
 }
