@@ -11,11 +11,11 @@
         'phase_number' => 1,
         'phase_name' => '',
         'phases' => [
-            'Cadrage & Analyse',
+            'Cadrage Analyse',
             'Conception UX/UI',
             'Développement Front-end',
             'Développement Back-end',
-            'Tests & Recette',
+            'Tests Recette',
             'Correction de bugs',
             'Pré-production',
             'Déploiement final'
@@ -29,16 +29,16 @@
                 <div class="p-6">
                     <div class="flex items-start justify-between">
                         <x-project_status :status="$proposition_status"/>
-                        <x-projects_Details.comeBackButton/>
+                        <x-projects-details.comeBackButton/>
                     </div>
 
                     <h2 class="mt-3 text-2xl font-bold text-gray-900">{{ $titre_projet }}</h2>
                     <p class="mt-1 text-sm text-gray-500"> {{ $description_projet }}</p>
                     <div class="flex justify-between">
-                        <x-projects_Details.baseInfo name="Proposeur :" valeur="Jean Dupont"/>
-                        <x-projects_Details.baseInfo name="Date de creation :" valeur="12/06/2026"/>
-                        <x-projects_Details.baseInfo name="Buts :" :valeur="$but_a_faire .' / '. $but_totaux"/>
-                        <x-projects_Details.baseInfo name="Budget :" :valeur="$budget . ' ' . 'CHF'"/>
+                        <x-projects-details.baseInfo name="Proposeur :" valeur="Jean Dupont"/>
+                        <x-projects-details.baseInfo name="Date de creation :" valeur="12/06/2026"/>
+                        <x-projects-details.baseInfo name="Buts :" :valeur="$but_a_faire .' / '. $but_totaux"/>
+                        <x-projects-details.baseInfo name="Budget :" :valeur="$budget . ' ' . 'CHF'"/>
                     </div>
                     <div class="mt-4 grid grid-cols-2 gap-3">
                         <div class="rounded-lg border border-gray-200 p-3 flex flex-col justify-center">
@@ -49,7 +49,7 @@
                         </div>
                             <div class="rounded-lg border border-gray-200 p-3">
                                 <p class="text-sm font-semibold text-gray-800">Details</p>
-                                <x-projects_Details.details/>
+                                <x-projects-details.details/>
                             </div>
                     </div>
                     <div class="mt-3 grid grid-cols-2 gap-3">
@@ -60,35 +60,35 @@
                                         class="rounded-md bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 text-sm font-medium text-white transition-colors shadow-sm">+ Ajouter un but</button>
                             </div>
                             <div id="input-container" class="hidden mt-3">
-                                <x-projects_Details.inputAddtask/>
+                                <x-projects-details.inputAddtask/>
                             </div>
                         </div>
                         <div class="rounded-lg border border-gray-200 p-3">
                             <p class="text-sm font-semibold text-gray-800">Equipe</p>
                             <div>
-                                <x-projects_Details.teamUsers team_name_user="Marie" user_status="{{ true }}"/>
-                                <x-projects_Details.teamUsers team_name_user="Jean" user_status="{{ true }}"/>
-                                <x-projects_Details.teamUsers team_name_user="Igor"/>
-                                <x-projects_Details.teamUsers team_name_user="Laura Pereira da Silva Santos Carvalho pereira"/>
+                                <x-projects-details.teamUsers team_name_user="Marie" :user_status="true"/>
+                                <x-projects-details.teamUsers team_name_user="Jean" :user_status="true"/>
+                                <x-projects-details.teamUsers team_name_user="Igor"/>
+                                <x-projects-details.teamUsers team_name_user="Laura Pereira da Silva Santos Carvalho pereira"/>
                             </div></div>
                     </div>
                     <div class="mt-4 rounded-lg border border-gray-200 p-3 ">
                         <p class="mb-3 text-sm font-semibold text-gray-800">Phases :</p>
                         <div class="grid grid-cols-4 gap-4">
                             @foreach($phases as $index => $phase)
-                                <x-Phase-details.phase_button :phase_name="$phase" :phase_number="$index + 1"/>
+                                <x-phase-details.phase_button :phase_name="$phase" :phase_number="$index + 1"/>
                             @endforeach
                         </div>
                     </div>
                     <div class="mt-2 rounded-lg border border-gray-200 p-4">
-                        <x-projects_Details.graphique/>
+                        <x-projects-details.graphique/>
                     </div>
                     <div class="mt-4 rounded-lg border border-gray-200 p-3">
                         <p class="text-sm font-semibold text-gray-800">Commentaires</p>
                         <div class="mt-3 space-y-3 overflow-y-auto">
                             <span class="mt-1 text-sm text-gray-600">Actuellement, aucun commentaire n'a été ajouté</span>
-                            <x-projects_Details.Comment_msg messager_name="{{ $user_name_msg }}" commentaire_msg="{{ $comment_msg }}" date_msg="{{ $input_date }}"/>
-                            <x-projects_Details.Comment_msg messager_name="{{ $user_name_msg }}" commentaire_msg="{{ $comment_msg }}" date_msg="{{ $input_date }}"/>
+                            <x-projects-details.Comment_msg messager_name="{{ $user_name_msg }}" commentaire_msg="{{ $comment_msg }}" date_msg="{{ $input_date }}"/>
+                            <x-projects-details.Comment_msg messager_name="{{ $user_name_msg }}" commentaire_msg="{{ $comment_msg }}" date_msg="{{ $input_date }}"/>
                         </div>
                     </div>
                 </div>

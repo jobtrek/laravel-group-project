@@ -9,7 +9,7 @@
     $styles = [
         'En cours'     => 'inline-block rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-700',
         'Récolte'      => 'inline-block rounded-full bg-yellow-100 px-3 py-1 text-xs font-medium text-yellow-700',
-        'Prêt'         => 'inline-block rounded-full bg-white-100 px-3 py-1 text-xs font-medium text-yellow-700',
+        'Prêt'         => 'inline-block rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-yellow-700',
         'Proposition'  => 'inline-block rounded-full bg-blue-700 px-3 py-1 text-xs font-medium text-white',
         'Modification' => 'inline-block rounded-full bg-purple-500 px-3 py-1 text-xs font-medium text-indigo-700',
         'Review'       => 'inline-block rounded-full bg-cyan-100 px-3 py-1 text-xs font-medium text-indigo-700',
@@ -31,6 +31,6 @@
 ];
     $displaytext = $labels[$status] ?? $status;
 @endphp
-<span class="{{ $styles[$displaytext] }}">
+<span class="{{ $styles[$displaytext] ?? 'inline-block rounded-full bg-gray-100 px-3 py-1 text-xs font-medium text-gray-700 '}}">
     {{ $displaytext }}
 </span>
