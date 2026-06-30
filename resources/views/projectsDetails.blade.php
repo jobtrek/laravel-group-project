@@ -5,7 +5,17 @@
 
                 <div class="flex items-start justify-between">
                     <x-project_status :status="$project->status" />
-                    <x-projects_Details.comeBackButton/>
+                    <div class="flex items-center gap-3">
+                        @if ($project->status instanceof \App\Models\States\RevisionState && auth()->id() === $project->proposer_id)
+                            <a
+                                href="{{ route('projects.revision-form', $project) }}"
+                                class="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 text-sm font-medium transition-colors shadow-sm"
+                            >
+                                Corriger ma proposition
+                            </a>
+                        @endif
+                        <x-projects_Details.comeBackButton/>
+                    </div>
                 </div>
 
                 <h2 class="mt-3 text-2xl font-bold text-gray-900">
