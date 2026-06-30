@@ -10,6 +10,7 @@ use App\Models\States\EncoursState;
 use App\Models\States\RecolteState;
 use App\Models\States\ArchiveState;
 use App\Models\User;
+use App\Models\PhaseResource;
 use Illuminate\Http\Request;
 
 class RecolteController extends Controller
@@ -60,5 +61,23 @@ class RecolteController extends Controller
         $project->save();
 
         return redirect()->back()->with('success', 'Project moved to Archive state successfully.');
+    }
+
+    public function UpdateProgress(Request $request)
+    {
+        $request->validate([
+            'phase_resource_id' => 'required|exists:projects,id',
+            'amount_found' => 'required|numeric|min:0|max:100',
+        ]);
+        $phaseResourceId = $request->input('phase_resource_id');
+
+        $resource = PhaseResource::findOrFail($phaseResourceId);
+
+        $resource->update([
+            'amount_found' => $request->input('amount_found'),
+        ]);
+        $resource->save();
+
+        return redirect()->back()->with('success', 'Project progress updated successfully.');
     }
 }
