@@ -50,11 +50,11 @@ class RecolteController extends Controller
         }
     }
 
-    public function UpdateProgress(Request $request)
+    public function updateProgress(Request $request)
     {
         $request->validate([
-            'phase_resource_id' => 'required|exists:projects,id',
-            'amount_found' => 'required|numeric|min:0|max:100',
+            'phase_resource_id' => 'required|exists:phase_resources,id',
+            'amount_found' => 'required|numeric|min:0',
         ]);
         $phaseResourceId = $request->input('phase_resource_id');
 
@@ -63,7 +63,6 @@ class RecolteController extends Controller
         $resource->update([
             'amount_found' => $request->input('amount_found'),
         ]);
-        $resource->save();
 
         return redirect()->back()->with('success', 'Project progress updated successfully.');
     }
