@@ -21,6 +21,7 @@ class RoleAndPermissionSeeder extends Seeder
             'approve',
             'deny',
             'review',
+            'manage everything',
         ];
 
         foreach ($permissions as $permission) {
@@ -36,9 +37,7 @@ class RoleAndPermissionSeeder extends Seeder
         $projectManager = Role::firstOrCreate(['name' => 'project_manager', 'guard_name' => 'web']);
         $resourcesSupport = Role::firstOrCreate(['name' => 'resources_support', 'guard_name' => 'web']);
 
-        Gate::before(function ($user, $ability) {
-            return $user->hasPermissionTo('manage everything') ? true : null;
-        });
+        $adminRole->givePermissionTo('manage everything');
         $directionRole->givePermissionTo([
             'approve',
             'deny',
