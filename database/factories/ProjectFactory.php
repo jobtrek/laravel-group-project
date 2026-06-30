@@ -41,7 +41,7 @@ class ProjectFactory extends Factory
             'title' => $this->faker->sentence(3),
             'description' => $this->faker->paragraph(),
             'budget_global' => $this->faker->randomFloat(2, 1000, 100000),
-            'but' => json_encode(['goal' => $this->faker->sentence()]),
+            'but' => ['goal' => $this->faker->sentence()],
             'perimetre' => $this->faker->paragraph(),
             'status' => $statusClass,
             'current_stage' => $statusClass::getMorphClass(),
