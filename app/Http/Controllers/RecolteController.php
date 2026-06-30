@@ -6,11 +6,9 @@ use App\Enums\Stage;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Models\Project;
-use App\Models\States\ActiveState;
-use App\Models\States\CollectingState;
-use App\Models\States\ReadyState;
-use App\Models\User;
 use App\Models\States\EncoursState;
+use App\Models\States\RecolteState;
+use App\Models\User;
 use Illuminate\Http\Request;
 
 class RecolteController extends Controller
@@ -23,7 +21,7 @@ class RecolteController extends Controller
     {
         $projects = $this->filter->apply(
             Project::with(['proposer', 'leader', 'evaluation'])
-                ->whereState('status', [CollectingState::class, ReadyState::class]),
+                ->whereState('status', [RecolteState::class]),
             $request
         )->paginate(10);
 

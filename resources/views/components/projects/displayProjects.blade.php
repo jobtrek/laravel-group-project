@@ -8,28 +8,57 @@
     'creationDate' => '',
     'updatedAt' => null
 ])
+
 <?php
 
-
-      
 use Carbon\Carbon;
 $bgColor = '';
+use App\Http\Controllers\ProjectController;
+
 ?>
-<a class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm href="{{ route('projects-details') }}">
+<div class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm cursor-pointer"
+     onclick="window.location='{{ route('projects-details', $project) }}'">
     <div class="flex flex-col items-start gap-2 py-2">
         <x-project_status :status="$status"/>
         <h3 class="text-base font-medium leading-snug">Importance : {{ $importance }}</h3>
     </div>
 
-    <div>
-        <h3 class="text-base font-semibold text-gray-900 leading-snug">{{ $title }}</h3>
-        <p class="text-sm text-gray-500 mt-1 flex items-center gap-1">
-            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round"
-                      d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>
-            </svg>
-            {{ $chef }}
-        </p>
+    <div class="flex items-center justify-between mt-1">
+        <div>
+            <h3 class="text-base font-semibold text-gray-900 leading-snug">{{ $title }}</h3>
+            <p class="text-sm text-gray-500 mt-1 flex items-center gap-1">
+                <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
+                    <path stroke-linecap="round" stroke-linejoin="round"
+                          d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>
+                </svg>
+                {{ $chef }}
+            </p>
+        </div>
+        <div class="flex gap-2">
+            @if((string)$status === 'proposition')
+                <form action="{{ route('projects.review', $project) }}" method="POST" onclick="event.stopPropagation()">
+                    @csrf
+                    @method('PATCH')
+                    <x-projects.buttons text=" Evaluer" class="bg-blue-700 text-white p-2" type="submit"/>
+                </form>
+            @elseif((string)$status === 'évaluation')
+                <form action="{{ route('projects.deny', $project) }}" method="POST" onclick="event.stopPropagation()">
+                    @csrf
+                    @method('PATCH')
+                    <x-projects.buttons text="Refuser" class="bg-red-700 text-white p-2" type="submit"/>
+                </form>
+                <form action="{{ route('projects.direction-review', $project) }}" method="GET"
+                      onclick="event.stopPropagation()">
+                    <x-projects.buttons text="Révision" class="bg-yellow-500 text-white p-2" type="submit"/>
+                </form>
+                <form action="{{ route('projects.approve', $project) }}" method="POST"
+                      onclick="event.stopPropagation()">
+                    @csrf
+                    @method('PATCH')
+                    <x-projects.buttons text="Accepter" class="bg-green-600 text-white p-2" type="submit"/>
+                </form>
+            @endif
+        </div>
     </div>
     @if((string)$status === 'récolte' || (string)$status === 'en cours')
         <div class="flex items-center gap-2 w-full">
@@ -65,4 +94,4 @@ $bgColor = '';
             </span>
         @endif
     </div>
-</a>
+</div>

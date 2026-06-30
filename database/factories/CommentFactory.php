@@ -4,6 +4,8 @@ namespace Database\Factories;
 
 use App\Models\Comment;
 use App\Models\Project;
+use App\Models\States\EncoursState;
+use App\Models\States\RevisionState;
 use App\Models\User;
 use Illuminate\Database\Eloquent\Factories\Factory;
 
@@ -21,7 +23,7 @@ class CommentFactory extends Factory
     {
         return [
             'content' => $this->faker->paragraph(),
-            'stage' => $this->faker->randomElement(['planning', 'development', 'testing', 'deployment']),
+            'stage' => $this->faker->randomElement([RevisionState::getMorphClass(), EncoursState::getMorphClass()]),
             'user_id' => User::factory(),
             'project_id' => Project::factory(),
         ];
