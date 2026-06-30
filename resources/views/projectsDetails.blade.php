@@ -1,3 +1,8 @@
+@php
+    use App\Models\States\RevisionState;
+@endphp
+
+
 <x-app-layout>
     <div class="w-full max-w-7xl p-4 mx-auto">
         <div class="rounded-xl border border-gray-200 bg-white">
@@ -5,7 +10,17 @@
 
                 <div class="flex items-start justify-between">
                     <x-project_status :status="$project->status" />
-                    <x-projects_Details.comeBackButton/>
+                    <div class="flex items-center gap-3">
+                                                                        @if ($project->status->is(RevisionState::class) && auth()->id() === $project->proposer_id)
+                            <a
+                                href="{{ route('projects.revision-form', $project) }}"
+                                class="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 text-sm font-medium transition-colors shadow-sm"
+                            >
+                                Corriger ma proposition
+                            </a>
+                        @endif
+                        <x-projects_Details.comeBackButton/>
+                    </div>
                 </div>
 
                 <h2 class="mt-3 text-2xl font-bold text-gray-900">
