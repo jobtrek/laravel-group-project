@@ -40,6 +40,7 @@ Route::middleware('auth')->group(function () {
         $projects = Project::with('evaluation')
             ->whereState('status', [PropositionState::class, EvaluationState::class])
             ->get();
+
         return view('testDirectionFront', ['projects' => $projects]);
     })->name('direction.projects');
 
