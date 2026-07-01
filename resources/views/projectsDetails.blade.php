@@ -86,7 +86,6 @@
                         <div class="flex items-center justify-between">
                             <p class="text-sm font-semibold text-gray-800">Buts</p>
                             @if(canModify($project))
-                                :
                                 <button onclick="document.getElementById('input-container').classList.toggle('hidden')"
                                         class="rounded-md bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 text-sm font-medium text-white transition-colors shadow-sm">
                                     + Ajouter un but
