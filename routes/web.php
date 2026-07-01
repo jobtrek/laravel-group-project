@@ -8,6 +8,10 @@ use App\Http\Controllers\PropositionController;
 use App\Http\Controllers\RecolteController;
 use App\Http\Controllers\ResourceContributionController;
 use App\Http\Controllers\ReviewController;
+use App\Models\Project;
+use App\Models\ProjectPhase;
+use App\Models\States\EvaluationState;
+use App\Models\States\PropositionState;
 use App\Http\Controllers\RevisionController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -28,6 +32,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 });
 
 Route::get('/projects_details/{project}', [ProjectController::class, 'detailPage'])->middleware(['auth', 'verified'])->name('projects-details');
+
+Route::get('/projects_details', function () {
+    return view('projectsDetails');
+})->middleware(['auth', 'verified'])->name('projects-details');
+
+Route::get('/phase_details/{phase}', function (ProjectPhase $phase) {
+    return view('phase_details', compact('phase'));
+})->middleware(['auth', 'verified'])->name('phase_details');
 
 Route::middleware('auth')->group(function () {
     Route::get('/create', fn () => view('create', [
