@@ -52,8 +52,8 @@ Route::middleware('auth')->group(function () {
         Route::patch('/review', 'review')->middleware('can:review')->name('projects.review');
     });
 
-    Route::controller(ResourceContributionController::class)->prefix('/projects/{project}/resources')->group(function () {
-        Route::get('/create', 'create')->middleware('can:add resources')->name('projects.resources.create');
+    Route::controller(ResourceContributionController::class)->prefix('/projects/{project}/resources')->middleware('can:add resources')->group(function () {
+        Route::get('/create', 'create')->name('projects.resources.create');
         Route::post('/', 'store')->name('projects.resources.store');
     });
 
