@@ -58,7 +58,7 @@ class ResourceContributionController extends Controller
         : 'recolte';
 
         return redirect()
-        ->route($redirectRoute)
-        ->with('success', 'Resource contribution added successfully.');
+            ->route($redirectRoute)
+            ->with('success', 'Resource contribution added successfully.');
     }
 }

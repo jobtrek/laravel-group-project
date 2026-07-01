@@ -29,7 +29,7 @@ class StoreResourceContributionRequest extends FormRequest
             /** @var Project $project */
             $project = $this->route('project');
 
-                $phase = $project->phases()
+            $phase = $project->phases()
                 ->with(['resources', 'contributions'])
                 ->find((int) $this->input('phase_id'));
 
