@@ -4,7 +4,7 @@
 ])
 
 <div
-    x-data="{ checked: true }"
+    x-data="{ checked: false }"
     class="rounded-lg border p-3 flex justify-between transition-colors"
     :class="checked ? 'bg-green-50 border-green-400' : 'border-gray-200'"
     >
