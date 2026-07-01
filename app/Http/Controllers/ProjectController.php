@@ -24,11 +24,12 @@ class ProjectController extends Controller
     public function index(FilterProjectsRequest $request)
     {
         $projects = $this->filter->apply(
-            Project::with(['proposer', 'leader', 'evaluation']),
+            Project::with(['proposer', 'leader', 'evaluation', 'phases.resources']),
             $request
         )->paginate(10)->withQueryString();
 
         $counts = Project::statusCounts();
+        
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
         return view('allProjects', compact('projects', 'counts', 'users'));
