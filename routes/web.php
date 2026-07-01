@@ -7,9 +7,7 @@ use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
 use App\Http\Controllers\RecolteController;
 use App\Http\Controllers\ReviewController;
-use App\Models\Project;
-use App\Models\States\EvaluationState;
-use App\Models\States\PropositionState;
+use App\Http\Controllers\RevisionController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -24,6 +22,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/en-cours', [EnCoursController::class, 'index'])->name('en-cours');
     Route::get('/frigo', [ArchiveController::class, 'index'])->name('frigo');
     Route::get('/projects/{project}/direction-review', [ReviewController::class, 'showForm'])->name('projects.direction-review');
+    Route::get('/projects/{project}/revision', [RevisionController::class, 'showForm'])->name('projects.revision-form');
+    Route::post('/projects/{project}/revision-submit', [RevisionController::class, 'submit'])->name('projects.revision-submit');
 });
 
 Route::get('/projects_details/{project}', [ProjectController::class, 'detailPage'])->middleware(['auth', 'verified'])->name('projects-details');
@@ -32,13 +32,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/create', fn () => view('create', [
         'users' => User::query()->select('id', 'name')->get(),
     ]))->name('create');
-
-    Route::get('/direction/projects', function () {
-        $projects = Project::with('evaluation')
-            ->whereState('status', [PropositionState::class, EvaluationState::class])
-            ->get();
-        return view('testDirectionFront', ['projects' => $projects]);
-    })->name('direction.projects');
 
     Route::post('/propositions', [PropositionController::class, 'store'])->name('proposition.store');
 

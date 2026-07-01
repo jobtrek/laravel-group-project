@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\States\ProjectState;
-use App\Models\States\PropositionState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -93,53 +92,6 @@ class Project extends Model
     public function getImportanceAttribute(): ?float
     {
         return $this->evaluation?->importance;
-    }
-
-    public static function createProposal(array $data, int $proposerId): self
-    {
-        return DB::transaction(function () use ($data, $proposerId) {
-            $project = self::create([
-                'title' => $data['titre'],
-                'description' => $data['description'],
-                'but' => $data['buts'],
-                'perimetre' => $data['perimetre'] ?? null,
-                'ressources_totales' => $data['ressources_totales'] ?? null,
-                'status' => PropositionState::getMorphClass(),
-                'current_stage' => PropositionState::getMorphClass(),
-                'proposer_id' => $proposerId,
-                'leader_id' => $data['porteur'],
-            ]);
-
-            $project->members()->attach($data['membres']);
-
-            $project->evaluation()->create([
-                'portee' => $data['portee'],
-                'impact' => $data['impact'],
-                'confiance' => $data['confiance'],
-                'effort' => $data['effort'],
-            ]);
-
-            foreach ($data['phases'] as $index => $phase) {
-                /** @var ProjectPhase $createdPhase */
-                $createdPhase = $project->phases()->create([
-                    'name' => $phase['titre'],
-                    'duration' => $phase['duree'],
-                    'description' => $phase['description'],
-                    'objectifs' => $phase['objectifs'],
-                    'livrables' => $phase['livrables'],
-                    'order' => $index + 1,
-                ]);
-
-                foreach ($phase['ressources_necessaires'] as $resource) {
-                    $createdPhase->resources()->create([
-                        'resource_type' => $resource['resource_type'],
-                        'amount_needed' => $resource['amount_needed'],
-                    ]);
-                }
-            }
-
-            return $project;
-        });
     }
 
     public function getProgressAttribute(): float

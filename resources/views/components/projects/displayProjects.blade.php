@@ -84,7 +84,7 @@ use App\Http\Controllers\ProjectController;
             </svg>
             {{ $creationDate }}
         </span>
-        @if($updatedAt instanceof \Carbon\Carbon)
+        @if($updatedAt instanceof Carbon)
             <?php $bgColor = match (true) {
                     $updatedAt->lessThan(now()->subMonth(3)) => 'bg-red-400',
                     $updatedAt->lessThan(now()->subMonth(2)) => 'bg-orange-400',

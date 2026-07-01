@@ -10,29 +10,17 @@
     </p>
 
     <p>
-        Cliquez sur le lien ci-dessous pour consulter les annotations et mettre à jour votre proposition :
+        Cliquez sur le lien ci-dessous pour consulter les annotations et corriger les champs signalés :
     </p>
 
     <p style="margin: 24px 0;">
-        
-            href="{{ route('propositions') }}"
+        <a
+            href="{{ route('projects.revision-form', $project) }}"
             style="background:#4f46e5; color:#fff; padding:12px 24px; border-radius:6px; text-decoration:none; font-weight:600;"
         >
-            Voir ma proposition
+            Corriger ma proposition
         </a>
     </p>
-
-    {{--
-        TODO: replace route('propositions') with route('projects.revision-form', $project)
-        once the proposer revision page is built.
-    --}}
-
-        <a
-            href="{{ route('propositions') }}"
-            style="background:#4f46e5; color:#fff; padding:12px 24px; border-radius:6px; text-decoration:none; font-weight:600;"
-        >
-            Voir ma proposition
-        </a>
 
 </body>
 </html>

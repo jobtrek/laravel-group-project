@@ -40,8 +40,6 @@ Project lifecycle is managed with `spatie/laravel-model-states`. All states live
 The states are currently being updated reference it to the 'docs/Source_of_truth.md'
 
 
-The `Stage` enum (`app/Enums/Stage.php`) groups statuses for routing: `Stage::Propositions` maps to `['submitted', 'modification']`, `Stage::Review` to `['approved']`, etc. Routes use `Stage` as a route parameter to drive `ProjectController::stage()`.
-
 ### Key business rules
 
 - **80% threshold**: `SUM(amount_found) / SUM(amount_needed) >= 0.8` across all `PhaseResource` rows triggers `CollectingState → ReadyState`
