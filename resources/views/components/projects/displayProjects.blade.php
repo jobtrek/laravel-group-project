@@ -60,8 +60,8 @@ use App\Http\Controllers\ProjectController;
                     @method('PATCH')
                     <x-projects.buttons text="Accepter" class="bg-green-600 text-white p-2" type="submit"/>
                 </form>
-            @endif
             @endcan
+            @endif
         </div>
     </div>
     @if((string)$status === 'récolte' || (string)$status === 'en cours')
