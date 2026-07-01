@@ -11,15 +11,15 @@
                 <div class="flex items-start justify-between">
                     <x-project_status :status="$project->status" />
                     <div class="flex items-center gap-3">
-                                                                        @if ($project->status instanceof RevisionState && auth()->id() === $project->proposer_id)
-                           <a 
+                        @if ($project->status instanceof RevisionState && auth()->id() === $project->proposer_id)
+                            <a
                                 href="{{ route('projects.revision-form', $project) }}"
                                 class="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 text-sm font-medium transition-colors shadow-sm"
                             >
                                 Corriger ma proposition
                             </a>
                         @endif
-                        <x-projects_Details.comeBackButton/>
+                        <x-projects-details.comeBackButton/>
                     </div>
                 </div>
 
@@ -33,22 +33,22 @@
 
                 <div class="flex justify-between">
 
-                    <x-projects_Details.baseInfo
+                    <x-projects-details.baseInfo
                         name="Proposeur :"
                         :valeur="$project->proposer?->name ?? '—'"
                     />
 
-                    <x-projects_Details.baseInfo
+                    <x-projects-details.baseInfo
                         name="Date de creation :"
                         :valeur="$project->created_at?->format('d/m/Y') ?? '—'"
                     />
 
-                    <x-projects_Details.baseInfo
+                    <x-projects-details.baseInfo
                         name="Buts :"
                         :valeur="is_array($project->but) ? count($project->but) : 0"
                     />
 
-                    <x-projects_Details.baseInfo
+                    <x-projects-details.baseInfo
                         name="Budget :"
                         :valeur="($project->budget_global ?? 0) . ' CHF'"
                     />
@@ -66,31 +66,20 @@
                             </div>
                         </div>
                     </div>
-
                     <div class="rounded-lg border border-gray-200 p-3">
                         <p class="text-sm font-semibold text-gray-800">Details</p>
-                        <x-projects_Details.details/>
+                        <x-projects-details.details/>
                     </div>
 
                 </div>
 
                 <div class="mt-3 grid grid-cols-2 gap-3">
 
-                    <div class="rounded-lg border border-gray-200 p-3 flex flex-col justify-between">
-
-                        <div class="flex items-center justify-between">
-                            <p class="text-sm font-semibold text-gray-800">Buts</p>
-
-                            <button onclick="document.getElementById('input-container').classList.toggle('hidden')"
-                                    class="rounded-md bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 text-sm font-medium text-white transition-colors shadow-sm">
-                                + Ajouter un but
-                            </button>
-                        </div>
-
-                        <div id="input-container" class="hidden mt-3">
-                            <x-projects_Details.inputAddtask/>
-                        </div>
-
+                    <div class="rounded-lg border border-gray-200 p-3 flex flex-col gap-3">
+                        <p class="text-sm font-semibold text-gray-800 p-1">Buts</p>
+                            <x-projects-details.display-buts
+                                text_but="Faire"
+                            />
                     </div>
 
                     <div class="rounded-lg border border-gray-200 p-3">
@@ -99,7 +88,7 @@
 
                         <div>
                             @foreach($project->members as $member)
-                                <x-projects_Details.teamUsers
+                                <x-projects-details.teamUsers
                                     :team_name_user="$member->name"
                                     :user_status="true"
                                 />
@@ -114,9 +103,9 @@
 
                     <p class="text-sm font-semibold text-gray-800">Phases :</p>
 
-                    <div>
+                    <div class="mt-3 grid grid-cols-4 gap-4">
                         @foreach($project->phases as $phase)
-                            <a href="/phase_details/{{ $phase->id }}">
+                            <a class="bg-gray-50 p-1  pl-3 pr-3 border rounded-xl hover:bg-gray-100" href="/phase_details/{{ $phase->id }}">
                                 {{ $phase->name }}
                             </a>
                         @endforeach
@@ -125,7 +114,7 @@
                 </div>
 
                 <div class="mt-2 rounded-lg border border-gray-200 p-4">
-                    <x-projects_Details.graphique/>
+                    <x-projects-details.graphique/>
                 </div>
 
                 <div class="mt-4 rounded-lg border border-gray-200 p-3">
@@ -136,7 +125,7 @@
 
                         @forelse($project->comments as $comment)
 
-                            <x-projects_Details.Comment_msg
+                            <x-projects-details.Comment_msg
                                 :messager_name="$comment->user?->name ?? 'Unknown'"
                                 :commentaire_msg="$comment->content"
                                 :date_msg="$comment->created_at?->format('d/m/Y')"
