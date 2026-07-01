@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Gate;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -23,6 +22,7 @@ class RoleAndPermissionSeeder extends Seeder
             'review',
             'evaluate projects',
             'manage everything',
+            'edit project',
         ];
 
         foreach ($permissions as $permission) {
@@ -40,12 +40,15 @@ class RoleAndPermissionSeeder extends Seeder
 
         $adminRole->givePermissionTo([
             'manage everything',
-            ]);
+        ]);
         $directionRole->givePermissionTo([
             'approve',
             'deny',
             'review',
             'evaluate projects',
+        ]);
+        $projectLeader->givePermissionTo([
+            'edit project',
         ]);
     }
 }
