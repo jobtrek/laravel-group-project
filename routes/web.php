@@ -8,11 +8,8 @@ use App\Http\Controllers\PropositionController;
 use App\Http\Controllers\RecolteController;
 use App\Http\Controllers\ResourceContributionController;
 use App\Http\Controllers\ReviewController;
-use App\Models\Project;
-use App\Models\ProjectPhase;
-use App\Models\States\EvaluationState;
-use App\Models\States\PropositionState;
 use App\Http\Controllers\RevisionController;
+use App\Models\ProjectPhase;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
