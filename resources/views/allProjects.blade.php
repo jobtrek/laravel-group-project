@@ -32,7 +32,7 @@
                                         :creation-date="$project->created_at->format('d M Y')"
                                         :updated_at="$project->updated_at"/>
                             @endif
-                        @endforeach.
+                        @endforeach
                     </div>
                 </div>
             </div>

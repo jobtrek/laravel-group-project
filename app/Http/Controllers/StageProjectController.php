@@ -25,8 +25,7 @@ abstract class StageProjectController extends Controller
     public function index(FilterProjectsRequest $request): View
     {
         $projects = $this->filter->apply(
-            Project::with(['proposer', 'leader', 'evaluation', 'phases.resources'])
-                ->whereState('status', $this->states()),
+            Project::with(['proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions'])->whereState('status', $this->states()),
             $request
         )->paginate(10);
 

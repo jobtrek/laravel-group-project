@@ -13,8 +13,8 @@ class ProjectMemberSeeder extends Seeder
 
     public function run(): void
     {
-        $projects = Project::with('members')->get();
-        $users = User::with('roles')->get();
+        $projects = Project::all();
+        $users = User::all();
 
         $projects->each(function ($project) use ($users) {
             $users->random(rand(2, 4))->each(function ($user) use ($project) {
