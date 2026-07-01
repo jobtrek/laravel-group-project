@@ -9,6 +9,7 @@ use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Support\Facades\DB;
 use Spatie\ModelStates\HasStates;
 
@@ -121,4 +122,16 @@ class Project extends Model
             ->groupBy('status')
             ->pluck('total', 'status');
     }
+ /** @return HasManyThrough<ResourceContribution, ProjectPhase, $this> */
+    public function resourceContributions(): HasManyThrough
+{
+    return $this->hasManyThrough(
+        ResourceContribution::class,
+        ProjectPhase::class,
+        'project_id', // FK on project_phases pointing back to projects
+        'phase_id',   // FK on resource_contributions pointing to project_phases
+        'id',         // local key on projects
+        'id'          // local key on project_phases
+    );
+}
 }
