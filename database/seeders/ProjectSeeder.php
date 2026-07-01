@@ -2,9 +2,9 @@
 
 namespace Database\Seeders;
 
+use App\Models\PhaseResource;
 use App\Models\Project;
 use App\Models\ProjectPhase;
-use App\Models\PhaseResource;
 use Illuminate\Database\Seeder;
 
 class ProjectSeeder extends Seeder
