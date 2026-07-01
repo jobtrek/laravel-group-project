@@ -5,12 +5,11 @@ namespace App\Http\Controllers;
 use App\Enums\Stage;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
-use App\Models\PhaseResource;
 use App\Models\Project;
 use App\Models\States\EncoursState;
 use App\Models\States\RecolteState;
 use App\Models\User;
-use Illuminate\Http\Request;
+use Illuminate\Http\RedirectResponse;
 
 class RecolteController extends Controller
 {
@@ -20,6 +19,16 @@ class RecolteController extends Controller
 
     public function index(FilterProjectsRequest $request)
     {
+        Project::with(['phases.resources', 'phases.contributions'])
+            ->whereState('status', RecolteState::class)
+            ->get()
+            ->each(function (Project $project): void {
+                if ($project->progress >= 80) {
+                    $project->status->transitionTo(EncoursState::class);
+                    $project->save();
+                }
+            });
+
         $projects = $this->filter->apply(
             Project::with(['proposer', 'leader', 'evaluation'])
                 ->whereState('status', [RecolteState::class]),
@@ -35,35 +44,15 @@ class RecolteController extends Controller
         ]);
     }
 
-    public function moveFromRecolteToActive(Request $request)
+    public function moveFromRecolteToActive(Project $project): RedirectResponse
     {
-        $recolteId = $request->input('recolte_id');
-        $project = Project::findOrFail($recolteId);
-
         if ($project->progress >= 80) {
             $project->status->transitionTo(EncoursState::class);
             $project->save();
 
             return redirect()->back()->with('success', 'Project moved to Active state successfully.');
-        } else {
-            return redirect()->back()->with('error', 'Project cannot be moved to Active state. Progress must be greater than 80%.');
         }
-    }
 
-    public function updateProgress(Request $request)
-    {
-        $request->validate([
-            'phase_resource_id' => 'required|exists:phase_resources,id',
-            'amount_found' => 'required|numeric|min:0',
-        ]);
-        $phaseResourceId = $request->input('phase_resource_id');
-
-        $resource = PhaseResource::findOrFail($phaseResourceId);
-
-        $resource->update([
-            'amount_found' => $request->input('amount_found'),
-        ]);
-
-        return redirect()->back()->with('success', 'Project progress updated successfully.');
+        return redirect()->back()->with('error', 'Project cannot be moved to Active state. Progress must be greater than 80%.');
     }
 }

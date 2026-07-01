@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
 use App\Http\Controllers\RecolteController;
+use App\Http\Controllers\ResourceContributionController;
 use App\Http\Controllers\ReviewController;
 use App\Models\Project;
 use App\Models\States\EvaluationState;
@@ -37,6 +38,7 @@ Route::middleware('auth')->group(function () {
         $projects = Project::with('evaluation')
             ->whereState('status', [PropositionState::class, EvaluationState::class])
             ->get();
+
         return view('testDirectionFront', ['projects' => $projects]);
     })->name('direction.projects');
 
@@ -57,6 +59,14 @@ Route::middleware('auth')->group(function () {
         Route::patch('/resubmit', 'reSubmit')->name('projects.resubmit');
         Route::patch('/review', 'review')->middleware('permission:review')->name('projects.review');
     });
+
+    Route::controller(ResourceContributionController::class)->prefix('/projects/{project}/resources')->group(function () {
+        Route::get('/create', 'create')->name('projects.resources.create');
+        Route::post('/', 'store')->name('projects.resources.store');
+    });
+
+    Route::patch('/projects/{project}/move-to-en-cours', [RecolteController::class, 'moveFromRecolteToActive'])
+        ->name('projects.recolte.activate');
 });
 
 require __DIR__.'/auth.php';
