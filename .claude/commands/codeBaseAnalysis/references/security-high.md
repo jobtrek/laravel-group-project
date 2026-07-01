@@ -84,9 +84,9 @@ Uploads must **never** be stored in `public/` — use `storage/app/private/` and
 return redirect($request->input('next'));
 
 // ✅ Validate it's an internal path
-$next = $request->input('next', '/dashboard');
+$next = $request->input('next', '/projects');
 if (!str_starts_with($next, '/') || str_starts_with($next, '//')) {
-    $next = '/dashboard';
+    $next = '/projects';
 }
 return redirect($next);
 ```
