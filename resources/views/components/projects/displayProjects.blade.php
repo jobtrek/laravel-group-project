@@ -75,10 +75,12 @@ use App\Http\Controllers\ProjectController;
         </span>
     </div>
     <div class="flex justify-end" onclick="event.stopPropagation()">
+        @can('add resources')
         <a href="{{ route('projects.resources.create', $project) }}"
            class="bg-blue-700 text-white text-sm rounded-lg px-3 py-1.5">
             Ajouter une ressource
         </a>
+            @endcan
     </div>
 @endif
     <div class="flex items-center justify-between mt-1">

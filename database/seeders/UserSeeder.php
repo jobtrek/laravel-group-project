@@ -26,5 +26,15 @@ class UserSeeder extends Seeder
             'name' => 'Phil Direction',
             'email' => 'direction@mail.fr',
         ])->assignRole(['user', 'direction']);
+
+        User::factory()->create([
+            'name' => 'Jean Ressources',
+            'email' => 'support@mail.fr',
+        ])->assignRole(['user', 'resources_manager']);
+
+        User::factory()->create([
+            'name' => 'Marc User',
+            'email' => 'user@mail.fr',
+        ])->assignRole(['user']);
     }
 }

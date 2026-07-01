@@ -7,6 +7,7 @@ use App\Models\Project;
 use App\Models\States\EncoursState;
 use App\Models\States\RecolteState;
 use Illuminate\Http\RedirectResponse;
+
 class RecolteController extends StageProjectController
 {
     protected function stage(): Stage

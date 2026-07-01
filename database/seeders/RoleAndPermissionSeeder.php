@@ -23,6 +23,7 @@ class RoleAndPermissionSeeder extends Seeder
             'evaluate projects',
             'manage everything',
             'edit project',
+            'add resources',
         ];
 
         foreach ($permissions as $permission) {
@@ -36,7 +37,7 @@ class RoleAndPermissionSeeder extends Seeder
         $directionRole = Role::firstOrCreate(['name' => 'direction', 'guard_name' => 'web']);
         $projectLeader = Role::firstOrCreate(['name' => 'project_leader', 'guard_name' => 'web']);
         $projectManager = Role::firstOrCreate(['name' => 'project_manager', 'guard_name' => 'web']);
-        $resourcesSupport = Role::firstOrCreate(['name' => 'resources_support', 'guard_name' => 'web']);
+        $resourcesManager = Role::firstOrCreate(['name' => 'resources_manager', 'guard_name' => 'web']);
 
         $adminRole->givePermissionTo([
             'manage everything',
@@ -49,6 +50,9 @@ class RoleAndPermissionSeeder extends Seeder
         ]);
         $projectLeader->givePermissionTo([
             'edit project',
+        ]);
+        $resourcesManager->givePermissionTo([
+            'add resources',
         ]);
     }
 }
