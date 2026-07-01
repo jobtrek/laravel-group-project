@@ -16,7 +16,10 @@ use App\Http\Controllers\RevisionController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => view('auth.login'));
+
+Route::middleware(['guest'])->group(function () {
+    Route::get('/', fn () => view('auth.login'));
+});
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
