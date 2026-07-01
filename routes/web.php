@@ -8,9 +8,6 @@ use App\Http\Controllers\PropositionController;
 use App\Http\Controllers\RecolteController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RevisionController;
-use App\Models\Project;
-use App\Models\States\EvaluationState;
-use App\Models\States\PropositionState;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -35,14 +32,6 @@ Route::middleware('auth')->group(function () {
     Route::get('/create', fn () => view('create', [
         'users' => User::query()->select('id', 'name')->get(),
     ]))->name('create');
-
-    Route::get('/direction/projects', function () {
-        $projects = Project::with('evaluation')
-            ->whereState('status', [PropositionState::class, EvaluationState::class])
-            ->get();
-
-        return view('testDirectionFront', ['projects' => $projects]);
-    })->name('direction.projects');
 
     Route::post('/propositions', [PropositionController::class, 'store'])->name('proposition.store');
 
