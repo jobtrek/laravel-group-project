@@ -92,10 +92,6 @@
                             @endif
                         </div>
 
-                        <div id="input-container" class="hidden mt-3">
-                            <x-projects_Details.inputAddtask/>
-                        </div>
-
                     </div>
 
                     <div class="rounded-lg border border-gray-200 p-3">
