@@ -36,7 +36,7 @@ class ResourceContributionController extends Controller
 
     public function store(StoreResourceContributionRequest $request, Project $project): RedirectResponse
     {
-        DB::transaction(function () use ($request): void {
+        DB::transaction(function () use ($request, $project): void {
             ResourceContribution::create([
                 'phase_id' => $request->validated('phase_id'),
                 'user_id' => auth()->id(),
@@ -44,10 +44,21 @@ class ResourceContributionController extends Controller
                 'description' => $request->validated('description'),
                 'amount' => $request->validated('amount'),
             ]);
+
+            $project->load(['phases.resources', 'phases.contributions']);
+
+            if ($project->progress >= 80 && $project->status instanceof RecolteState) {
+                $project->status->transitionTo(EncoursState::class);
+                $project->save();
+            }
         });
 
+        $redirectRoute = $project->status instanceof EncoursState
+        ? 'en-cours'
+        : 'recolte';
+
         return redirect()
-            ->route('recolte')
-            ->with('success', 'Resource contribution added successfully.');
+        ->route($redirectRoute)
+        ->with('success', 'Resource contribution added successfully.');
     }
 }

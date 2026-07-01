@@ -48,16 +48,12 @@ class ProjectPhase extends Model
 
     public function getAmountNeededAttribute(): float
     {
-        return (float) $this->resources->sum(
-            fn (PhaseResource $resource): float => (float) $resource->amount_needed
-        );
+        return (float) $this->resources->sum('amount_needed');
     }
 
     public function getAmountFoundAttribute(): float
     {
-        return (float) $this->contributions->sum(
-            fn (ResourceContribution $contribution): float => (float) $contribution->amount
-        );
+        return (float) $this->contributions->sum('amount');
     }
 
     public function getProgressAttribute(): float

@@ -17,35 +17,29 @@ class RecolteController extends Controller
         private readonly ProjectFilter $filter
     ) {}
 
-    public function index(FilterProjectsRequest $request)
-    {
-        Project::with(['phases.resources', 'phases.contributions'])
-            ->whereState('status', RecolteState::class)
-            ->get()
-            ->each(function (Project $project): void {
-                if ($project->progress >= 80) {
-                    $project->status->transitionTo(EncoursState::class);
-                    $project->save();
-                }
-            });
+   public function index(FilterProjectsRequest $request)
+{
+    $projects = $this->filter->apply(
+        Project::with(['proposer', 'leader', 'evaluation'])
+            ->whereState('status', [RecolteState::class]),
+        $request
+    )->paginate(10);
 
-        $projects = $this->filter->apply(
-            Project::with(['proposer', 'leader', 'evaluation'])
-                ->whereState('status', [RecolteState::class]),
-            $request
-        )->paginate(10);
+    $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
-        $users = User::query()->select('id', 'name')->orderBy('name')->get();
-
-        return view('stage', [
-            'stage' => Stage::Recolte,
-            'projects' => $projects,
-            'users' => $users,
-        ]);
+    return view('stage', [
+        'stage' => Stage::Recolte,
+        'projects' => $projects,
+        'users' => $users,
+    ]);
     }
 
-    public function moveFromRecolteToActive(Project $project): RedirectResponse
+        public function moveFromRecolteToActive(Project $project): RedirectResponse
     {
+        if (! $project->status instanceof RecolteState) {
+            return redirect()->back()->with('error', 'Project is not in Recolte state.');
+        }
+
         if ($project->progress >= 80) {
             $project->status->transitionTo(EncoursState::class);
             $project->save();

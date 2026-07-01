@@ -57,8 +57,8 @@
         function resourceForm() {
             return {
                 phases: @json($phasesData),
-                selectedPhaseId: {{ old('phase_id', $project->phases->first()?->id ?? 'null') }},
-                amount: {{ old('amount', 0) }},
+                selectedPhaseId: @json(old('phase_id', $project->phases->first()?->id)),
+                amount: @json((float) old('amount', 0)),
 
                 get selectedPhase() {
                     return this.phases.find(p => p.id === Number(this.selectedPhaseId)) ?? null;

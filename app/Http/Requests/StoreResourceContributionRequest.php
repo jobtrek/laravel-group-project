@@ -29,7 +29,9 @@ class StoreResourceContributionRequest extends FormRequest
             /** @var Project $project */
             $project = $this->route('project');
 
-            $phase = $project->phases->firstWhere('id', (int) $this->input('phase_id'));
+                $phase = $project->phases()
+                ->with(['resources', 'contributions'])
+                ->find((int) $this->input('phase_id'));
 
             if ($phase === null) {
                 $validator->errors()->add('phase_id', 'This phase does not belong to the selected project.');
@@ -37,8 +39,8 @@ class StoreResourceContributionRequest extends FormRequest
                 return;
             }
 
-            $amount = (float) $this->input('amount');
-            $remaining = $phase->amount_needed - $phase->amount_found;
+            $amount = round((float) $this->input('amount'), 2);
+            $remaining = round($phase->amount_needed - $phase->amount_found, 2);
 
             if ($amount > $remaining) {
                 $validator->errors()->add(
