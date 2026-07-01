@@ -96,4 +96,4 @@ use App\Http\Controllers\ProjectController;
             </span>
         @endif
     </div>
-</a>
+</div>
