@@ -53,34 +53,34 @@ class AutoArchiveProjects extends Command
     }
 
     private function archiveStaleRecolte(): int
-    {
-        $projects = Project::whereState('status', RecolteState::class)
-            ->withMax('resourceContributions as last_contribution_at', 'created_at')
-            ->with(['proposer', 'recolteManager', 'leader', 'members'])
-            ->get();
+{
+    $projects = Project::whereState('status', RecolteState::class)
+        ->withMax('resourceContributions as last_contribution_at', 'created_at')
+        ->withCasts(['last_contribution_at' => 'datetime'])
+        ->with(['proposer', 'recolteManager', 'leader', 'members'])
+        ->get();
 
-        $archivedCount = 0;
+    $archivedCount = 0;
 
-        foreach ($projects as $project) {
-            $lastActivityAt = $project->last_contribution_at ?? $project->updated_at;
+    foreach ($projects as $project) {
+        $lastActivityAt = $project->last_contribution_at ?? $project->updated_at;
 
-            if ($lastActivityAt->lt(now()->subMonths(12))) {
-                $this->archive($project);
-                $this->notify($project, $this->recolteRecipients($project));
-                $archivedCount++;
-            }
+        if ($lastActivityAt->lt(now()->subMonths(12))) {
+            $this->archive($project);
+            $this->notify($project, $this->recolteRecipients($project));
+            $archivedCount++;
         }
-
-        return $archivedCount;
     }
+
+    return $archivedCount;
+}
 
     private function archive(Project $project): void
     {
         DB::transaction(function () use ($project): void {
             $project->current_stage = $project->getRawOriginal('status');
-            $project->status->transitionTo(ArchiveState::class);
             $project->archived_at = now();
-            $project->save();
+            $project->status->transitionTo(ArchiveState::class);
         });
     }
 
