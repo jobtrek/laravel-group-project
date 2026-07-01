@@ -36,12 +36,15 @@ use App\Http\Controllers\ProjectController;
         </div>
         <div class="flex gap-2">
             @if((string)$status === 'proposition')
+                    @can('evaluate projects')
                 <form action="{{ route('projects.review', $project) }}" method="POST" onclick="event.stopPropagation()">
                     @csrf
                     @method('PATCH')
                     <x-projects.buttons text=" Evaluer" class="bg-blue-700 text-white p-2" type="submit"/>
                 </form>
+                @endcan
             @elseif((string)$status === 'évaluation')
+                @can('evaluate projects')
                 <form action="{{ route('projects.deny', $project) }}" method="POST" onclick="event.stopPropagation()">
                     @csrf
                     @method('PATCH')
@@ -58,6 +61,7 @@ use App\Http\Controllers\ProjectController;
                     <x-projects.buttons text="Accepter" class="bg-green-600 text-white p-2" type="submit"/>
                 </form>
             @endif
+            @endcan
         </div>
     </div>
     @if((string)$status === 'récolte' || (string)$status === 'en cours')
