@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use App\Models\States\ProjectState;
-use App\Models\States\PropositionState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -95,70 +94,23 @@ class Project extends Model
         return $this->evaluation?->importance;
     }
 
-    public static function createProposal(array $data, int $proposerId): self
-    {
-        return DB::transaction(function () use ($data, $proposerId) {
-            $project = self::create([
-                'title' => $data['titre'],
-                'description' => $data['description'],
-                'but' => $data['buts'],
-                'perimetre' => $data['perimetre'] ?? null,
-                'ressources_totales' => $data['ressources_totales'] ?? null,
-                'status' => PropositionState::getMorphClass(),
-                'current_stage' => PropositionState::getMorphClass(),
-                'proposer_id' => $proposerId,
-                'leader_id' => $data['porteur'],
-            ]);
-
-            $project->members()->attach($data['membres']);
-
-            $project->evaluation()->create([
-                'portee' => $data['portee'],
-                'impact' => $data['impact'],
-                'confiance' => $data['confiance'],
-                'effort' => $data['effort'],
-            ]);
-
-            foreach ($data['phases'] as $index => $phase) {
-                /** @var ProjectPhase $createdPhase */
-                $createdPhase = $project->phases()->create([
-                    'name' => $phase['titre'],
-                    'duration' => $phase['duree'],
-                    'description' => $phase['description'],
-                    'objectifs' => $phase['objectifs'],
-                    'livrables' => $phase['livrables'],
-                    'order' => $index + 1,
-                ]);
-
-                foreach ($phase['ressources_necessaires'] as $resource) {
-                    $createdPhase->resources()->create([
-                        'resource_type' => $resource['resource_type'],
-                        'amount_needed' => $resource['amount_needed'],
-                    ]);
-                }
-            }
-
-            return $project;
-        });
-    }
-
     public function getProgressAttribute(): float
     {
-        $totalNeeded = 0;
-        $totalFound = 0;
+        $totalNeeded = 0.0;
+        $totalFound = 0.0;
 
         foreach ($this->phases as $phase) {
-            foreach ($phase->resources as $resource) {
-                $totalNeeded += (float) $resource->amount_needed;
-                $totalFound += (float) ($resource->amount_found ?? 0);
-            }
+            $totalNeeded += $phase->amount_needed;
+            $totalFound += $phase->amount_found;
         }
 
         if ($totalNeeded <= 0) {
-            return 0;
+            return 0.0;
         }
 
-        return round(($totalFound / $totalNeeded) * 100, 2);
+        $progress = round(($totalFound / $totalNeeded) * 100, 2);
+
+        return max(0.0, min($progress, 100.0));
     }
 
     public static function statusCounts()

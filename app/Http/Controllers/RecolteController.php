@@ -3,49 +3,35 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Stage;
-use App\Filters\ProjectFilter;
-use App\Http\Requests\FilterProjectsRequest;
 use App\Models\Project;
 use App\Models\States\EncoursState;
 use App\Models\States\RecolteState;
-use App\Models\User;
-use Illuminate\Http\Request;
-
-class RecolteController extends Controller
+use Illuminate\Http\RedirectResponse;
+class RecolteController extends StageProjectController
 {
-    public function __construct(
-        private readonly ProjectFilter $filter
-    ) {}
-
-    public function index(FilterProjectsRequest $request)
+    protected function stage(): Stage
     {
-        $projects = $this->filter->apply(
-            Project::with(['proposer', 'leader', 'evaluation'])
-                ->whereState('status', [RecolteState::class]),
-            $request
-        )->paginate(10);
-
-        $users = User::query()->select('id', 'name')->orderBy('name')->get();
-
-        return view('stage', [
-            'stage' => Stage::Recolte,
-            'projects' => $projects,
-            'users' => $users,
-        ]);
+        return Stage::Recolte;
     }
 
-    public function moveFromRecolteToActive(Request $request)
+    protected function states(): string|array
     {
-        $recolteId = $request->input('recolte_id');
-        $project = Project::findOrFail($recolteId);
+        return [RecolteState::class];
+    }
+
+    public function moveFromRecolteToActive(Project $project): RedirectResponse
+    {
+        if (! $project->status instanceof RecolteState) {
+            return redirect()->back()->with('error', 'Project is not in Recolte state.');
+        }
 
         if ($project->progress >= 80) {
             $project->status->transitionTo(EncoursState::class);
             $project->save();
 
             return redirect()->back()->with('success', 'Project moved to Active state successfully.');
-        } else {
-            return redirect()->back()->with('error', 'Project cannot be moved to Active state. Progress must be greater than 80%.');
         }
+
+        return redirect()->back()->with('error', 'Project cannot be moved to Active state. Progress must be greater than 80%.');
     }
 }
