@@ -23,7 +23,7 @@ class RecolteController extends StageProjectController
     public function moveFromRecolteToActive(Project $project): RedirectResponse
     {
         $project->loadMissing(['phases.resources', 'phases.contributions']);
-        
+
         if (! $project->status instanceof RecolteState) {
             return redirect()->back()->with('error', 'Project is not in Recolte state.');
         }
