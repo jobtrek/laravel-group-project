@@ -3,11 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Stage;
-use App\Models\PhaseResource;
 use App\Models\Project;
 use App\Models\States\EncoursState;
 use App\Models\States\RecolteState;
-use Illuminate\Http\Request;
 
 class RecolteController extends StageProjectController
 {
@@ -21,7 +19,7 @@ class RecolteController extends StageProjectController
         return [RecolteState::class];
     }
 
-        public function moveFromRecolteToActive(Project $project): RedirectResponse
+    public function moveFromRecolteToActive(Project $project): RedirectResponse
     {
         if (! $project->status instanceof RecolteState) {
             return redirect()->back()->with('error', 'Project is not in Recolte state.');
