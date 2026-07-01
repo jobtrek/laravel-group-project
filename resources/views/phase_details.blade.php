@@ -10,7 +10,7 @@
                         <p class="mt-1 text-sm text-gray-500">{{ $phase->description }}</p>
                         @if($phase->duration)
                             <p class="mt-2 text-sm font-medium text-gray-600">
-                                Durée : {{ $phase->duration }}
+                                {{ __('Durée : :duration', ['duration' => $phase->duration]) }}
                             </p>
                         @endif
                     </div>
@@ -19,25 +19,25 @@
                 <div class="flex flex-col gap-4">
                     <div class="rounded-lg border border-blue-700 p-3 flex flex-col gap-4 shadow-lg">
                         <p class="text-[20px] font-semibold text-gray-800">Objectifs</p>
-                        @forelse($phase->objectifs as $objectif)
+                        @forelse($phase->objectifs ?? [] as $objectif)
                             <x-phase-details.phase_objectif_livrables :objectifs_text="$objectif"/>
                         @empty
-                            <p class="text-sm text-gray-500">Aucun objectif défini</p>
+                            <p class="text-sm text-gray-500">{{ __('Aucun objectif défini') }}</p>
                         @endforelse
                     </div>
 
                     <div class="rounded-lg border border-green-700 p-3 flex flex-col gap-4 shadow-lg">
                         <p class="text-[20px] font-semibold text-gray-800">Livrables :</p>
-                        @forelse($phase->livrables as $livrable)
+                        @forelse($phase->livrables ?? [] as $livrable)
                             <x-phase-details.phase_objectif_livrables :livrables_text="$livrable"/>
                         @empty
-                            <p class="text-sm text-gray-500">Aucun livrable défini</p>
+                            <p class="text-sm text-gray-500">{{ __('Aucun livrable défini') }}</p>
                         @endforelse
                     </div>
 
                     <div class="rounded-lg border border-purple-700 p-3 flex flex-col gap-4 shadow-lg">
-                        <p class="text-[20px] font-semibold text-gray-800">Ressources requises :</p>
-                        @forelse($phase->resources as $resource)
+                        <p class="text-sm text-gray-500">{{ __('Aucune ressource requise') }}</p>
+                        @forelse($phase->resources ?? [] as $resource)
                             <x-phase-details.resources
                                 :resource_type="$resource->resource_type"
                                 :resource_quantity="$resource->amount_needed . ' CHF'"
