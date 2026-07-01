@@ -6,6 +6,7 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
 use App\Http\Controllers\RecolteController;
+use App\Http\Controllers\ResourceContributionController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RevisionController;
 use App\Models\User;
@@ -50,6 +51,14 @@ Route::middleware('auth')->group(function () {
         Route::patch('/resubmit', 'reSubmit')->name('projects.resubmit');
         Route::patch('/review', 'review')->middleware('can:review')->name('projects.review');
     });
+
+    Route::controller(ResourceContributionController::class)->prefix('/projects/{project}/resources')->group(function () {
+        Route::get('/create', 'create')->name('projects.resources.create');
+        Route::post('/', 'store')->name('projects.resources.store');
+    });
+
+    Route::patch('/projects/{project}/move-to-en-cours', [RecolteController::class, 'moveFromRecolteToActive'])
+        ->name('projects.recolte.activate');
 });
 
 require __DIR__.'/auth.php';
