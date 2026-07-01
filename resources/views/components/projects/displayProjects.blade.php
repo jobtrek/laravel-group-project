@@ -61,16 +61,22 @@ use App\Http\Controllers\ProjectController;
         </div>
     </div>
     @if((string)$status === 'récolte' || (string)$status === 'en cours')
-        <div class="flex items-center gap-2 w-full">
-            <div class="w-full bg-gray-200 rounded-full h-1.5">
-                <div class="{{ $progress <= 20 ? 'bg-red-500' : 'bg-green-700' }} h-1.5 rounded-full"
-                     style="width: {{ $progress }}%"></div>
-            </div>
-            <span class="text-xs font-semibold text-gray-600 whitespace-nowrap">
+    <div class="flex items-center gap-2 w-full">
+        <div class="w-full bg-gray-200 rounded-full h-1.5">
+            <div class="{{ $progress <= 20 ? 'bg-red-500' : 'bg-green-700' }} h-1.5 rounded-full"
+                 style="width: {{ $progress }}%"></div>
+        </div>
+        <span class="text-xs font-semibold text-gray-600 whitespace-nowrap">
             {{ $progress }}%
         </span>
-        </div>
-    @endif
+    </div>
+    <div class="flex justify-end" onclick="event.stopPropagation()">
+        <a href="{{ route('projects.resources.create', $project) }}"
+           class="bg-blue-700 text-white text-sm rounded-lg px-3 py-1.5">
+            Ajouter une ressource
+        </a>
+    </div>
+@endif
     <div class="flex items-center justify-between mt-1">
 
         <span class="text-xs text-gray-400 flex items-center gap-1">
