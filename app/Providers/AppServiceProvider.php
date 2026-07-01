@@ -21,7 +21,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::before(function ($user, $ability) {
-            return $user->hasPermissionTo('manage everything') ? true : null;
+            return method_exists($user, 'hasPermissionTo') && $user->hasPermissionTo('manage everything') ? true : null;
         });
     }
 }
