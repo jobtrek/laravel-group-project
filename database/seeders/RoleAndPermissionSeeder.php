@@ -24,6 +24,7 @@ class RoleAndPermissionSeeder extends Seeder
             'manage everything',
             'edit project',
             'add resources',
+            'send to direction',
         ];
 
         foreach ($permissions as $permission) {
@@ -53,6 +54,10 @@ class RoleAndPermissionSeeder extends Seeder
         ]);
         $resourcesManager->givePermissionTo([
             'add resources',
+        ]);
+
+        $projectManager->givePermissionTo([
+            'send to direction',
         ]);
     }
 }

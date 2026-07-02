@@ -33,6 +33,11 @@ class UserSeeder extends Seeder
         ])->assignRole(['user', 'resources_manager']);
 
         User::factory()->create([
+            'name' => 'Jackson PManager',
+            'email' => 'pmanager@mail.fr',
+        ])->assignRole(['project_manager']);
+
+        User::factory()->create([
             'name' => 'Marc User',
             'email' => 'user@mail.fr',
         ])->assignRole(['user']);
