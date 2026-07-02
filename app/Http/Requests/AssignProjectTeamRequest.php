@@ -13,12 +13,21 @@ class AssignProjectTeamRequest extends FormRequest
         return true;
     }
 
+    protected function prepareForValidation(): void
+    {
+        if ($this->has('membres')) {
+            $this->merge([
+                'membres' => array_filter($this->input('membres', []), fn ($value) => ! is_null($value) && $value !== ''),
+            ]);
+        }
+    }
+
     public function rules(): array
     {
         return [
             'leader_id' => ['required', 'integer', 'exists:users,id'],
             'membres' => ['array'],
-            'membres.*' => ['nullable', 'integer', 'exists:users,id', 'distinct'],
+            'membres.*' => ['integer', 'exists:users,id', 'distinct'],
         ];
     }
 }
