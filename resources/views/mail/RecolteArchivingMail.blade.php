@@ -101,5 +101,5 @@
             Ceci est un rappel automatique. Veuillez ne pas répondre directement à cet e-mail.
         </div>
     </div>
-</body>
+</body
 </html>

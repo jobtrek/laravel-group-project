@@ -6,18 +6,17 @@ use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
 use App\Http\Controllers\RecolteController;
+use App\Http\Controllers\ResourceContributionController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RevisionController;
-use App\Models\Project;
-use App\Models\States\EvaluationState;
-use App\Models\States\PropositionState;
+use App\Models\ProjectPhase;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn() => view('welcome'));
+Route::get('/', fn () => view('auth.login'))->middleware('guest');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', fn() => redirect()->route('projects'))->name('dashboard');
+    Route::get('/dashboard', fn () => redirect()->route('projects'))->name('dashboard');
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
     Route::get('/propositions', [PropositionController::class, 'index'])->name('propositions');
     Route::get('/evaluation', [ReviewController::class, 'index'])->name('evaluation');
@@ -31,18 +30,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::get('/projects_details/{project}', [ProjectController::class, 'detailPage'])->middleware(['auth', 'verified'])->name('projects-details');
 
+Route::get('/phase_details/{phase}', function (ProjectPhase $phase) {
+    return view('phase_details', compact('phase'));
+})->middleware(['auth', 'verified'])->name('phase_details');
+
 Route::middleware('auth')->group(function () {
-    Route::get('/create', fn() => view('create', [
+    Route::get('/create', fn () => view('create', [
         'users' => User::query()->select('id', 'name')->get(),
     ]))->name('create');
-
-    Route::get('/direction/projects', function () {
-        $projects = Project::with('evaluation')
-            ->whereState('status', [PropositionState::class, EvaluationState::class])
-            ->get();
-
-        return view('testDirectionFront', ['projects' => $projects]);
-    })->name('direction.projects');
 
     Route::post('/propositions', [PropositionController::class, 'store'])->name('proposition.store');
 
@@ -63,6 +58,14 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit', 'edit')->name('projects.edit');
         Route::patch('/', 'update')->name('projects.update');
     });
+
+    Route::controller(ResourceContributionController::class)->prefix('/projects/{project}/resources')->group(function () {
+        Route::get('/create', 'create')->name('projects.resources.create');
+        Route::post('/', 'store')->name('projects.resources.store');
+    });
+
+    Route::patch('/projects/{project}/move-to-en-cours', [RecolteController::class, 'moveFromRecolteToActive'])
+        ->name('projects.recolte.activate');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';

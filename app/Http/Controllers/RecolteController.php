@@ -3,67 +3,31 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Stage;
-use App\Filters\ProjectFilter;
-use App\Http\Requests\FilterProjectsRequest;
-use App\Models\PhaseResource;
 use App\Models\Project;
-use App\Models\States\EncoursState;
 use App\Models\States\RecolteState;
-use App\Models\User;
-use Illuminate\Http\Request;
+use App\Service\ProjectService;
+use Illuminate\Http\RedirectResponse;
 
-class RecolteController extends Controller
+class RecolteController extends StageProjectController
 {
-    public function __construct(
-        private readonly ProjectFilter $filter
-    ) {}
-
-    public function index(FilterProjectsRequest $request)
+    protected function stage(): Stage
     {
-        $projects = $this->filter->apply(
-            Project::with(['proposer', 'leader', 'evaluation'])
-                ->whereState('status', [RecolteState::class]),
-            $request
-        )->paginate(10);
-
-        $users = User::query()->select('id', 'name')->orderBy('name')->get();
-
-        return view('stage', [
-            'stage' => Stage::Recolte,
-            'projects' => $projects,
-            'users' => $users,
-        ]);
+        return Stage::Recolte;
     }
 
-    public function moveFromRecolteToActive(Request $request)
+    protected function states(): string|array
     {
-        $recolteId = $request->input('recolte_id');
-        $project = Project::findOrFail($recolteId);
+        return [RecolteState::class];
+    }
 
-        if ($project->progress >= 80) {
-            $project->status->transitionTo(EncoursState::class);
-            $project->save();
+    public function moveFromRecolteToActive(Project $project): RedirectResponse
+    {
+        $project->loadMissing(['phases.resources', 'phases.contributions']);
 
-            return redirect()->back()->with('success', 'Project moved to Active state successfully.');
-        } else {
-            return redirect()->back()->with('error', 'Project cannot be moved to Active state. Progress must be greater than 80%.');
+        if (! ProjectService::moveToEncours($project)) {
+            return redirect()->back()->with('error', 'Project cannot be moved to Active state. It must be in Recolte state with progress of at least 80%.');
         }
-    }
 
-    public function updateProgress(Request $request)
-    {
-        $request->validate([
-            'phase_resource_id' => 'required|exists:phase_resources,id',
-            'amount_found' => 'required|numeric|min:0',
-        ]);
-        $phaseResourceId = $request->input('phase_resource_id');
-
-        $resource = PhaseResource::findOrFail($phaseResourceId);
-
-        $resource->update([
-            'amount_found' => $request->input('amount_found'),
-        ]);
-
-        return redirect()->back()->with('success', 'Project progress updated successfully.');
+        return redirect()->back()->with('success', 'Project moved to Active state successfully.');
     }
 }

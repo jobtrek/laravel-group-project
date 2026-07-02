@@ -5,7 +5,7 @@
                 Modifier le projet —
                 <span class="text-indigo-600">{{ $project->title }}</span>
             </h2>
-            <x-projects_Details.comeBackButton :fallback-url="route('projects-details', $project)"/>
+            <x-projects-details.comeBackButton :fallback-url="route('projects-details', $project)"/>
         </div>
     </x-slot>
 
