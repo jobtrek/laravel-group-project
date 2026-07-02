@@ -46,7 +46,7 @@
         }
     },
     removeItem(arr, i) {
-        if (arr.length > 1) arr.splice(i, 1);
+        window.listHelpers.remove(arr, i);
     },
     validateStep1() {
         this.errors = {};

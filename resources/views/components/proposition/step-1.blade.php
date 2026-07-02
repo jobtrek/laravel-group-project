@@ -31,14 +31,14 @@
                                 </option>
                             @endforeach
                         </select>
-                        <button type="button" @click="membres.splice(idx, 1)"
+                        <button type="button" @click="removeItem(membres, idx)"
                             x-show="membres.length > 1"
                             class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
                     </div>
                 </template>
             </div>
             <p x-show="errors.membres" x-text="errors.membres || ''" class="mt-1 text-sm text-red-600"></p>
-            <button type="button" @click="membres.push('')"
+            <button type="button" @click="window.listHelpers.add(membres)"
                 class="mt-2 text-sm text-indigo-600 hover:underline">+ Ajouter un membre</button>
         </div>
     </div>

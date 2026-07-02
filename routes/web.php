@@ -33,6 +33,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/projects_details/{project}', [ProjectController::class, 'detailPage'])->middleware(['auth', 'verified'])->name('projects-details');
 
 Route::get('/phase_details/{phase}', function (ProjectPhase $phase) {
+    $phase->load(['resources', 'contributions']);
+
     return view('phase_details', compact('phase'));
 })->middleware(['auth', 'verified'])->name('phase_details');
 
@@ -67,6 +69,9 @@ Route::middleware('auth')->group(function () {
 
     Route::patch('/projects/{project}/move-to-en-cours', [RecolteController::class, 'moveFromRecolteToActive'])
         ->name('projects.recolte.activate');
+
+    Route::patch('/projects/{project}/team', [RecolteController::class, 'assignTeam'])
+        ->name('projects.recolte.team');
 });
 
 require __DIR__.'/auth.php';

@@ -75,7 +75,7 @@ class ProjectService
             return false;
         }
 
-        if ($project->progress < 80) {
+        if ($project->leader_id === null) {
             return false;
         }
 
