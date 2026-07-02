@@ -10,4 +10,9 @@ class PropositionState extends ProjectState
     {
         return 'proposition';
     }
+
+    public function isEditable(): bool
+    {
+        return true;
+    }
 }

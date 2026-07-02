@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Actions\RequestMoreInfoAction;
+use App\Actions\UpdateProjectAction;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Http\Requests\RequestMoreInfoRequest;
+use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
 use App\Models\User;
 use App\Service\ProjectService;
@@ -81,7 +83,27 @@ class ProjectController extends Controller
         return view('projectsDetails', compact('project'));
     }
 
-  public function complete(Project $project)
+    public function edit(Project $project)
+    {
+        abort_if(! $project->status->isEditable() || auth()->id() !== $project->proposer_id, 403);
+
+        $project->load(['phases.resources', 'evaluation', 'members']);
+        $users = User::query()->select('id', 'name')->orderBy('name')->get();
+
+        return view('edit', compact('project', 'users'));
+    }
+
+    public function update(UpdateProjectRequest $request, Project $project, UpdateProjectAction $action)
+    {
+        abort_if(! $project->status->isEditable() || auth()->id() !== $project->proposer_id, 403);
+
+        $action->execute($project, $request->validated());
+
+        return redirect()->route('projects-details', $project)
+            ->with('status', 'project-updated');
+    }
+
+    public function complete(Project $project)
     {
         try {
             ProjectService::complete($project);

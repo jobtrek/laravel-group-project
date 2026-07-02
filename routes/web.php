@@ -59,6 +59,8 @@ Route::middleware('auth')->group(function () {
         Route::post('/request-more-info', 'requestMoreInfo')->middleware('permission:review')->name('projects.request-more-info');
         Route::patch('/resubmit', 'reSubmit')->name('projects.resubmit');
         Route::patch('/review', 'review')->middleware('permission:review')->name('projects.review');
+        Route::get('/edit', 'edit')->name('projects.edit');
+        Route::patch('/', 'update')->name('projects.update');
         Route::patch('/complete', 'complete')->name('projects.complete');
     });
 
