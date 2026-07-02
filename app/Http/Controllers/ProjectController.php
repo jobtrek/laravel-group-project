@@ -31,9 +31,9 @@ class ProjectController extends Controller
         return view('allProjects', compact('projects', 'counts', 'users'));
     }
 
-    public function review(Project $project)
+    public function sendToDirection(Project $project)
     {
-        ProjectService::review($project);
+        ProjectService::sendToDirection($project);
 
         return Redirect::back()->with('status', 'project-in-review');
     }

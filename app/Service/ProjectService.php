@@ -25,7 +25,7 @@ class ProjectService
         return compact('projects', 'users');
     }
 
-    public static function review(Project $project): void
+    public static function sendToDirection(Project $project): void
     {
         $project->status->transitionTo(EvaluationState::class);
         $project->save();

@@ -43,11 +43,17 @@ use App\Http\Controllers\ProjectController;
         <div class="flex gap-2 pointer-events-auto">
             @if((string)$status === 'proposition')
                 @can('send to direction')
-                <form action="{{ route('projects.send-to-direction', $project) }}" method="POST" class="relative z-10">
-                    @csrf
-                    @method('PATCH')
-                    <x-projects.buttons text="Confirmer la proposition" class="bg-blue-700 text-white p-2" type="submit"/>
-                </form>
+                <div x-data="{ open: false }">
+                    <x-projects.buttons
+                        @click="open = true"
+                        text="Confirmer la proposition"
+                        class="bg-blue-700 text-white p-2"
+                        type="button"
+                    />
+                    <x-to-direction-confirm-window show="open"
+                    route="{{ route('projects.send-to-direction', $project) }}"
+                    />
+                </div>
                 @endcan
             @elseif((string)$status === 'évaluation')
                 @can('evaluate projects')
