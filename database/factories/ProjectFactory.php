@@ -48,6 +48,7 @@ class ProjectFactory extends Factory
             'status' => $statusClass,
             'current_stage' => $statusClass::getMorphClass(),
             'updated_at' => $this->faker->dateTimeBetween('-4 months', '-20 days'),
+            'created_at' => $this->faker->dateTimeBetween('-8 months', '-2 days'),
             'proposer_id' => fake()->randomElement($userIds),
             'leader_id' => fake()->randomElement($userIds),
             'recolte_manager_id' => fake()->randomElement($userIds),
