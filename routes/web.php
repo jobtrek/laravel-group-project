@@ -63,7 +63,7 @@ Route::middleware('auth')->group(function () {
         Route::patch('/deny', 'deny')->middleware('can:deny')->name('projects.deny');
         Route::post('/request-more-info', 'requestMoreInfo')->middleware('can:review')->name('projects.request-more-info');
         Route::patch('/resubmit', 'reSubmit')->name('projects.resubmit');
-        Route::patch('/review', 'review')->middleware('can:review')->name('projects.review');
+        Route::patch('/send-to-direction', 'sendToDirection')->middleware('can:send to direction')->name('projects.send-to-direction');
     });
 
     Route::controller(ResourceContributionController::class)->prefix('/projects/{project}/resources')

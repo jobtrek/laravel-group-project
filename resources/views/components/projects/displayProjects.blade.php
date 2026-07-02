@@ -42,11 +42,11 @@ use App\Http\Controllers\ProjectController;
         </div>
         <div class="flex gap-2 pointer-events-auto">
             @if((string)$status === 'proposition')
-                @can('evaluate projects')
-                <form action="{{ route('projects.review', $project) }}" method="POST" class="relative z-10">
+                @can('send to direction')
+                <form action="{{ route('projects.send-to-direction', $project) }}" method="POST" class="relative z-10">
                     @csrf
                     @method('PATCH')
-                    <x-projects.buttons text=" Evaluer" class="bg-blue-700 text-white p-2" type="submit"/>
+                    <x-projects.buttons text="Evaluer" class="bg-blue-700 text-white p-2" type="submit"/>
                 </form>
                 @endcan
             @elseif((string)$status === 'évaluation')
