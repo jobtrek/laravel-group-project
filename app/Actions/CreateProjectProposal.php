@@ -53,10 +53,8 @@ class CreateProjectProposal
             }
 
             $project->update([
-                'budget_global' => $project->phases()
-                    ->with('resources')
-                    ->get()
-                    ->flatMap(fn (ProjectPhase $phase) => $phase->resources)
+                'budget_global' => collect($data['phases'] ?? [])
+                    ->flatMap(fn (array $phase) => $phase['ressources_necessaires'] ?? [])
                     ->sum('amount_needed'),
             ]);
 

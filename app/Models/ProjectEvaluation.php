@@ -18,23 +18,28 @@ class ProjectEvaluation extends Model
         return $this->belongsTo(Project::class);
     }
 
-    public function getPorteeNormalizedAttribute(): float
+       public function getPorteeNormalizedAttribute(): float
     {
-        return round(min(100, max(0, ($this->portee / 50) * 100)), 2);
+        return $this->normalize($this->portee, 50);
     }
 
     public function getImpactNormalizedAttribute(): float
     {
-        return round(min(100, max(0, ($this->impact / 5) * 100)), 2);
+        return $this->normalize($this->impact, 5);
     }
 
     public function getEffortNormalizedAttribute(): float
     {
-        return round(min(100, max(0, ($this->effort / 5) * 100)), 2);
+        return $this->normalize($this->effort, 5);
     }
 
     public function getConfianceNormalizedAttribute(): float
     {
-        return round(min(100, max(0, (float) $this->confiance)), 2);
+        return $this->normalize($this->confiance);
+    }
+
+    protected function normalize(mixed $value, float $max = 100.0): float
+    {
+        return round(min(100.0, max(0.0, ((float) $value / $max) * 100.0)), 2);
     }
 }

@@ -35,9 +35,9 @@
 
                     <x-projects-details.baseInfo name="Importance :" :valeur="$project->importance !== null ? number_format($project->importance, 2) : '—'" />
 
-                    <x-projects-details.baseInfo name="Budget :" :valeur="($project->budget_global ?? 0) . ' CHF'" />
+                      <x-projects-details.baseInfo name="Budget :" :valeur="number_format($project->budget_global ?? 0, 2, '.', ' ') . ' CHF'" />
 
-                    <x-projects-details.baseInfo name="Date de creation :" :valeur="$project->created_at?->format('d/m/Y') ?? '—'" />
+                    <x-projects-details.baseInfo name="Date de création :" :valeur="$project->created_at?->format('d/m/Y') ?? '—'" />
 
 
 
