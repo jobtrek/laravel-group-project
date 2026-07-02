@@ -33,7 +33,7 @@ class PropositionRequest extends FormRequest
 
             'phases' => ['required', 'array', 'min:1'],
             'phases.*.titre' => ['required', 'string', 'max:255'],
-            'phases.*.duree' => ['required', 'string', 'max:255'],
+            'phases.*.duree' => ['required', 'string', 'max:100'],
             'phases.*.description' => ['required', 'string'],
             'phases.*.objectifs' => ['required', 'array', 'min:1'],
             'phases.*.objectifs.*' => ['required', 'string'],

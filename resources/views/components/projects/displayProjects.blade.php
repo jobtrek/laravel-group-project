@@ -18,16 +18,20 @@ $bgColor = '';
 use App\Http\Controllers\ProjectController;
 
 ?>
-<div class="bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm cursor-pointer"
-     onclick="window.location='{{ route('projects-details', $project) }}'">
-    <div class="flex flex-col items-start gap-2 py-2">
+<div class="relative bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm">
+    <a href="{{ route('projects-details', $project) }}"
+       class="absolute inset-0 z-0"
+       aria-label="Voir le projet {{ $title }}">
+    </a>
+
+    <div class="relative z-10 pointer-events-none flex flex-col items-start gap-2 py-2">
         <x-project_status :status="$status"/>
         <h3 class="text-base font-medium leading-snug">Importance : {{ $importance }}</h3>
     </div>
 
-    <div class="flex items-center justify-between mt-1">
+    <div class="relative z-10 pointer-events-none flex items-center justify-between mt-1">
         <div>
-            <h3 class="text-base font-semibold text-gray-900 leading-snug">{{ $title }}</h3>
+            <h2 class="text-base font-semibold text-gray-900 leading-snug">{{ $title }}</h2>
             <p class="text-sm text-gray-500 mt-1 flex items-center gap-1">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round"
@@ -36,10 +40,10 @@ use App\Http\Controllers\ProjectController;
                 {{ $chef }}
             </p>
         </div>
-        <div class="flex gap-2">
+        <div class="flex gap-2 pointer-events-auto">
             @if((string)$status === 'proposition')
-                    @can('evaluate projects')
-                <form action="{{ route('projects.review', $project) }}" method="POST" onclick="event.stopPropagation()">
+                @can('evaluate projects')
+                <form action="{{ route('projects.review', $project) }}" method="POST" class="relative z-10">
                     @csrf
                     @method('PATCH')
                     <x-projects.buttons text=" Evaluer" class="bg-blue-700 text-white p-2" type="submit"/>
@@ -47,17 +51,17 @@ use App\Http\Controllers\ProjectController;
                 @endcan
             @elseif((string)$status === 'évaluation')
                 @can('evaluate projects')
-                <form action="{{ route('projects.deny', $project) }}" method="POST" onclick="event.stopPropagation()">
+                <form action="{{ route('projects.deny', $project) }}" method="POST" class="relative z-10">
                     @csrf
                     @method('PATCH')
                     <x-projects.buttons text="Refuser" class="bg-red-700 text-white p-2" type="submit"/>
                 </form>
                 <form action="{{ route('projects.direction-review', $project) }}" method="GET"
-                      onclick="event.stopPropagation()">
+                      class="relative z-10">
                     <x-projects.buttons text="Révision" class="bg-yellow-500 text-white p-2" type="submit"/>
                 </form>
                 <form action="{{ route('projects.approve', $project) }}" method="POST"
-                      onclick="event.stopPropagation()">
+                      class="relative z-10">
                     @csrf
                     @method('PATCH')
                     <x-projects.buttons text="Accepter" class="bg-green-600 text-white p-2" type="submit"/>
@@ -67,25 +71,25 @@ use App\Http\Controllers\ProjectController;
         </div>
     </div>
     @if((string)$status === 'récolte' || (string)$status === 'en cours')
-    <div class="flex items-center gap-2 w-full">
-        <div class="w-full bg-gray-200 rounded-full h-1.5">
-            <div class="{{ $progress <= 20 ? 'bg-red-500' : 'bg-green-700' }} h-1.5 rounded-full"
-                 style="width: {{ $progress }}%"></div>
-        </div>
-        <span class="text-xs font-semibold text-gray-600 whitespace-nowrap">
+        <div class="relative z-10 pointer-events-none flex items-center gap-2 w-full">
+            <div class="w-full bg-gray-200 rounded-full h-1.5">
+                <div class="{{ $progress <= 20 ? 'bg-red-500' : 'bg-green-700' }} h-1.5 rounded-full"
+                     style="width: {{ $progress }}%"></div>
+            </div>
+            <span class="text-xs font-semibold text-gray-600 whitespace-nowrap">
             {{ $progress }}%
         </span>
-    </div>
-    <div class="flex justify-end" onclick="event.stopPropagation()">
-        @can('add resources')
-        <a href="{{ route('projects.resources.create', $project) }}"
-           class="bg-blue-700 text-white text-sm rounded-lg px-3 py-1.5">
-            Ajouter une ressource
-        </a>
-            @endcan
-    </div>
-@endif
-    <div class="flex items-center justify-between mt-1">
+        </div>
+        <div class="relative z-10 flex justify-end">
+            @can('add resources')
+            <a href="{{ route('projects.resources.create', $project) }}"
+               class="bg-blue-700 text-white text-sm rounded-lg px-3 py-1.5">
+                Ajouter une ressource
+            </a>
+                @endcan
+        </div>
+    @endif
+    <div class="relative z-10 pointer-events-none flex items-center justify-between mt-1">
 
         <span class="text-xs text-gray-400 flex items-center gap-1">
             <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
@@ -95,14 +99,14 @@ use App\Http\Controllers\ProjectController;
             {{ $creationDate }}
         </span>
         @if($updatedAt instanceof Carbon)
-            <?php $bgColor = match (true) {
-                    $updatedAt->lessThan(now()->subMonth(3)) => 'bg-red-400',
-                    $updatedAt->lessThan(now()->subMonth(2)) => 'bg-orange-400',
+                <?php $bgColor = match (true) {
+                $updatedAt->lessThan(now()->subMonth(3)) => 'bg-red-400',
+                $updatedAt->lessThan(now()->subMonth(2)) => 'bg-orange-400',
                 $updatedAt->lessThan(now()->subMonth()) => 'bg-yellow-400',
 
                 default                                              => 'bg-green-400',
-                };
-?>
+            };
+                ?>
             <span class="text-xs px-1.5 py-0.5 rounded-full text-gray-700 {{ $bgColor }} flex items-center gap-1 italic">
                 Mis à jours {{ $updatedAt->locale('fr')->diffForHumans() }}
             </span>
