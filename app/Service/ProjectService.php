@@ -62,10 +62,6 @@ class ProjectService
         $project->save();
     }
 
-    /**
-     * Transitions a Recolte project to Encours once it has reached the 80% funding
-     * threshold. Returns false without transitioning if either guard fails.
-     */
     public static function moveToEncours(Project $project): bool
     {
         if (! $project->status instanceof RecolteState) {
