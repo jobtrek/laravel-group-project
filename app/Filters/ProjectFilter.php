@@ -36,7 +36,7 @@ class ProjectFilter
             )
             ->when(
                 ! $request->filled('sort'),
-                fn (Builder $q) => $q->orderBy('projects.created_at', 'desc')
+                fn (Builder $q) => $q->orderBy('projects.updated_at', 'desc')
             );
     }
 }

@@ -18,8 +18,8 @@ enum ProjectSort: string
         return match ($this) {
             self::AZ => $query->orderBy('projects.title', 'asc'),
             self::ZA => $query->orderBy('projects.title', 'desc'),
-            self::Recent => $query->orderBy('projects.created_at', 'desc'),
-            self::Oldest => $query->orderBy('projects.created_at', 'asc'),
+            self::Recent => $query->orderBy('projects.updated_at', 'desc'),
+            self::Oldest => $query->orderBy('projects.updated_at', 'asc'),
             self::ImportanceDesc => $query
                 ->leftJoin('project_evaluations', 'project_evaluations.project_id', '=', 'projects.id')
                 ->orderBy('project_evaluations.importance', 'desc')
