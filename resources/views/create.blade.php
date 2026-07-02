@@ -22,7 +22,7 @@
 
                     <h3 class="text-2xl font-medium text-gray-900 mb-6">Nouvelle proposition de projet</h3>
 
-                    <form method="POST" action="{{route('proposition.store')}}">
+                        <form method="POST" action="{{ route('proposition.store') }}">
                         @csrf
                         <x-proposition.wizard :users="$users" />
                     </form>
