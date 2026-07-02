@@ -11,7 +11,6 @@ use App\Http\Controllers\ResourceContributionController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RevisionController;
 use App\Models\ProjectPhase;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => view('auth.login'))->middleware('guest');
@@ -39,9 +38,7 @@ Route::get('/phase_details/{phase}', function (ProjectPhase $phase) {
 })->middleware(['auth', 'verified'])->name('phase_details');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/create', fn () => view('create', [
-        'users' => User::query()->select('id', 'name')->get(),
-    ]))->name('create');
+    Route::get('/create', fn () => view('create'))->name('create');
 
     Route::post('/propositions', [PropositionController::class, 'store'])->name('proposition.store');
 

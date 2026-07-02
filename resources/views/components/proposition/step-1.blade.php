@@ -1,5 +1,3 @@
-@props(['users'])
-
 <div x-show="step === 1" class="space-y-8">
     <div class="space-y-4">
         <div>
@@ -13,33 +11,6 @@
             <p class="mt-1 block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                 {{auth()->user()->name}}
             </p>
-        </div>
-
-        <div>
-            <label class="block text-sm font-medium text-gray-700">Membres</label>
-            <p class="text-xs text-gray-500 mb-2">Toutes les personnes impliquées dans le projet</p>
-            <div class="space-y-2">
-                <template x-for="(membre, idx) in membres" :key="idx">
-                    <div class="flex gap-2">
-                        <select :name="'membres[' + idx + ']'" x-model="membres[idx]"
-                            class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                            <option value="">Sélectionner un utilisateur…</option>
-                            @foreach($users as $user)
-                                <option value="{{ $user->id }}"
-                                    :disabled="membres.some((m, i) => i !== idx && String(m) === '{{ $user->id }}')">
-                                    {{ $user->name }}
-                                </option>
-                            @endforeach
-                        </select>
-                        <button type="button" @click="removeItem(membres, idx)"
-                            x-show="membres.length > 1"
-                            class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
-                    </div>
-                </template>
-            </div>
-            <p x-show="errors.membres" x-text="errors.membres || ''" class="mt-1 text-sm text-red-600"></p>
-            <button type="button" @click="window.listHelpers.add(membres)"
-                class="mt-2 text-sm text-indigo-600 hover:underline">+ Ajouter un membre</button>
         </div>
     </div>
 
