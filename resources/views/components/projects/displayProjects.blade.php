@@ -18,7 +18,8 @@ $bgColor = '';
 use App\Http\Controllers\ProjectController;
 
 ?>
-<div class="relative bg-white rounded-2xl border border-gray-200 p-5 flex flex-col gap-3 shadow-sm">
+<div class="relative border border-white/25 bg-white/10 px-4.5 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors rounded-2xl p-5 flex flex-col gap-3">
+
     <a href="{{ route('projects-details', $project) }}"
        class="absolute inset-0 z-0"
        aria-label="Voir le projet {{ $title }}">
@@ -31,8 +32,8 @@ use App\Http\Controllers\ProjectController;
 
     <div class="relative z-10 pointer-events-none flex items-center justify-between mt-1">
         <div>
-            <h2 class="text-base font-semibold text-gray-900 leading-snug">{{ $title }}</h2>
-            <p class="text-sm text-gray-500 mt-1 flex items-center gap-1">
+            <h2 class="text-base font-semibold text-white leading-snug">{{ $title }}</h2>
+            <p class="text-sm text-white mt-1 flex items-center gap-1">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round"
                           d="M15.75 6a3.75 3.75 0 1 1-7.5 0 3.75 3.75 0 0 1 7.5 0ZM4.501 20.118a7.5 7.5 0 0 1 14.998 0A17.933 17.933 0 0 1 12 21.75c-2.676 0-5.216-.584-7.499-1.632Z"/>
@@ -80,7 +81,7 @@ use App\Http\Controllers\ProjectController;
                 <div class="{{ $progress <= 20 ? 'bg-red-500' : 'bg-green-700' }} h-1.5 rounded-full"
                      style="width: {{ $progress }}%"></div>
             </div>
-            <span class="text-xs font-semibold text-gray-600 whitespace-nowrap">
+            <span class="text-xs font-semibold text-blue-50 whitespace-nowrap">
             {{ $progress }}%
         </span>
         </div>

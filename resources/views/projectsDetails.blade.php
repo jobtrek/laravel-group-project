@@ -32,11 +32,11 @@
                         </div>
                     </div>
 
-                    <h2 class="mt-3 text-2xl font-bold text-gray-900">
+                    <h2 class="mt-3 text-2xl font-bold text-gray-900 break-words">
                         {{ $project->title }}
                     </h2>
 
-                    <p class="mt-1 text-sm text-gray-500">
+                    <p class="mt-1 text-sm text-gray-500 break-words">
                         {{ $project->description }}
                     </p>
 
@@ -97,11 +97,11 @@
 
                     <div class="mt-4 rounded-lg border border-gray-200 p-3">
 
-                        <p class="text-sm font-semibold text-gray-800">Phases :</p>
+                        <p class="text-sm font-semibold text-gray-800 break-words">Phases :</p>
 
                         <div class="mt-3 grid grid-cols-4 gap-4">
                             @foreach($project->phases as $phase)
-                                <a class="bg-gray-50 p-1  pl-3 pr-3 border rounded-xl hover:bg-gray-100" href="{{ route('phase_details', $phase) }}">
+                                <a class=" bg-gray-50 p-1  pl-3 pr-3 border rounded-xl hover:bg-gray-100" href="{{ route('phase_details', $phase) }}">
                                     {{ $phase->name }}
                                 </a>
                             @endforeach
