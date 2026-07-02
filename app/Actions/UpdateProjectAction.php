@@ -51,17 +51,21 @@ class UpdateProjectAction
             ];
 
             $phase = !empty($phaseData['id'])
-                ? tap($project->phases->firstWhere('id', $phaseData['id']))?->update($attributes)
-                    ? $project->phases->firstWhere('id', $phaseData['id'])
-                    : null
-                : $project->phases()->create($attributes);
+                ? $project->phases->firstWhere('id', $phaseData['id'])
+                : null;
+
+            if ($phase) {
+                $phase->update($attributes);
+            } else {
+                $phase = $project->phases()->create($attributes);
+            }
 
             if (!$phase) {
                 continue;
             }
 
             $keptIds[] = $phase->id;
-            $this->syncResources($phase, $phaseData['resources'] ?? []);
+            $this->syncResources($phase, $phaseData['ressources'] ?? []);
         }
 
         $project->phases()
