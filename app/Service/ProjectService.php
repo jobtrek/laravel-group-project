@@ -6,6 +6,7 @@ use App\Mail\ApprovedEmail;
 use App\Mail\DeniedEmail;
 use App\Models\Project;
 use App\Models\States\ArchiveState;
+use App\Models\States\CompleteState;
 use App\Models\States\EncoursState;
 use App\Models\States\EvaluationState;
 use App\Models\States\PropositionState;
@@ -59,6 +60,12 @@ class ProjectService
     public static function reSubmit(Project $project): void
     {
         $project->status->transitionTo(PropositionState::class);
+        $project->save();
+    }
+
+    public static function complete(Project $project): void
+    {
+        $project->status->transitionTo(CompleteState::class);
         $project->save();
     }
 

@@ -18,7 +18,9 @@ class ProjectController extends Controller
 {
     public function __construct(
         private readonly ProjectFilter $filter
-    ) {}
+    )
+    {
+    }
 
     public function index(FilterProjectsRequest $request)
     {
@@ -56,9 +58,10 @@ class ProjectController extends Controller
 
     public function requestMoreInfo(
         RequestMoreInfoRequest $request,
-        Project $project,
-        RequestMoreInfoAction $action,
-    ): RedirectResponse {
+        Project                $project,
+        RequestMoreInfoAction  $action,
+    ): RedirectResponse
+    {
         $action->execute(
             project: $project,
             fieldComments: $request->validated()['field_comments'],
@@ -101,5 +104,23 @@ class ProjectController extends Controller
 
         return redirect()->route('projects-details', $project)
             ->with('status', 'project-updated');
+    }
+
+  public function complete(Project $project)
+    {
+        try {
+            ProjectService::complete($project);
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        return back()->with('status', 'project-completed');
+    }
+
+    public function archive(Project $project)
+    {
+        ProjectService::archive($project);
+
+        return back()->with('status', 'project-archived');
     }
 }
