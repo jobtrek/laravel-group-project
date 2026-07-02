@@ -2,6 +2,8 @@
 
 namespace App\Service;
 
+use App\Mail\ApprovedEmail;
+use App\Mail\DeniedEmail;
 use App\Models\Project;
 use App\Models\States\ArchiveState;
 use App\Models\States\CompleteState;
@@ -12,6 +14,7 @@ use App\Models\States\RecolteState;
 use App\Models\States\RevisionState;
 use App\Models\User;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Mail;
 
 class ProjectService
 {
@@ -33,18 +36,25 @@ class ProjectService
     {
         $project->status->transitionTo(RecolteState::class);
         $project->save();
+
+        if ($proposer = $project->proposer) {
+            Mail::to($proposer->email)->send(new ApprovedEmail($proposer->name));
+        }
     }
 
     public static function deny(Project $project): void
     {
         $project->status->transitionTo(ArchiveState::class);
         $project->save();
+
+        if ($proposer = $project->proposer) {
+            Mail::to($proposer->email)->send(new DeniedEmail($proposer->name));
+        }
     }
 
-    public static function requestMoreInfo(Project $project): void
+    public static function requestMoreInfoTransition(Project $project): void
     {
         $project->status->transitionTo(RevisionState::class);
-        $project->save();
     }
 
     public static function reSubmit(Project $project): void

@@ -6,7 +6,7 @@ namespace App\Actions;
 
 use App\Models\Project;
 use App\Models\ProjectPhase;
-use App\Models\States\PropositionState;
+use App\Service\ProjectService;
 use Illuminate\Support\Facades\DB;
 
 class SubmitRevisionAction
@@ -88,8 +88,7 @@ class SubmitRevisionAction
 
             $project->comments()->where('stage', 'review')->delete();
 
-            $project->status->transitionTo(PropositionState::class);
-            $project->save();
+            ProjectService::reSubmit($project);
         });
     }
 

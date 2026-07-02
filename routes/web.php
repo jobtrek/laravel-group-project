@@ -14,7 +14,7 @@ use App\Models\ProjectPhase;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => view('welcome'));
+Route::get('/', fn () => view('auth.login'))->middleware('guest');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', fn () => redirect()->route('projects'))->name('dashboard');
