@@ -52,6 +52,12 @@ class CreateProjectProposal
                 }
             }
 
+            $project->update([
+                'budget_global' => collect($data['phases'] ?? [])
+                    ->flatMap(fn (array $phase) => $phase['ressources_necessaires'] ?? [])
+                    ->sum('amount_needed'),
+            ]);
+
             return $project;
         });
     }
