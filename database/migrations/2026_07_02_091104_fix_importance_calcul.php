@@ -11,15 +11,14 @@ return new class extends Migration
      */
     public function up(): void
     {
+
         Schema::table('project_evaluations', function (Blueprint $table) {
-            $table->decimal('importance')->storedAs('(portee * impact * confiance) / NULLIF(effort, 0)');
+            $table->decimal('importance', 8, 2)->storedAs('
+            (portee * impact * (confiance / 100.0)) / NULLIF(effort, 0)
+        ');
         });
-        //
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
         Schema::table('project_evaluations', function (Blueprint $table) {

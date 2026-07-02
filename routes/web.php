@@ -31,10 +31,6 @@ Route::middleware(['auth', 'verified'])->group(function () {
 
 Route::get('/projects_details/{project}', [ProjectController::class, 'detailPage'])->middleware(['auth', 'verified'])->name('projects-details');
 
-Route::get('/projects_details', function () {
-    return view('projectsDetails');
-})->middleware(['auth', 'verified'])->name('projects-details');
-
 Route::get('/phase_details/{phase}', function (ProjectPhase $phase) {
     return view('phase_details', compact('phase'));
 })->middleware(['auth', 'verified'])->name('phase_details');
