@@ -86,9 +86,12 @@
                                     <input type="text" :name="'phases[' + pi + '][ressources_necessaires][' + ri + '][resource_type]'"
                                         x-model="res.resource_type" placeholder="Type de ressource"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    <input type="number" :name="'phases[' + pi + '][ressources_necessaires][' + ri + '][amount_needed]'"
-                                        x-model="res.amount_needed" placeholder="Quantité" min="0" step="0.01"
-                                        class="block w-32 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                    <div class="relative w-32">
+                                        <input type="number" :name="'phases[' + pi + '][ressources_necessaires][' + ri + '][amount_needed]'"
+                                            x-model="res.amount_needed" placeholder="Quantité" min="0" step="0.01"
+                                            class="block w-full rounded-md border-gray-300 shadow-sm pr-12 focus:border-indigo-500 focus:ring-indigo-500">
+                                        <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-sm text-gray-400">CHF</span>
+                                    </div>
                                     <button type="button" @click="removeItem(phase.ressources_necessaires, ri)"
                                         x-show="phase.ressources_necessaires.length > 1"
                                         class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>

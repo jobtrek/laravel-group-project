@@ -24,8 +24,6 @@ class PropositionRequest extends FormRequest
     {
         return [
             'titre' => ['required', 'string', 'max:100'],
-            'membres' => ['required', 'array', 'min:1'],
-            'membres.*' => ['required', 'integer', 'distinct', 'exists:users,id'],
             'description' => ['required', 'string'],
             'buts' => ['required', 'array', 'min:1'],
             'buts.*' => ['required', 'string', 'max:255'],
