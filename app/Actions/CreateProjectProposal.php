@@ -52,6 +52,14 @@ class CreateProjectProposal
                 }
             }
 
+            $project->update([
+                'budget_global' => $project->phases()
+                    ->with('resources')
+                    ->get()
+                    ->flatMap(fn (ProjectPhase $phase) => $phase->resources)
+                    ->sum('amount_needed'),
+            ]);
+
             return $project;
         });
     }
