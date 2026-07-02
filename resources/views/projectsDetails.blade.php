@@ -89,9 +89,8 @@
                     <p class="text-sm font-semibold text-gray-800">Phases :</p>
 
                     <div class="mt-3 grid grid-cols-4 gap-4">
-                        @foreach ($project->phases as $phase)
-                            <a class="bg-gray-50 p-1  pl-3 pr-3 border rounded-xl hover:bg-gray-100"
-                                href="/phase_details/{{ $phase->id }}">
+                        @foreach($project->phases as $phase)
+                            <a class="bg-gray-50 p-1  pl-3 pr-3 border rounded-xl hover:bg-gray-100" href="{{ route('phase_details', $phase) }}">
                                 {{ $phase->name }}
                             </a>
                         @endforeach
