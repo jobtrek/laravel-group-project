@@ -6,6 +6,7 @@ use App\Models\Project;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
 
 class ProjectMemberSeeder extends Seeder
 {
@@ -16,10 +17,11 @@ class ProjectMemberSeeder extends Seeder
         $projects = Project::all();
         $users = User::all();
 
-        $projects->each(function ($project) use ($users) {
-            $users->random(rand(2, 4))->each(function ($user) use ($project) {
-                $project->members()->attach($user->id);
-            });
-        });
+        $members = $projects->flatMap(fn ($project) =>
+        $users->random(rand(2, 4))
+            ->map(fn ($user) => ['project_id' => $project->id, 'user_id' => $user->id])
+        );
+
+        DB::table('project_members')->insert($members->toArray());
     }
 }
