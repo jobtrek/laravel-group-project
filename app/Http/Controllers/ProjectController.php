@@ -3,16 +3,15 @@
 namespace App\Http\Controllers;
 
 use App\Actions\RequestMoreInfoAction;
+use App\Actions\UpdateProjectAction;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Http\Requests\RequestMoreInfoRequest;
-use App\Mail\ApprovedEmail;
-use App\Mail\DeniedEmail;
+use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
 use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 
 class ProjectController extends Controller
@@ -44,9 +43,6 @@ class ProjectController extends Controller
     public function approve(Project $project)
     {
         ProjectService::approve($project);
-        if ($proposer = $project->proposer) {
-            Mail::to($proposer->email)->send(new ApprovedEmail($proposer->name));
-        }
 
         return Redirect::back()->with('status', 'project-approved');
     }
@@ -54,9 +50,6 @@ class ProjectController extends Controller
     public function deny(Project $project)
     {
         ProjectService::deny($project);
-        if ($proposer = $project->proposer) {
-            Mail::to($proposer->email)->send(new DeniedEmail($proposer->name));
-        }
 
         return Redirect::back()->with('status', 'project-denied');
     }
@@ -88,5 +81,43 @@ class ProjectController extends Controller
         $project->load(['proposer', 'leader', 'evaluation', 'phases', 'phases.resources', 'members', 'comments', 'comments.user']);
 
         return view('projectsDetails', compact('project'));
+    }
+
+    public function edit(Project $project)
+    {
+        abort_if(! $project->status->isEditable() || auth()->id() !== $project->proposer_id, 403);
+
+        $project->load(['phases.resources', 'evaluation', 'members']);
+        $users = User::query()->select('id', 'name')->orderBy('name')->get();
+
+        return view('edit', compact('project', 'users'));
+    }
+
+    public function update(UpdateProjectRequest $request, Project $project, UpdateProjectAction $action)
+    {
+        abort_if(! $project->status->isEditable() || auth()->id() !== $project->proposer_id, 403);
+
+        $action->execute($project, $request->validated());
+
+        return redirect()->route('projects-details', $project)
+            ->with('status', 'project-updated');
+    }
+
+    public function complete(Project $project)
+    {
+        try {
+            ProjectService::complete($project);
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        return back()->with('status', 'project-completed');
+    }
+
+    public function archive(Project $project)
+    {
+        ProjectService::archive($project);
+
+        return back()->with('status', 'project-archived');
     }
 }

@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\CompleteController;
 use App\Http\Controllers\EnCoursController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
@@ -10,10 +11,9 @@ use App\Http\Controllers\ResourceContributionController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RevisionController;
 use App\Models\ProjectPhase;
-use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => view('welcome'));
+Route::get('/', fn () => view('auth.login'))->middleware('guest');
 
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', fn () => redirect()->route('projects'))->name('dashboard');
@@ -22,6 +22,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/evaluation', [ReviewController::class, 'index'])->name('evaluation');
     Route::get('/recolte', [RecolteController::class, 'index'])->name('recolte');
     Route::get('/en-cours', [EnCoursController::class, 'index'])->name('en-cours');
+    Route::get('/complete', [CompleteController::class, 'index'])->name('complete');
     Route::get('/frigo', [ArchiveController::class, 'index'])->name('frigo');
     Route::get('/projects/{project}/direction-review', [ReviewController::class, 'showForm'])
         ->middleware('can:review')
@@ -39,14 +40,14 @@ Route::get('/projects_details/{project}', [ProjectController::class, 'detailPage
     ->name('projects-details');
 
 Route::get('/phase_details/{phase}', function (ProjectPhase $phase) {
+    $phase->load(['resources', 'contributions']);
+
     return view('phase_details', compact('phase'));
 })->middleware(['auth', 'verified'])
     ->name('phase_details');
 
 Route::middleware('auth')->group(function () {
-    Route::get('/create', fn () => view('create', [
-        'users' => User::query()->select('id', 'name')->get(),
-    ]))->name('create');
+    Route::get('/create', fn () => view('create'))->name('create');
 
     Route::post('/propositions', [PropositionController::class, 'store'])->name('proposition.store');
 
@@ -63,6 +64,9 @@ Route::middleware('auth')->group(function () {
         Route::patch('/deny', 'deny')->middleware('can:deny')->name('projects.deny');
         Route::post('/request-more-info', 'requestMoreInfo')->middleware('can:review')->name('projects.request-more-info');
         Route::patch('/resubmit', 'reSubmit')->name('projects.resubmit');
+        Route::get('/edit', 'edit')->name('projects.edit');
+        Route::patch('/', 'update')->name('projects.update');
+        Route::patch('/complete', 'complete')->name('projects.complete');
         Route::patch('/send-to-direction', 'sendToDirection')->middleware('can:send to direction')->name('projects.send-to-direction');
     });
 
@@ -75,6 +79,9 @@ Route::middleware('auth')->group(function () {
 
     Route::patch('/projects/{project}/move-to-en-cours', [RecolteController::class, 'moveFromRecolteToActive'])
         ->name('projects.recolte.activate');
+
+    Route::patch('/projects/{project}/team', [RecolteController::class, 'assignTeam'])
+        ->name('projects.recolte.team');
 });
 
 require __DIR__.'/auth.php';

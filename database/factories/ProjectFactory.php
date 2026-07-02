@@ -37,6 +37,8 @@ class ProjectFactory extends Factory
             ArchiveState::class,
         ]);
 
+        $userIds = once(fn () => User::pluck('id')->toArray());
+
         return [
             'title' => $this->faker->sentence(3),
             'description' => $this->faker->paragraph(),
@@ -46,9 +48,9 @@ class ProjectFactory extends Factory
             'status' => $statusClass,
             'current_stage' => $statusClass::getMorphClass(),
             'updated_at' => $this->faker->dateTimeBetween('-4 months', '-20 days'),
-            'proposer_id' => fn () => User::inRandomOrder()->first()?->id ?? User::factory(),
-            'leader_id' => User::inRandomOrder()->first()?->id,
-            'recolte_manager_id' => User::inRandomOrder()->first()?->id,
+            'proposer_id' => fake()->randomElement($userIds),
+            'leader_id' => fake()->randomElement($userIds),
+            'recolte_manager_id' => fake()->randomElement($userIds),
         ];
     }
 

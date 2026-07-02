@@ -8,8 +8,8 @@ use App\Models\ProjectPhase;
 use App\Models\ResourceContribution;
 use App\Models\States\EncoursState;
 use App\Models\States\RecolteState;
+use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
 
 class ResourceContributionController extends Controller
@@ -22,36 +22,36 @@ class ResourceContributionController extends Controller
             404
         );
 
-        $project->load(['phases.resources', 'phases.contributions']);
+        $project->load(['phases.resources', 'phases.contributions', 'leader', 'members']);
 
         $phasesData = $project->phases->map(fn (ProjectPhase $phase) => [
             'id' => $phase->id,
             'name' => $phase->name,
             'needed' => $phase->amount_needed,
             'found' => $phase->amount_found,
+            'resources' => $phase->resources->map(fn ($resource) => [
+                'resource_type' => $resource->resource_type,
+                'needed' => (float) $resource->amount_needed,
+                'found' => (float) $phase->contributions
+                    ->where('resource_type', $resource->resource_type)
+                    ->sum('amount'),
+            ])->values()->all(),
         ])->values();
 
-        return view('resource-contribution-form', compact('project', 'phasesData'));
+        $users = User::query()->select('id', 'name')->orderBy('name')->get();
+
+        return view('resource-contribution-form', compact('project', 'phasesData', 'users'));
     }
 
     public function store(StoreResourceContributionRequest $request, Project $project): RedirectResponse
     {
-        DB::transaction(function () use ($request, $project): void {
-            ResourceContribution::create([
-                'phase_id' => $request->validated('phase_id'),
-                'user_id' => auth()->id(),
-                'resource_type' => $request->validated('resource_type'),
-                'description' => $request->validated('description'),
-                'amount' => $request->validated('amount'),
-            ]);
-
-            $project->load(['phases.resources', 'phases.contributions']);
-
-            if ($project->progress >= 80 && $project->status instanceof RecolteState) {
-                $project->status->transitionTo(EncoursState::class);
-                $project->save();
-            }
-        });
+        ResourceContribution::create([
+            'phase_id' => $request->validated('phase_id'),
+            'user_id' => auth()->id(),
+            'resource_type' => $request->validated('resource_type'),
+            'description' => $request->validated('description'),
+            'amount' => $request->validated('amount'),
+        ]);
 
         $redirectRoute = $project->status instanceof EncoursState
         ? 'en-cours'
