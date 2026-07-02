@@ -7,7 +7,7 @@ namespace App\Actions;
 use App\Mail\RequestMoreInfoMail;
 use App\Models\Comment;
 use App\Models\Project;
-use App\Models\States\RevisionState;
+use App\Service\ProjectService;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
@@ -32,7 +32,7 @@ class RequestMoreInfoAction
                 ]);
             }
 
-            $project->status->transitionTo(RevisionState::class);
+            ProjectService::requestMoreInfoTransition($project);
         });
 
         if ($project->proposer) {
