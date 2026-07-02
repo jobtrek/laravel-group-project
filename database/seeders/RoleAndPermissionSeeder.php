@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use Gate;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -21,6 +20,11 @@ class RoleAndPermissionSeeder extends Seeder
             'approve',
             'deny',
             'review',
+            'evaluate projects',
+            'manage everything',
+            'edit project',
+            'add resources',
+            'send to direction',
         ];
 
         foreach ($permissions as $permission) {
@@ -34,15 +38,26 @@ class RoleAndPermissionSeeder extends Seeder
         $directionRole = Role::firstOrCreate(['name' => 'direction', 'guard_name' => 'web']);
         $projectLeader = Role::firstOrCreate(['name' => 'project_leader', 'guard_name' => 'web']);
         $projectManager = Role::firstOrCreate(['name' => 'project_manager', 'guard_name' => 'web']);
-        $resourcesSupport = Role::firstOrCreate(['name' => 'resources_support', 'guard_name' => 'web']);
+        $resourcesManager = Role::firstOrCreate(['name' => 'resources_manager', 'guard_name' => 'web']);
 
-        Gate::before(function ($user, $ability) {
-            return $user->hasPermissionTo('manage everything') ? true : null;
-        });
+        $adminRole->givePermissionTo([
+            'manage everything',
+        ]);
         $directionRole->givePermissionTo([
             'approve',
             'deny',
             'review',
+            'evaluate projects',
+        ]);
+        $projectLeader->givePermissionTo([
+            'edit project',
+        ]);
+        $resourcesManager->givePermissionTo([
+            'add resources',
+        ]);
+
+        $projectManager->givePermissionTo([
+            'send to direction',
         ]);
     }
 }

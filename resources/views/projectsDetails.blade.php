@@ -1,5 +1,10 @@
 @php
     use App\Models\States\RevisionState;
+    function canModify($project) {
+        return (auth()->user()->can('edit project') && auth()->id() === $project->leader_id)
+        || auth()->id() === $project->proposer_id
+        || auth()->user()->can('manage everything');
+    }
 @endphp
 
 
@@ -12,12 +17,14 @@
                     <x-project_status :status="$project->status" />
                     <div class="flex items-center gap-3">
                         @if ($project->status instanceof RevisionState && auth()->id() === $project->proposer_id)
-                            <a href="{{ route('projects.revision-form', $project) }}"
-                                class="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 text-sm font-medium transition-colors shadow-sm">
+                            <a
+                                href="{{ route('projects.revision-form', $project) }}"
+                                class="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 text-sm font-medium transition-colors shadow-sm"
+                            >
                                 Corriger ma proposition
                             </a>
                         @endif
-                        <x-projects-details.comeBackButton />
+                        <x-projects-details.comeBackButton/>
                     </div>
                 </div>
 

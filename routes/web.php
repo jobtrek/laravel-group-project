@@ -23,16 +23,25 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/recolte', [RecolteController::class, 'index'])->name('recolte');
     Route::get('/en-cours', [EnCoursController::class, 'index'])->name('en-cours');
     Route::get('/frigo', [ArchiveController::class, 'index'])->name('frigo');
-    Route::get('/projects/{project}/direction-review', [ReviewController::class, 'showForm'])->name('projects.direction-review');
-    Route::get('/projects/{project}/revision', [RevisionController::class, 'showForm'])->name('projects.revision-form');
-    Route::post('/projects/{project}/revision-submit', [RevisionController::class, 'submit'])->name('projects.revision-submit');
+    Route::get('/projects/{project}/direction-review', [ReviewController::class, 'showForm'])
+        ->middleware('can:review')
+        ->name('projects.direction-review');
+    Route::get('/projects/{project}/revision', [RevisionController::class, 'showForm'])
+        ->middleware('can:review')
+        ->name('projects.revision-form');
+    Route::post('/projects/{project}/revision-submit', [RevisionController::class, 'submit'])
+        ->middleware('can:review')
+        ->name('projects.revision-submit');
 });
 
-Route::get('/projects_details/{project}', [ProjectController::class, 'detailPage'])->middleware(['auth', 'verified'])->name('projects-details');
+Route::get('/projects_details/{project}', [ProjectController::class, 'detailPage'])
+    ->middleware(['auth', 'verified'])
+    ->name('projects-details');
 
 Route::get('/phase_details/{phase}', function (ProjectPhase $phase) {
     return view('phase_details', compact('phase'));
-})->middleware(['auth', 'verified'])->name('phase_details');
+})->middleware(['auth', 'verified'])
+    ->name('phase_details');
 
 Route::middleware('auth')->group(function () {
     Route::get('/create', fn () => view('create', [
@@ -49,15 +58,17 @@ Route::middleware('auth')->group(function () {
 
     Route::controller(ProjectController::class)->prefix('/projects/{project}')->group(function () {
         Route::patch('/approve', 'approve')
-            ->middleware('permission:approve')
+            ->middleware('can:approve')
             ->name('projects.approve');
-        Route::patch('/deny', 'deny')->middleware('permission:deny')->name('projects.deny');
-        Route::post('/request-more-info', 'requestMoreInfo')->middleware('permission:review')->name('projects.request-more-info');
+        Route::patch('/deny', 'deny')->middleware('can:deny')->name('projects.deny');
+        Route::post('/request-more-info', 'requestMoreInfo')->middleware('can:review')->name('projects.request-more-info');
         Route::patch('/resubmit', 'reSubmit')->name('projects.resubmit');
-        Route::patch('/review', 'review')->middleware('permission:review')->name('projects.review');
+        Route::patch('/send-to-direction', 'sendToDirection')->middleware('can:send to direction')->name('projects.send-to-direction');
     });
 
-    Route::controller(ResourceContributionController::class)->prefix('/projects/{project}/resources')->group(function () {
+    Route::controller(ResourceContributionController::class)->prefix('/projects/{project}/resources')
+        ->middleware('can:add resources')->
+        group(function () {
         Route::get('/create', 'create')->name('projects.resources.create');
         Route::post('/', 'store')->name('projects.resources.store');
     });
