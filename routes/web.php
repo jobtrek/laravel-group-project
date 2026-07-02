@@ -9,6 +9,7 @@ use App\Http\Controllers\RecolteController;
 use App\Http\Controllers\ResourceContributionController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RevisionController;
+use App\Http\Controllers\CompleteController;
 use App\Models\ProjectPhase;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
@@ -22,6 +23,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/evaluation', [ReviewController::class, 'index'])->name('evaluation');
     Route::get('/recolte', [RecolteController::class, 'index'])->name('recolte');
     Route::get('/en-cours', [EnCoursController::class, 'index'])->name('en-cours');
+    Route::get('/complete', [CompleteController::class, 'index'])->name('complete');
     Route::get('/frigo', [ArchiveController::class, 'index'])->name('frigo');
     Route::get('/projects/{project}/direction-review', [ReviewController::class, 'showForm'])->name('projects.direction-review');
     Route::get('/projects/{project}/revision', [RevisionController::class, 'showForm'])->name('projects.revision-form');
@@ -55,6 +57,7 @@ Route::middleware('auth')->group(function () {
         Route::post('/request-more-info', 'requestMoreInfo')->middleware('permission:review')->name('projects.request-more-info');
         Route::patch('/resubmit', 'reSubmit')->name('projects.resubmit');
         Route::patch('/review', 'review')->middleware('permission:review')->name('projects.review');
+        Route::patch('/complete', 'complete')->name('projects.complete');
     });
 
     Route::controller(ResourceContributionController::class)->prefix('/projects/{project}/resources')->group(function () {

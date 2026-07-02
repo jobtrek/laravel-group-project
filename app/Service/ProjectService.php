@@ -2,6 +2,7 @@
 
 namespace App\Service;
 
+use App\Models\States\CompleteState;
 use App\Models\Project;
 use App\Models\States\ArchiveState;
 use App\Models\States\EvaluationState;
@@ -49,4 +50,16 @@ class ProjectService
         $project->status->transitionTo(PropositionState::class);
         $project->save();
     }
+
+    public static function complete(Project $project): void
+{
+    $project->status->transitionTo(CompleteState::class);
+    $project->save();
+}
+
+public static function archive(Project $project): void
+{
+    $project->status->transitionTo(ArchiveState::class);
+    $project->save();
+}
 }

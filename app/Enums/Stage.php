@@ -8,6 +8,7 @@ enum Stage: string
     case Evaluation = 'evaluation';
     case Recolte = 'recolte';
     case EnCours = 'en-cours';
+    case Complete = 'complete';
     case Archive = 'frigo';
 
     public function title(): string
@@ -17,6 +18,7 @@ enum Stage: string
             self::Evaluation => 'Evaluation',
             self::Recolte => 'Récolte',
             self::EnCours => 'En cours',
+            self::Complete => 'Complété',
             self::Archive => 'Frigo',
         };
     }
@@ -27,7 +29,8 @@ enum Stage: string
             self::Evaluation => self::Propositions,
             self::Recolte => self::Evaluation,
             self::EnCours => self::Recolte,
-            self::Archive => self::EnCours,
+            self::Complete => self::EnCours,
+            self::Archive => self::Complete,
             default => null,
         };
     }
@@ -38,7 +41,8 @@ enum Stage: string
             self::Propositions => self::Evaluation,
             self::Evaluation => self::Recolte,
             self::Recolte => self::EnCours,
-            self::EnCours => self::Archive,
+            self::EnCours => self::Complete,
+            self::Complete => self::Archive,
             default => null,
         };
     }
@@ -50,7 +54,8 @@ enum Stage: string
             self::Evaluation => ['évaluation'],
             self::Recolte => ['récolte'],
             self::EnCours => ['en cours'],
-            self::Archive => ['archivé', 'complété'],
+            self::Complete => ['complété'],
+            self::Archive => ['archivé'],
         };
     }
 }

@@ -3,17 +3,17 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Stage;
-use App\Models\States\ArchiveState;
+use App\Models\States\CompleteState;
 
-class ArchiveController extends StageProjectController
+class CompleteController extends StageProjectController
 {
     protected function stage(): Stage
     {
-        return Stage::Archive;
+        return Stage::Complete;
     }
 
     protected function states(): string|array
     {
-        return ArchiveState::class;
+        return CompleteState::class;
     }
 }
