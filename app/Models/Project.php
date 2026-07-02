@@ -3,12 +3,12 @@
 namespace App\Models;
 
 use App\Models\States\ProjectState;
-use App\Models\States\PropositionState;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 use Spatie\ModelStates\HasStates;
@@ -95,70 +95,23 @@ class Project extends Model
         return $this->evaluation?->importance;
     }
 
-    public static function createProposal(array $data, int $proposerId): self
-    {
-        return DB::transaction(function () use ($data, $proposerId) {
-            $project = self::create([
-                'title' => $data['titre'],
-                'description' => $data['description'],
-                'but' => $data['buts'],
-                'perimetre' => $data['perimetre'] ?? null,
-                'ressources_totales' => $data['ressources_totales'] ?? null,
-                'status' => PropositionState::getMorphClass(),
-                'current_stage' => PropositionState::getMorphClass(),
-                'proposer_id' => $proposerId,
-                'leader_id' => $data['porteur'],
-            ]);
-
-            $project->members()->attach($data['membres']);
-
-            $project->evaluation()->create([
-                'portee' => $data['portee'],
-                'impact' => $data['impact'],
-                'confiance' => $data['confiance'],
-                'effort' => $data['effort'],
-            ]);
-
-            foreach ($data['phases'] as $index => $phase) {
-                /** @var ProjectPhase $createdPhase */
-                $createdPhase = $project->phases()->create([
-                    'name' => $phase['titre'],
-                    'duration' => $phase['duree'],
-                    'description' => $phase['description'],
-                    'objectifs' => $phase['objectifs'],
-                    'livrables' => $phase['livrables'],
-                    'order' => $index + 1,
-                ]);
-
-                foreach ($phase['ressources_necessaires'] as $resource) {
-                    $createdPhase->resources()->create([
-                        'resource_type' => $resource['resource_type'],
-                        'amount_needed' => $resource['amount_needed'],
-                    ]);
-                }
-            }
-
-            return $project;
-        });
-    }
-
     public function getProgressAttribute(): float
     {
-        $totalNeeded = 0;
-        $totalFound = 0;
+        $totalNeeded = 0.0;
+        $totalFound = 0.0;
 
         foreach ($this->phases as $phase) {
-            foreach ($phase->resources as $resource) {
-                $totalNeeded += (float) $resource->amount_needed;
-                $totalFound += (float) ($resource->amount_found ?? 0);
-            }
+            $totalNeeded += $phase->amount_needed;
+            $totalFound += $phase->amount_found;
         }
 
         if ($totalNeeded <= 0) {
-            return 0;
+            return 0.0;
         }
 
-        return round(($totalFound / $totalNeeded) * 100, 2);
+        $progress = round(($totalFound / $totalNeeded) * 100, 2);
+
+        return max(0.0, min($progress, 100.0));
     }
 
     public static function statusCounts()
@@ -168,5 +121,18 @@ class Project extends Model
             ->selectRaw('count(*) as total')
             ->groupBy('status')
             ->pluck('total', 'status');
+    }
+
+    /** @return HasManyThrough<ResourceContribution, ProjectPhase, $this> */
+    public function resourceContributions(): HasManyThrough
+    {
+        return $this->hasManyThrough(
+            ResourceContribution::class,
+            ProjectPhase::class,
+            'project_id', // FK on project_phases pointing back to projects
+            'phase_id',   // FK on resource_contributions pointing to project_phases
+            'id',         // local key on projects
+            'id'          // local key on project_phases
+        );
     }
 }

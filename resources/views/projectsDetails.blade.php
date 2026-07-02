@@ -1,3 +1,8 @@
+@php
+    use App\Models\States\RevisionState;
+@endphp
+
+
 <x-app-layout>
     <div class="w-full max-w-7xl p-4 mx-auto">
         <div class="rounded-xl border border-gray-200 bg-white">
@@ -5,7 +10,15 @@
 
                 <div class="flex items-start justify-between">
                     <x-project_status :status="$project->status" />
-                    <x-projects_Details.comeBackButton/>
+                    <div class="flex items-center gap-3">
+                        @if ($project->status instanceof RevisionState && auth()->id() === $project->proposer_id)
+                            <a href="{{ route('projects.revision-form', $project) }}"
+                                class="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 text-sm font-medium transition-colors shadow-sm">
+                                Corriger ma proposition
+                            </a>
+                        @endif
+                        <x-projects-details.comeBackButton />
+                    </div>
                 </div>
 
                 <h2 class="mt-3 text-2xl font-bold text-gray-900">
@@ -18,64 +31,43 @@
 
                 <div class="flex justify-between">
 
-                    <x-projects_Details.baseInfo
-                        name="Proposeur :"
-                        :valeur="$project->proposer?->name ?? '—'"
-                    />
+                    <x-projects-details.baseInfo name="Proposeur :" :valeur="$project->proposer?->name ?? '—'" />
 
-                    <x-projects_Details.baseInfo
-                        name="Date de creation :"
-                        :valeur="$project->created_at?->format('d/m/Y') ?? '—'"
-                    />
+                    <x-projects-details.baseInfo name="Importance :" :valeur="$project->importance !== null ? number_format($project->importance, 2) : '—'" />
 
-                    <x-projects_Details.baseInfo
-                        name="Buts :"
-                        :valeur="is_array($project->but) ? count($project->but) : 0"
-                    />
+                      <x-projects-details.baseInfo name="Budget :" :valeur="number_format($project->budget_global ?? 0, 2, '.', ' ') . ' CHF'" />
 
-                    <x-projects_Details.baseInfo
-                        name="Budget :"
-                        :valeur="($project->budget_global ?? 0) . ' CHF'"
-                    />
+                    <x-projects-details.baseInfo name="Date de création :" :valeur="$project->created_at?->format('d/m/Y') ?? '—'" />
+
+
+
 
                 </div>
 
-                <div class="mt-4 grid grid-cols-2 gap-3">
+                <div class="mt-4 flex gap-3">
 
-                    <div class="rounded-lg border border-gray-200 p-3 flex flex-col justify-center">
+                    <div class="rounded-lg w-full border border-gray-200 p-3 flex flex-col justify-center">
                         <p class="text-sm font-semibold text-gray-800">Avancement</p>
 
                         <div class="mt-3 h-1.5 w-full rounded-full bg-gray-100">
-                            <div class="h-1.5 rounded-full bg-emerald-400"
-                                 style="width: {{ $project->progress }}%">
+                            <div class="h-1.5 rounded-full bg-emerald-400" style="width: {{ $project->progress }}%">
                             </div>
                         </div>
                     </div>
 
-                    <div class="rounded-lg border border-gray-200 p-3">
-                        <p class="text-sm font-semibold text-gray-800">Details</p>
-                        <x-projects_Details.details/>
-                    </div>
+
 
                 </div>
 
                 <div class="mt-3 grid grid-cols-2 gap-3">
 
-                    <div class="rounded-lg border border-gray-200 p-3 flex flex-col justify-between">
-
-                        <div class="flex items-center justify-between">
-                            <p class="text-sm font-semibold text-gray-800">Buts</p>
-
-                            <button onclick="document.getElementById('input-container').classList.toggle('hidden')"
-                                    class="rounded-md bg-indigo-600 hover:bg-indigo-700 px-3 py-1.5 text-sm font-medium text-white transition-colors shadow-sm">
-                                + Ajouter un but
-                            </button>
-                        </div>
-
-                        <div id="input-container" class="hidden mt-3">
-                            <x-projects_Details.inputAddtask/>
-                        </div>
-
+                    <div class="rounded-lg border border-gray-200 p-3 flex flex-col gap-3">
+                        <p class="text-sm font-semibold text-gray-800 p-1">Buts</p>
+                        @forelse($project->but ?? [] as $but)
+                            <x-projects-details.display-buts text_but="{{ $but }}" />
+                        @empty
+                            <span class="text-sm text-gray-500">Aucun but défini</span>
+                        @endforelse
                     </div>
 
                     <div class="rounded-lg border border-gray-200 p-3">
@@ -83,11 +75,8 @@
                         <p class="text-sm font-semibold text-gray-800">Equipe</p>
 
                         <div>
-                            @foreach($project->members as $member)
-                                <x-projects_Details.teamUsers
-                                    :team_name_user="$member->name"
-                                    :user_status="true"
-                                />
+                            @foreach ($project->members as $member)
+                                <x-projects-details.teamUsers :team_name_user="$member->name" :user_status="$member->id === $project->leader_id" />
                             @endforeach
                         </div>
 
@@ -99,9 +88,9 @@
 
                     <p class="text-sm font-semibold text-gray-800">Phases :</p>
 
-                    <div>
+                    <div class="mt-3 grid grid-cols-4 gap-4">
                         @foreach($project->phases as $phase)
-                            <a href="/phase_details/{{ $phase->id }}">
+                            <a class="bg-gray-50 p-1  pl-3 pr-3 border rounded-xl hover:bg-gray-100" href="{{ route('phase_details', $phase) }}">
                                 {{ $phase->name }}
                             </a>
                         @endforeach
@@ -110,7 +99,8 @@
                 </div>
 
                 <div class="mt-2 rounded-lg border border-gray-200 p-4">
-                    <x-projects_Details.graphique/>
+                    <x-projects-details.graphique :porte="$project->evaluation?->portee_normalized ?? 0" :impact="$project->evaluation?->impact_normalized ?? 0" :confiance="$project->evaluation?->confiance_normalized ?? 0"
+                        :effort="$project->evaluation?->effort_normalized ?? 0" />
                 </div>
 
                 <div class="mt-4 rounded-lg border border-gray-200 p-3">
@@ -120,12 +110,7 @@
                     <div class="mt-3 space-y-3 overflow-y-auto">
 
                         @forelse($project->comments as $comment)
-
-                            <x-projects_Details.Comment_msg
-                                :messager_name="$comment->user?->name ?? 'Unknown'"
-                                :commentaire_msg="$comment->content"
-                                :date_msg="$comment->created_at?->format('d/m/Y')"
-                            />
+                            <x-projects-details.Comment_msg :messager_name="$comment->user?->name ?? 'Unknown'" :commentaire_msg="$comment->content" :date_msg="$comment->created_at?->format('d/m/Y')" />
 
                         @empty
                             <span class="mt-1 text-sm text-gray-600">

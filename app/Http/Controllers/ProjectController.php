@@ -6,13 +6,10 @@ use App\Actions\RequestMoreInfoAction;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Http\Requests\RequestMoreInfoRequest;
-use App\Mail\ApprovedEmail;
-use App\Mail\DeniedEmail;
 use App\Models\Project;
 use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Redirect;
 
 class ProjectController extends Controller
@@ -24,11 +21,11 @@ class ProjectController extends Controller
     public function index(FilterProjectsRequest $request)
     {
         $projects = $this->filter->apply(
-            Project::with(['proposer', 'leader', 'evaluation']),
-            $request
+            Project::with(['proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions']), $request
         )->paginate(10)->withQueryString();
 
         $counts = Project::statusCounts();
+
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
         return view('allProjects', compact('projects', 'counts', 'users'));
@@ -44,9 +41,6 @@ class ProjectController extends Controller
     public function approve(Project $project)
     {
         ProjectService::approve($project);
-        if ($proposer = $project->proposer) {
-            Mail::to($proposer->email)->send(new ApprovedEmail($proposer->name));
-        }
 
         return Redirect::back()->with('status', 'project-approved');
     }
@@ -54,9 +48,6 @@ class ProjectController extends Controller
     public function deny(Project $project)
     {
         ProjectService::deny($project);
-        if ($proposer = $project->proposer) {
-            Mail::to($proposer->email)->send(new DeniedEmail($proposer->name));
-        }
 
         return Redirect::back()->with('status', 'project-denied');
     }

@@ -15,12 +15,14 @@ abstract class ProjectState extends State
             ->default(PropositionState::class)
             ->allowTransitions([
                 [PropositionState::class, EvaluationState::class],
+                [PropositionState::class, ArchiveState::class],
 
                 [EvaluationState::class, RevisionState::class],
                 [EvaluationState::class, ArchiveState::class],
                 [EvaluationState::class, RecolteState::class],
 
                 [RevisionState::class, PropositionState::class],
+                [RevisionState::class, ArchiveState::class],
 
                 [RecolteState::class, EncoursState::class],
                 [RecolteState::class, ArchiveState::class],
