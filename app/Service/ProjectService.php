@@ -73,7 +73,6 @@ class ProjectService
         }
 
         $project->status->transitionTo(EncoursState::class);
-        $project->save();
 
         return true;
     }
@@ -84,7 +83,6 @@ class ProjectService
             $project->current_stage = $project->getRawOriginal('status');
             $project->archived_at = now();
             $project->status->transitionTo(ArchiveState::class);
-            $project->save();
         });
     }
 }
