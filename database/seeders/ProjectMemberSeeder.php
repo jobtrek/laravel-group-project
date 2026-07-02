@@ -17,10 +17,15 @@ class ProjectMemberSeeder extends Seeder
         $projects = Project::all();
         $users = User::all();
 
-        $members = $projects->flatMap(fn ($project) =>
-        $users->random(rand(2, 4))
-            ->map(fn ($user) => ['project_id' => $project->id, 'user_id' => $user->id])
-        );
+        $members = $projects->flatMap(function ($project) use ($users) {
+            $count = min($users->count(), rand(2, 4));
+
+            if ($count === 0) {
+                return [];
+            }
+            return $users->random($count)
+                ->map(fn ($user) => ['project_id' => $project->id, 'user_id' => $user->id]);
+        });
 
         DB::table('project_members')->insert($members->toArray());
     }
