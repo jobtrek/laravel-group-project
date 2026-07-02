@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Enums\Stage;
+use App\Http\Requests\AssignProjectTeamRequest;
 use App\Models\Project;
 use App\Models\States\RecolteState;
 use App\Service\ProjectService;
@@ -20,14 +21,24 @@ class RecolteController extends StageProjectController
         return [RecolteState::class];
     }
 
+    public function assignTeam(AssignProjectTeamRequest $request, Project $project): RedirectResponse
+    {
+        abort_if(! $project->status instanceof RecolteState, 404);
+
+        $members = array_filter($request->validated('membres', []));
+
+        $project->update(['leader_id' => $request->validated('leader_id')]);
+        $project->members()->sync($members);
+
+        return redirect()->back()->with('success', 'Équipe du projet mise à jour avec succès.');
+    }
+
     public function moveFromRecolteToActive(Project $project): RedirectResponse
     {
-        $project->loadMissing(['phases.resources', 'phases.contributions']);
-
         if (! ProjectService::moveToEncours($project)) {
-            return redirect()->back()->with('error', 'Project cannot be moved to Active state. It must be in Recolte state with progress of at least 80%.');
+            return redirect()->back()->with('error', 'Project cannot be moved to Active state. It must be in Recolte state with a project chief assigned.');
         }
 
-        return redirect()->back()->with('success', 'Project moved to Active state successfully.');
+        return redirect()->route('en-cours')->with('success', 'Project moved to Active state successfully.');
     }
 }

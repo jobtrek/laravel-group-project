@@ -1,33 +1,14 @@
 <?php
 
 use App\Models\Project;
-use App\Models\ProjectPhase;
 use App\Models\States\EncoursState;
 use App\Models\States\RecolteState;
 use App\Models\User;
 use App\Service\ProjectService;
 
-function projectWithProgress(float $needed, float $found): Project
-{
-    $project = Project::factory()->recolte()->create();
-    $contributor = User::factory()->create();
-
-    $phase = ProjectPhase::factory()->create(['project_id' => $project->id]);
-    $phase->resources()->create([
-        'resource_type' => 'money',
-        'amount_needed' => $needed,
-    ]);
-    $phase->contributions()->create([
-        'user_id' => $contributor->id,
-        'resource_type' => 'money',
-        'amount' => $found,
-    ]);
-
-    return $project->fresh(['phases.resources', 'phases.contributions']);
-}
-
-it('transitions a Recolte project to Encours once progress reaches 80%', function () {
-    $project = projectWithProgress(1000, 800);
+it('transitions a Recolte project to Encours once a project chief is assigned', function () {
+    $leader = User::factory()->create();
+    $project = Project::factory()->recolte()->create(['leader_id' => $leader->id]);
 
     $moved = ProjectService::moveToEncours($project);
 
@@ -35,8 +16,8 @@ it('transitions a Recolte project to Encours once progress reaches 80%', functio
         ->and($project->status)->toBeInstanceOf(EncoursState::class);
 });
 
-it('refuses to transition when progress is below 80%', function () {
-    $project = projectWithProgress(1000, 799);
+it('refuses to transition when no project chief is assigned', function () {
+    $project = Project::factory()->recolte()->create(['leader_id' => null]);
 
     $moved = ProjectService::moveToEncours($project);
 
@@ -45,7 +26,8 @@ it('refuses to transition when progress is below 80%', function () {
 });
 
 it('refuses to transition when the project is not in Recolte state', function () {
-    $project = Project::factory()->enCours()->create();
+    $leader = User::factory()->create();
+    $project = Project::factory()->enCours()->create(['leader_id' => $leader->id]);
 
     $moved = ProjectService::moveToEncours($project);
 

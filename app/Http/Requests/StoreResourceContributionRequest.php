@@ -39,13 +39,23 @@ class StoreResourceContributionRequest extends FormRequest
                 return;
             }
 
+            $resourceType = $this->input('resource_type');
+            $resource = $phase->resources->firstWhere('resource_type', $resourceType);
+
+            if ($resource === null) {
+                $validator->errors()->add('resource_type', 'This resource type is not defined for the selected phase.');
+
+                return;
+            }
+
             $amount = round((float) $this->input('amount'), 2);
-            $remaining = round($phase->amount_needed - $phase->amount_found, 2);
+            $found = (float) $phase->contributions->where('resource_type', $resourceType)->sum('amount');
+            $remaining = round((float) $resource->amount_needed - $found, 2);
 
             if ($amount > $remaining) {
                 $validator->errors()->add(
                     'amount',
-                    sprintf('This contribution exceeds what is still needed for this phase (%.2f remaining).', $remaining)
+                    sprintf('This contribution exceeds what is still needed for this resource type (%.2f remaining).', $remaining)
                 );
             }
         });
