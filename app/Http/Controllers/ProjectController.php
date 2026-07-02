@@ -80,4 +80,22 @@ class ProjectController extends Controller
 
         return view('projectsDetails', compact('project'));
     }
+
+  public function complete(Project $project)
+    {
+        try {
+            ProjectService::complete($project);
+        } catch (\RuntimeException $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        return back()->with('status', 'project-completed');
+    }
+
+    public function archive(Project $project)
+    {
+        ProjectService::archive($project);
+
+        return back()->with('status', 'project-archived');
+    }
 }

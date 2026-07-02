@@ -12,16 +12,18 @@
                                                   route="evaluation"/>
                         <x-projects.countProjects text="Récolte" :projets="$counts->get('récolte', 0)"
                                                   route="recolte"/>
-                        <x-projects.countProjects text="En cours" :projets="$counts->get('en cours', 0)"
-                                                  route="en-cours"/>
-                        <x-projects.countProjects text="Frigo"
-                                                  :projets="$counts->get('archivé', 0) + $counts->get('complété', 0)"
-                                                  route="frigo"/>
+                      <x-projects.countProjects text="En cours" :projets="$counts->get('en cours', 0)"
+                          route="en-cours"/>
+<x-projects.countProjects text="Complété" :projets="$counts->get('complété', 0)"
+                          route="complete"/>
+<x-projects.countProjects text="Frigo"
+                          :projets="$counts->get('archivé', 0)"
+                          route="frigo"/>
                     </div>
                     <a href="{{ route('create') }}" class="bg-blue-700 text-white rounded-lg p-1">New proposal</a>
                     <div class="flex flex-col gap-4 mt-4">
                         @foreach($projects as $project)
-                            @if($project && $project->status !== 'archivé')
+                            @if($project && $project->status !== 'archivé' && $project->status !== 'complété')
                                 <x-projects.displayProjects
                                         :project="$project"
                                         :status="$project->status"

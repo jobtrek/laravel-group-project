@@ -63,6 +63,14 @@ use App\Http\Controllers\ProjectController;
                     @method('PATCH')
                     <x-projects.buttons text="Accepter" class="bg-green-600 text-white p-2" type="submit"/>
                 </form>
+            @elseif((string)$status === 'en cours')
+                @if($project->progress >= 100)
+                    <form action="{{ route('projects.complete', $project) }}" method="POST" class="relative z-10">
+                        @csrf
+                        @method('PATCH')
+                        <x-projects.buttons text="Marquer comme complété" class="bg-green-600 text-white p-2" type="submit"/>
+                    </form>
+                @endif
             @endif
         </div>
     </div>
