@@ -18,7 +18,7 @@ class ProjectEvaluation extends Model
         return $this->belongsTo(Project::class);
     }
 
-       public function getPorteeNormalizedAttribute(): float
+    public function getPorteeNormalizedAttribute(): float
     {
         return $this->normalize($this->portee, 50);
     }

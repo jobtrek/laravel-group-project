@@ -50,7 +50,7 @@ class UpdateProjectAction
                 'order' => $index + 1,
             ];
 
-            $phase = !empty($phaseData['id'])
+            $phase = ! empty($phaseData['id'])
                 ? $project->phases->firstWhere('id', $phaseData['id'])
                 : null;
 
@@ -60,7 +60,7 @@ class UpdateProjectAction
                 $phase = $project->phases()->create($attributes);
             }
 
-            if (!$phase) {
+            if (! $phase) {
                 continue;
             }
 
@@ -71,7 +71,7 @@ class UpdateProjectAction
         $project->phases()
             ->whereNotIn('id', $keptIds)
             ->get()
-            ->each(fn(ProjectPhase $phase) => $phase->delete());
+            ->each(fn (ProjectPhase $phase) => $phase->delete());
     }
 
     private function syncResources(ProjectPhase $phase, array $resourcesData): void
@@ -84,7 +84,7 @@ class UpdateProjectAction
                 'amount_needed' => $resourceData['amount_needed'],
             ];
 
-            $resource = !empty($resourceData['id'])
+            $resource = ! empty($resourceData['id'])
                 ? $phase->resources->firstWhere('id', $resourceData['id'])
                 : null;
 
@@ -100,6 +100,6 @@ class UpdateProjectAction
         $phase->resources()
             ->whereNotIn('id', $keptIds)
             ->get()
-            ->each(fn(PhaseResource $resource) => $resource->delete());
+            ->each(fn (PhaseResource $resource) => $resource->delete());
     }
 }

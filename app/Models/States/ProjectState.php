@@ -38,5 +38,4 @@ abstract class ProjectState extends State
     {
         return false;
     }
-
 }

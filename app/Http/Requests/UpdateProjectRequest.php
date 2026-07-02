@@ -42,6 +42,7 @@ class UpdateProjectRequest extends FormRequest
             'confiance' => ['required', 'integer', 'min:0', 'max:100'],
             'effort' => ['required', 'integer', 'min:1', 'max:5'],
         ];
+
         return $rules;
     }
 }
