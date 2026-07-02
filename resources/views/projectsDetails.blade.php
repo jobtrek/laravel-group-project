@@ -9,15 +9,23 @@
             <div class="p-6">
 
                 <div class="flex items-start justify-between">
-                    <x-project_status :status="$project->status" />
+                    <x-project_status :status="$project->status"/>
                     <div class="flex items-center gap-3">
-                                                                        @if ($project->status instanceof RevisionState && auth()->id() === $project->proposer_id)
-                           <a 
-                                href="{{ route('projects.revision-form', $project) }}"
-                                class="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 text-sm font-medium transition-colors shadow-sm"
-                            >
-                                Corriger ma proposition
-                            </a>
+                        @if (auth()->id() === $project->proposer_id)
+                            @if ($project->status instanceof RevisionState)
+                                <a
+                                        href="{{ route('projects.revision-form', $project) }}"
+                                        class="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 text-sm font-medium transition-colors shadow-sm"
+                                >
+                                    Corriger ma proposition
+                                </a>
+                            @endif
+                            @if ($project->status->isEditable())
+                                <form action="{{ route('projects.edit', $project) }}" method="GET">
+                                    <x-projects.buttons text="Modifier" class="bg-blue-500 text-white p-2"
+                                                        type="submit"/>
+                                </form>
+                            @endif
                         @endif
                         <x-projects_Details.comeBackButton/>
                     </div>
@@ -34,23 +42,23 @@
                 <div class="flex justify-between">
 
                     <x-projects_Details.baseInfo
-                        name="Proposeur :"
-                        :valeur="$project->proposer?->name ?? '—'"
+                            name="Proposeur :"
+                            :valeur="$project->proposer?->name ?? '—'"
                     />
 
                     <x-projects_Details.baseInfo
-                        name="Date de creation :"
-                        :valeur="$project->created_at?->format('d/m/Y') ?? '—'"
+                            name="Date de creation :"
+                            :valeur="$project->created_at?->format('d/m/Y') ?? '—'"
                     />
 
                     <x-projects_Details.baseInfo
-                        name="Buts :"
-                        :valeur="is_array($project->but) ? count($project->but) : 0"
+                            name="Buts :"
+                            :valeur="is_array($project->but) ? count($project->but) : 0"
                     />
 
                     <x-projects_Details.baseInfo
-                        name="Budget :"
-                        :valeur="($project->budget_global ?? 0) . ' CHF'"
+                            name="Budget :"
+                            :valeur="($project->budget_global ?? 0) . ' CHF'"
                     />
 
                 </div>
@@ -100,8 +108,8 @@
                         <div>
                             @foreach($project->members as $member)
                                 <x-projects_Details.teamUsers
-                                    :team_name_user="$member->name"
-                                    :user_status="true"
+                                        :team_name_user="$member->name"
+                                        :user_status="true"
                                 />
                             @endforeach
                         </div>
@@ -137,9 +145,9 @@
                         @forelse($project->comments as $comment)
 
                             <x-projects_Details.Comment_msg
-                                :messager_name="$comment->user?->name ?? 'Unknown'"
-                                :commentaire_msg="$comment->content"
-                                :date_msg="$comment->created_at?->format('d/m/Y')"
+                                    :messager_name="$comment->user?->name ?? 'Unknown'"
+                                    :commentaire_msg="$comment->content"
+                                    :date_msg="$comment->created_at?->format('d/m/Y')"
                             />
 
                         @empty

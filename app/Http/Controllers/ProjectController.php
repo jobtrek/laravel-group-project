@@ -3,9 +3,11 @@
 namespace App\Http\Controllers;
 
 use App\Actions\RequestMoreInfoAction;
+use App\Actions\UpdateProjectAction;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Http\Requests\RequestMoreInfoRequest;
+use App\Http\Requests\UpdateProjectRequest;
 use App\Mail\ApprovedEmail;
 use App\Mail\DeniedEmail;
 use App\Models\Project;
@@ -19,7 +21,9 @@ class ProjectController extends Controller
 {
     public function __construct(
         private readonly ProjectFilter $filter
-    ) {}
+    )
+    {
+    }
 
     public function index(FilterProjectsRequest $request)
     {
@@ -63,9 +67,10 @@ class ProjectController extends Controller
 
     public function requestMoreInfo(
         RequestMoreInfoRequest $request,
-        Project $project,
-        RequestMoreInfoAction $action,
-    ): RedirectResponse {
+        Project                $project,
+        RequestMoreInfoAction  $action,
+    ): RedirectResponse
+    {
         $action->execute(
             project: $project,
             fieldComments: $request->validated()['field_comments'],
@@ -88,5 +93,25 @@ class ProjectController extends Controller
         $project->load(['proposer', 'leader', 'evaluation', 'phases', 'phases.resources', 'members', 'comments', 'comments.user']);
 
         return view('projectsDetails', compact('project'));
+    }
+
+    public function edit(Project $project)
+    {
+        abort_if(!$project->status->isEditable(), 403);
+
+        $project->load(['phases.resources', 'evaluation', 'members']);
+        $users = User::query()->select('id', 'name')->orderBy('name')->get();
+
+        return view('edit', compact('project', 'users'));
+    }
+
+    public function update(UpdateProjectRequest $request, Project $project, UpdateProjectAction $action)
+    {
+        abort_if(!$project->status->isEditable(), 403);
+
+        $action->execute($project, $request->validated());
+
+        return redirect()->route('projects-details', $project)
+            ->with('status', 'project-updated');
     }
 }
