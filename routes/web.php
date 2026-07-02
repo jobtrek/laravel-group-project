@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\CompleteController;
 use App\Http\Controllers\EnCoursController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
@@ -9,7 +10,6 @@ use App\Http\Controllers\RecolteController;
 use App\Http\Controllers\ResourceContributionController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RevisionController;
-use App\Http\Controllers\CompleteController;
 use App\Models\ProjectPhase;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;

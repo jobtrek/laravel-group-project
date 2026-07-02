@@ -91,20 +91,20 @@ class ProjectController extends Controller
     }
 
     public function complete(Project $project)
-{
-    try {
-        ProjectService::complete($project);
-    } catch (\RuntimeException $e) {
-        return Redirect::back()->with('error', $e->getMessage());
+    {
+        try {
+            ProjectService::complete($project);
+        } catch (\RuntimeException $e) {
+            return Redirect::back()->with('error', $e->getMessage());
+        }
+
+        return Redirect::back()->with('status', 'project-completed');
     }
 
-    return Redirect::back()->with('status', 'project-completed');
-}
+    public function archive(Project $project)
+    {
+        ProjectService::archive($project);
 
-public function archive(Project $project)
-{
-    ProjectService::archive($project);
-
-    return Redirect::back()->with('status', 'project-archived');
-}
+        return Redirect::back()->with('status', 'project-archived');
+    }
 }
