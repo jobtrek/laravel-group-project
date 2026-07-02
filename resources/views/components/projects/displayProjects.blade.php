@@ -46,7 +46,7 @@ use App\Http\Controllers\ProjectController;
                 <form action="{{ route('projects.send-to-direction', $project) }}" method="POST" class="relative z-10">
                     @csrf
                     @method('PATCH')
-                    <x-projects.buttons text="Evaluer" class="bg-blue-700 text-white p-2" type="submit"/>
+                    <x-projects.buttons text="Confirmer la proposition" class="bg-blue-700 text-white p-2" type="submit"/>
                 </form>
                 @endcan
             @elseif((string)$status === 'évaluation')
