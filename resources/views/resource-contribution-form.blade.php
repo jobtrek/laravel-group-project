@@ -119,9 +119,11 @@
             <form method="POST" action="{{ route('projects.recolte.activate', $project) }}" class="mt-8">
                 @csrf
                 @method('PATCH')
-                <button type="submit" :disabled="!initialChiefId || chiefId !== initialChiefId"
-                    :class="(initialChiefId && chiefId === initialChiefId) ? 'bg-green-700 hover:bg-green-800' : 'bg-gray-300 cursor-not-allowed'"
-                    Démarrer le projet (passer en cours) </button>
+                <button type="submit" :disabled="!chiefId"
+                    :class="chiefId ? 'bg-green-700 hover:bg-green-800' : 'bg-gray-300 cursor-not-allowed'"
+                    class="text-white p-2 rounded-md">
+                    Démarrer le projet (passer en cours)
+                </button>
             </form>
         @endif
     </div>
