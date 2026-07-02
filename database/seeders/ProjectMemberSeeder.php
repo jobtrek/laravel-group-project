@@ -23,6 +23,7 @@ class ProjectMemberSeeder extends Seeder
             if ($count === 0) {
                 return [];
             }
+
             return $users->random($count)
                 ->map(fn ($user) => ['project_id' => $project->id, 'user_id' => $user->id]);
         });
