@@ -24,7 +24,7 @@
 
                         <form method="POST" action="{{ route('proposition.store') }}">
                         @csrf
-                        <x-proposition.wizard :users="$users" />
+                        <x-proposition.wizard />
                     </form>
 
                 </div>

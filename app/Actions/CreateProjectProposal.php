@@ -24,8 +24,6 @@ class CreateProjectProposal
                 'proposer_id' => $proposerId,
             ]);
 
-            $project->members()->attach($data['membres']);
-
             $project->evaluation()->create([
                 'portee' => $data['portee'],
                 'impact' => $data['impact'],

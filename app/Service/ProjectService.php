@@ -6,6 +6,7 @@ use App\Mail\ApprovedEmail;
 use App\Mail\DeniedEmail;
 use App\Models\Project;
 use App\Models\States\ArchiveState;
+use App\Models\States\CompleteState;
 use App\Models\States\EncoursState;
 use App\Models\States\EvaluationState;
 use App\Models\States\PropositionState;
@@ -62,13 +63,19 @@ class ProjectService
         $project->save();
     }
 
+    public static function complete(Project $project): void
+    {
+        $project->status->transitionTo(CompleteState::class);
+        $project->save();
+    }
+
     public static function moveToEncours(Project $project): bool
     {
         if (! $project->status instanceof RecolteState) {
             return false;
         }
 
-        if ($project->progress < 80) {
+        if ($project->leader_id === null) {
             return false;
         }
 

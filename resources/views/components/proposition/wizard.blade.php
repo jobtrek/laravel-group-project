@@ -1,5 +1,3 @@
-@props(['users'])
-
 <div x-data="{
     step: 1,
     titre: @js(old('titre', '')),
@@ -9,7 +7,6 @@
     impact: @js(old('impact', '')),
     confiance: @js(old('confiance', '')),
     effort: @js(old('effort', '')),
-    membres: @js(old('membres', [''])),
     buts: @js(old('buts', [''])),
     phases: @js(old('phases', [
         [
@@ -46,16 +43,11 @@
         }
     },
     removeItem(arr, i) {
-        if (arr.length > 1) arr.splice(i, 1);
+        window.listHelpers.remove(arr, i);
     },
     validateStep1() {
         this.errors = {};
         if (!this.titre || !this.titre.trim()) this.errors.titre = 'Le titre est requis.';
-        if (!this.membres.length || this.membres.every(m => !m)) {
-            this.errors.membres = 'Au moins un membre est requis.';
-        } else if (this.membres.some(m => !m)) {
-            this.errors.membres = 'Veuillez remplir ou supprimer toutes les lignes de membres vides.';
-        }
         if (!this.description || !this.description.trim()) this.errors.description = 'La description est requise.';
         if (!this.buts.length || this.buts.every(b => !b || !b.trim())) {
             this.errors.buts = 'Au moins un objectif est requis.';
@@ -105,7 +97,7 @@
     }
 }">
     <p class="text-sm text-gray-500 mb-4">Étape <span x-text="step"></span> sur 3</p>
-    <x-proposition.step-1 :users="$users" />
+    <x-proposition.step-1 />
     <x-proposition.step-2 />
     <x-proposition.step-3 />
 </div>

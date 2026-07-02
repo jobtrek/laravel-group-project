@@ -33,4 +33,9 @@ abstract class ProjectState extends State
                 [ArchiveState::class, PropositionState::class],
             ]);
     }
+
+    public function isEditable(): bool
+    {
+        return false;
+    }
 }
