@@ -6,15 +6,14 @@ namespace App\Console\Commands;
 
 use App\Mail\ProjectArchivedMail;
 use App\Models\Project;
-use App\Models\States\ArchiveState;
 use App\Models\States\EvaluationState;
 use App\Models\States\PropositionState;
 use App\Models\States\RecolteState;
 use App\Models\States\RevisionState;
 use App\Models\User;
+use App\Service\ProjectService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Collection;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class AutoArchiveProjects extends Command
@@ -77,11 +76,7 @@ class AutoArchiveProjects extends Command
 
     private function archive(Project $project): void
     {
-        DB::transaction(function () use ($project): void {
-            $project->current_stage = $project->getRawOriginal('status');
-            $project->archived_at = now();
-            $project->status->transitionTo(ArchiveState::class);
-        });
+        ProjectService::archive($project);
     }
 
     /** @return Collection<int, User> */

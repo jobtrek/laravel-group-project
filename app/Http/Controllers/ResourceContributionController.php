@@ -8,6 +8,7 @@ use App\Models\ProjectPhase;
 use App\Models\ResourceContribution;
 use App\Models\States\EncoursState;
 use App\Models\States\RecolteState;
+use App\Service\ProjectService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\View\View;
@@ -47,10 +48,7 @@ class ResourceContributionController extends Controller
 
             $project->load(['phases.resources', 'phases.contributions']);
 
-            if ($project->progress >= 80 && $project->status instanceof RecolteState) {
-                $project->status->transitionTo(EncoursState::class);
-                $project->save();
-            }
+            ProjectService::moveToEncours($project);
         });
 
         $redirectRoute = $project->status instanceof EncoursState
