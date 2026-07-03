@@ -25,6 +25,10 @@ class RoleAndPermissionSeeder extends Seeder
             'edit project',
             'add resources',
             'send to direction',
+            'archive projects',
+            'assign team',
+            'launch project',
+            'complete project',
         ];
 
         foreach ($permissions as $permission) {
@@ -33,12 +37,12 @@ class RoleAndPermissionSeeder extends Seeder
                 'guard_name' => 'web']);
         }
 
-        $userRole = Role::firstOrCreate(['name' => 'user', 'guard_name' => 'web']);
+        Role::firstOrCreate(['name' => 'collaborateur', 'guard_name' => 'web']);
         $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         $directionRole = Role::firstOrCreate(['name' => 'direction', 'guard_name' => 'web']);
-        $projectLeader = Role::firstOrCreate(['name' => 'project_leader', 'guard_name' => 'web']);
+        $chefDeProjet = Role::firstOrCreate(['name' => 'chef_de_projet', 'guard_name' => 'web']);
         $projectManager = Role::firstOrCreate(['name' => 'project_manager', 'guard_name' => 'web']);
-        $resourcesManager = Role::firstOrCreate(['name' => 'resources_manager', 'guard_name' => 'web']);
+        $recolteManager = Role::firstOrCreate(['name' => 'recolte_manager', 'guard_name' => 'web']);
 
         $adminRole->givePermissionTo([
             'manage everything',
@@ -48,15 +52,21 @@ class RoleAndPermissionSeeder extends Seeder
             'deny',
             'review',
             'evaluate projects',
+            'archive projects',
+            'send to direction',
         ]);
-        $projectLeader->givePermissionTo([
+        $chefDeProjet->givePermissionTo([
             'edit project',
+            'launch project',
+            'complete project',
         ]);
-        $resourcesManager->givePermissionTo([
+        $recolteManager->givePermissionTo([
             'add resources',
+            'assign team',
         ]);
 
         $projectManager->givePermissionTo([
+            'archive projects',
             'send to direction',
         ]);
     }

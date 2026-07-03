@@ -1,5 +1,7 @@
 @php
     use App\Models\States\RevisionState;
+    use App\Models\States\EncoursState;
+    use App\Models\States\EvaluationState;
     function canModify($project) {
         return (auth()->user()->can('edit project') && auth()->id() === $project->leader_id)
         || auth()->id() === $project->proposer_id
@@ -134,6 +136,20 @@
                         @endforelse
 
                     </div>
+
+                    @if((auth()->user()->hasRole('direction') && $project->status instanceof EvaluationState)
+                        || (auth()->user()->hasRole('chef_de_projet') && $project->status instanceof EncoursState))
+                        <form action="{{ route('projects.comments.store', $project) }}" method="POST" class="mt-3 flex flex-col gap-2">
+                            @csrf
+                            <input type="hidden" name="stage" value="{{ $project->status->getValue() }}">                            
+                            <textarea name="content" rows="2" required
+                                      class="w-full rounded-md border border-gray-200 p-2 text-sm"
+                                      placeholder="Ajouter un commentaire"></textarea>
+                            <button type="submit" class="self-end px-4 py-2 bg-blue-700 text-white rounded-md text-sm font-medium">
+                                Commenter
+                            </button>
+                        </form>
+                    @endif
 
                 </div>
 

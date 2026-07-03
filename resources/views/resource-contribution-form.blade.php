@@ -115,7 +115,9 @@
             <x-projects.buttons text="Enregistrer" type="submit" class="bg-blue-700 text-white p-2" />
         </form>
 
-        @if ($project->status instanceof \App\Models\States\RecolteState)
+        @if ($project->status instanceof \App\Models\States\RecolteState
+            && auth()->user()?->can('launch project')
+            && auth()->id() === $project->leader_id)
             <form method="POST" action="{{ route('projects.recolte.activate', $project) }}" class="mt-8">
                 @csrf
                 @method('PATCH')
