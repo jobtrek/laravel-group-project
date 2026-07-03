@@ -7,6 +7,7 @@ use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Models\Project;
 use App\Models\User;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\View\View;
 
 abstract class StageProjectController extends Controller
@@ -22,19 +23,29 @@ abstract class StageProjectController extends Controller
      */
     abstract protected function states(): string|array;
 
+    protected function baseQuery(): Builder
+    {
+        return Project::with([
+            'proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions'
+        ])->whereState('status', $this->states());
+    }
+
+    protected function myProposals(): bool
+    {
+        return false;
+    }
+
     public function index(FilterProjectsRequest $request): View
     {
-        $projects = $this->filter->apply(
-            Project::with(['proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions'])->whereState('status', $this->states()),
-            $request
-        )->paginate(10);
+        $projects = $this->filter->apply($this->baseQuery(), $request)->paginate(10);
 
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
         return view('stage', [
-            'stage' => $this->stage(),
-            'projects' => $projects,
-            'users' => $users,
+            'stage'      => $this->stage(),
+            'projects'   => $projects,
+            'users'      => $users,
+            'myProposals' => $this->myProposals(),
         ]);
     }
 }

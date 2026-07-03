@@ -1,5 +1,8 @@
 <x-app-layout>
-    <x-projects.filter-bar :users="$users ?? []"/>
+   <x-projects.filter-bar 
+    :users="$users" 
+    :my-proposals="$myProposals" 
+/>
     <div class="relative w-full max-w-7xl mx-auto sm:px-6 lg:px-8">
         <section class="flex flex-col gap-4 p-4">
             @if($stage->prev())
