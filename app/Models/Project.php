@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use App\Models\States\ProjectState;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -12,7 +13,6 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 use Spatie\ModelStates\HasStates;
-use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Project extends Model
 {
@@ -22,7 +22,6 @@ class Project extends Model
     protected $fillable = [
         'title',
         'description',
-        'budget_global',
         'but',
         'perimetre',
         'status',
@@ -37,7 +36,6 @@ class Project extends Model
     ];
 
     protected $casts = [
-        'budget_global' => 'decimal:2',
         'but' => 'array',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -149,6 +147,7 @@ class Project extends Model
                 if ($totalNeeded <= 0) {
                     return 0.0;
                 }
+
                 return $totalNeeded;
             }
         );

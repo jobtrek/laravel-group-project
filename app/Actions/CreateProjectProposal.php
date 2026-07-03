@@ -50,7 +50,6 @@ class CreateProjectProposal
                 }
             }
 
-
             // I think we don't need this anymore because now we calculate the budget in project model
             /*
             $project->update([
