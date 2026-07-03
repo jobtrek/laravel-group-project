@@ -61,7 +61,7 @@ Route::middleware('auth')->group(function () {
         Route::patch('/', 'update')->name('projects.update');
         Route::patch('/complete', 'complete')->name('projects.complete');
         Route::patch('/archive', 'archive')->middleware('role:admin')->name('projects.archive');
-        Route::post('/comments', [CommentController::class, 'store'])
+        Route::post('/projects/{project}/comments', [CommentController::class, 'store'])
             ->middleware('role:chef_de_projet|collaborateur')
             ->name('projects.comments.store');
     });
