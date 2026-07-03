@@ -26,12 +26,15 @@ class ProjectFilter
                 fn (Builder $q) => $q->whereDate('projects.created_at', '<=', $request->input('date_to'))
             )
             ->when(
-                $request->filled('proposer_id'),
-                fn (Builder $q) => $q->where('proposer_id', $request->integer('proposer_id'))
-            )
+    $request->filled('proposer_id') && ! in_array($request->input('proposer_id'), ['all', 'mine']),
+    fn (Builder $q) => $q->where('proposer_id', $request->integer('proposer_id'))
+)
+->when(
+    $request->input('proposer_id') === 'mine',
+    fn (Builder $q) => $q->where('proposer_id', auth()->id())
+)
             ->when(
                 $request->filled('sort'),
-
                 fn (Builder $q) => ProjectSort::from($request->input('sort'))->apply($q)
             )
             ->when(
