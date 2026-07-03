@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CompleteController;
 use App\Http\Controllers\EnCoursController;
 use App\Http\Controllers\ProfileController;
@@ -67,6 +68,10 @@ Route::middleware('auth')->group(function () {
         Route::get('/edit', 'edit')->name('projects.edit');
         Route::patch('/', 'update')->name('projects.update');
         Route::patch('/complete', 'complete')->name('projects.complete');
+        Route::patch('/archive', 'archive')->middleware('role:admin')->name('projects.archive');
+        Route::post('/projects/{project}/comments', [CommentController::class, 'store'])
+            ->middleware('role:chef_de_projet|collaborateur')
+            ->name('projects.comments.store');
         Route::patch('/send-to-direction', 'sendToDirection')->middleware('can:send to direction')->name('projects.send-to-direction');
     });
 
