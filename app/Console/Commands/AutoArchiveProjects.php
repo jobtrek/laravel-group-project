@@ -92,7 +92,7 @@ class AutoArchiveProjects extends Command
     private function notify(Project $project, Collection $recipients): void
     {
         foreach ($recipients->filter()->unique('email') as $user) {
-            Mail::to($user->email)->send(new ProjectArchivedMail($user, $project));
+            Mail::to($user->email)->queue(new ProjectArchivedMail($user, $project));
         }
     }
 }
