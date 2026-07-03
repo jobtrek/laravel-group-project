@@ -119,7 +119,7 @@ class ProjectController extends Controller
         abort_if($project->proposer_id === auth()->id() || !$project->status instanceof \App\Models\States\EvaluationState, 403);
         try {
             ProjectService::complete($project);
-        } catch (\RuntimeException $e) {
+        } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
 
