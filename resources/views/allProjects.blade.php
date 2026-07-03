@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-projects.filter-bar :users="$users ?? []"/>
-    <div class="min-h-screen bg-gradient-to-b from-[#0d1b3d] via-[#0d1b3d] to-blue-950">
+    <div class="min-h-screen">
         <div class="w-full max-w-7xl mx-auto sm:px-6 lg:px-8">
             <div class="p-6 text-gray-900">
                 <div class="flex justify-between gap-4 mb-4">

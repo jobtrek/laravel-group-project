@@ -1,10 +1,10 @@
 <x-app-layout>
-    <div class="min-h-screen bg-gradient-to-b from-[#0d1b3d] via-[#0d1b3d] to-blue-950">
+    <div class="min-h-screen">
         <div class="w-full max-w-7xl mx-auto sm:px-6 lg:px-8">
 
             <x-slot name="header">
                 <div class="flex items-center justify-between">
-                    <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+                    <h2 class="font-semibold text-base text-gray-800 leading-tight">
                         Demande d'informations —
                         <span class="text-indigo-600">{{ $project->title }}</span>
                     </h2>

@@ -1,5 +1,5 @@
 <x-app-layout>
-    <div class="min-h-screen bg-gradient-to-b from-[#0d1b3d] via-[#0d1b3d] to-blue-950">
+    <div class="min-h-screen">
         <div class="w-full max-w-7xl p-4 mx-auto">
             <div class="rounded-xl border border-gray-200 bg-white">
                 <div class="p-6 flex flex-col gap-4">
