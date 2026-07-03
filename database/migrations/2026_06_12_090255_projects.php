@@ -12,7 +12,8 @@ return new class extends Migration
             $table->id();
             $table->string('title', 100);
             $table->text('description');
-            $table->decimal('budget_global', 10, 2)->nullable();
+            // $table->decimal('budget_global', 10, 2)->nullable();
+            //  Now we don't need this line, i can simply delete it from the file or delete it by new migration
             $table->json('but');
             $table->text('perimetre')->nullable();
 

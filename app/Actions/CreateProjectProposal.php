@@ -50,12 +50,15 @@ class CreateProjectProposal
                 }
             }
 
+
+            // I think we don't need this anymore because now we calculate the budget in project model
+            /*
             $project->update([
                 'budget_global' => collect($data['phases'] ?? [])
                     ->flatMap(fn (array $phase) => $phase['ressources_necessaires'] ?? [])
                     ->sum('amount_needed'),
             ]);
-
+            */
             return $project;
         });
     }

@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 use Spatie\ModelStates\HasStates;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class Project extends Model
 {
@@ -133,6 +134,22 @@ class Project extends Model
             'phase_id',   // FK on resource_contributions pointing to project_phases
             'id',         // local key on projects
             'id'          // local key on project_phases
+        );
+    }
+
+    protected function budgetGlobal(): Attribute
+    {
+        return Attribute::make(
+            get: function (): float {
+                $totalNeeded = 0.0;
+                foreach ($this->phases as $phase) {
+                    $totalNeeded += $phase->amount_needed;
+                }
+                if ($totalNeeded <= 0) {
+                    return 0.0;
+                }
+                return $totalNeeded;
+            }
         );
     }
 }
