@@ -139,14 +139,7 @@ class Project extends Model
     {
         return Attribute::make(
             get: function (): float {
-                $this->loadMissing('phases.resources');
-                $totalNeeded = 0.0;
-                foreach ($this->phases as $phase) {
-                    $totalNeeded += $phase->amount_needed;
-                }
-                if ($totalNeeded <= 0) {
-                    return 0.0;
-                }
+                $totalNeeded = $this->loadMissing('phases.resources')->phases->sum('amount_needed');
 
                 return $totalNeeded;
             }
