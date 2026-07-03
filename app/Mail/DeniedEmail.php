@@ -16,6 +16,7 @@ class DeniedEmail extends Mailable implements ShouldQueue
     public function __construct(private string $name)
     {
         //
+        $this->afterCommit();
     }
 
     public function envelope(): Envelope

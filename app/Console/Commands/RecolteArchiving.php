@@ -31,11 +31,11 @@ class RecolteArchiving extends Command
                 $proposer = $project->proposer;
                 $recolteManager = $project->recolteManager;
                 if ($recolteManager && $recolteManager->email !== $proposer->email) {
-                    Mail::to($recolteManager->email)->send(new RecolteArchivingMail($recolteManager, $project));
+                    Mail::to($recolteManager->email)->queue(new RecolteArchivingMail($recolteManager, $project));
                 }
 
                 if ($proposer) {
-                    Mail::to($proposer->email)->send(new RecolteArchivingMail($proposer, $project));
+                    Mail::to($proposer->email)->queue(new RecolteArchivingMail($proposer, $project));
                 }
             }
         }
