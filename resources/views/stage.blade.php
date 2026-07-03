@@ -1,6 +1,6 @@
 <x-app-layout>
     <x-projects.filter-bar :users="$users ?? []"/>
-    <div class="bg-gradient-to-br from-[#0d1b3d] via-[#12335a] to-[#1f6b3f]">
+    <div class="bg-gradient-to-b from-[#0d1b3d] via-[#0d1b3d] to-blue-950">
         <div class="w-full max-w-7xl mx-auto sm:px-6 lg:px-8">
             <section class="flex flex-col gap-4 p-4">
                 @if($stage->prev())

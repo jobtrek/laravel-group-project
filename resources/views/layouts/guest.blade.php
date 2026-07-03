@@ -29,9 +29,8 @@
                 <circle cx="20" cy="400" r="7" fill="none" stroke="#c9e070" stroke-width="2"/>
             </svg>
 
-            <div class="absolute top-9 left-11 flex items-center gap-1.5 text-white font-sans font-extrabold text-[22px] tracking-[-0.02em]">
-                <span>Jobtrek</span>
-                <span class="w-4 h-4 border-[3px] border-[#93c83a] rounded-full -mt-3.5"></span>
+            <div class="text-white w-52 mb-12">
+                <img src="{{ Vite::asset('resources/views/Images/logo-white.svg') }}" alt="JobtrekLogo">
             </div>
 
             <div class="relative z-10 w-full sm:max-w-md px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">

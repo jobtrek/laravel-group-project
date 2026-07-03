@@ -1,15 +1,11 @@
-<nav x-data="{ open: false }" class="bg-[#131c3f] font-['Inter'] sticky top-0 z-50">
+<nav x-data="{ open: false }" class="bg-[#131c3f] sticky top-0 z-50">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-[64px]">
 
             <div class="flex items-center gap-8">
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('projects') }}" class="flex items-center gap-1.5 font-['Poppins'] font-extrabold text-[19px] text-white no-underline">
-                        <span>JobTrek</span>
-                        <span class="w-3 h-3 border-[2.5px] border-[#93c83a] rounded-full -mt-2.5"></span>
-                    </a>
+                <div class="text-white w-20">
+                    <img src="{{ Vite::asset('resources/views/Images/logo-white.svg') }}" alt="JobtrekLogo">
                 </div>
-
                 <div class="hidden sm:flex sm:items-center sm:gap-7 mt-1">
                     <a href="{{ route('projects') }}" class="text-[13.5px] font-semibold px-0 py-2 border-b-2 transition-colors duration-150 {{ request()->routeIs('projects') ? 'text-white border-[#93c83a]' : 'text-[#b9c1de] border-transparent hover:text-white hover:border-[#b9c1de]' }}">
                         {{ __('Home') }}
