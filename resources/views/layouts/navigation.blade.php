@@ -15,6 +15,12 @@
                     <x-nav-link :href="route('projects')" :active="request()->routeIs('projects')">
                         {{ __('Home') }}
                     </x-nav-link>
+                    @can('manage everything')
+                        <x-nav-link :href="route('register')" :active="request()->routeIs('register')">
+                            {{ __('Administration') }}
+                        </x-nav-link>
+                    @endcan
+
                 </div>
             </div>
 

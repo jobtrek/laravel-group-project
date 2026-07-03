@@ -1,5 +1,5 @@
-<x-guest-layout>
-    <form method="POST" action="{{ route('register') }}">
+<x-app-layout>
+    <form method="POST" action="{{ route('register') }}" class="mt-6 px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">
         @csrf
 
         <!-- Name -->
@@ -40,13 +40,9 @@
         </div>
 
         <div class="flex items-center justify-end mt-4">
-            <a class="underline text-sm text-gray-600 hover:text-gray-900 rounded-md focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500" href="{{ route('login') }}">
-                {{ __('Déjà inscrit ?') }}
-            </a>
-
             <x-primary-button class="ms-4">
-                {{ __('Inscription') }}
+                {{ __("Enregistrer l'utilisateur") }}
             </x-primary-button>
         </div>
     </form>
-</x-guest-layout>
+</x-app-layout>

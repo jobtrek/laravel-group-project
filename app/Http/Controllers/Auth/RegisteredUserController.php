@@ -44,6 +44,11 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
+        if (Auth::check()) {
+            return redirect()->route('register')
+                ->with('status', __('Utilisateur créé avec succès.'));
+        }
+
         Auth::login($user);
 
         return redirect(route('dashboard', absolute: false));
