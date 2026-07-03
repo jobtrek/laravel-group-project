@@ -29,10 +29,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
         ->middleware('can:review')
         ->name('projects.direction-review');
     Route::get('/projects/{project}/revision', [RevisionController::class, 'showForm'])
-        ->middleware('can:review')
         ->name('projects.revision-form');
     Route::post('/projects/{project}/revision-submit', [RevisionController::class, 'submit'])
-        ->middleware('can:review')
         ->name('projects.revision-submit');
 });
 
@@ -67,10 +65,9 @@ Route::middleware('auth')->group(function () {
         Route::patch('/resubmit', 'reSubmit')->name('projects.resubmit');
         Route::get('/edit', 'edit')->name('projects.edit');
         Route::patch('/', 'update')->name('projects.update');
-        Route::patch('/complete', 'complete')->name('projects.complete');
-        Route::patch('/archive', 'archive')->middleware('role:admin')->name('projects.archive');
-        Route::post('/projects/{project}/comments', [CommentController::class, 'store'])
-            ->middleware('role:chef_de_projet|collaborateur')
+        Route::patch('/complete', 'complete')->middleware('can:complete project')->name('projects.complete');
+        Route::patch('/archive', 'archive')->middleware('can:archive projects')->name('projects.archive');
+        Route::post('/comments', [CommentController::class, 'store'])
             ->name('projects.comments.store');
         Route::patch('/send-to-direction', 'sendToDirection')->middleware('can:send to direction')->name('projects.send-to-direction');
     });
@@ -78,14 +75,16 @@ Route::middleware('auth')->group(function () {
     Route::controller(ResourceContributionController::class)->prefix('/projects/{project}/resources')
         ->middleware('can:add resources')->
         group(function () {
-        Route::get('/create', 'create')->name('projects.resources.create');
-        Route::post('/', 'store')->name('projects.resources.store');
-    });
+            Route::get('/create', 'create')->name('projects.resources.create');
+            Route::post('/', 'store')->name('projects.resources.store');
+        });
 
     Route::patch('/projects/{project}/move-to-en-cours', [RecolteController::class, 'moveFromRecolteToActive'])
+        ->middleware('can:launch project')
         ->name('projects.recolte.activate');
 
     Route::patch('/projects/{project}/team', [RecolteController::class, 'assignTeam'])
+        ->middleware('can:assign team')
         ->name('projects.recolte.team');
 });
 

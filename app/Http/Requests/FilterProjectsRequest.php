@@ -10,7 +10,9 @@ class FilterProjectsRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        // Every role can see every project (Source_of_truth.md: "All roles can see all projects? Yes"),
+        // so this is a read-only filter with no role restriction, not a stub.
+        return $this->user() !== null;
     }
 
     public function rules(): array

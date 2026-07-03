@@ -68,7 +68,7 @@ use App\Http\Controllers\ProjectController;
                 </form>
             @endcan
             @elseif((string)$status === 'en cours')
-                @if($project->progress >= 100)
+                @if($project->progress >= 100 && auth()->user()->can('complete project') && auth()->id() === $project->leader_id)
                     <form action="{{ route('projects.complete', $project) }}" method="POST" class="relative z-10">
                         @csrf
                         @method('PATCH')
@@ -88,13 +88,20 @@ use App\Http\Controllers\ProjectController;
             {{ $progress }}%
         </span>
         </div>
-        <div class="relative z-10 flex justify-end">
+        <div class="relative z-10 flex justify-end gap-2">
             @can('add resources')
             <a href="{{ route('projects.resources.create', $project) }}"
                class="bg-blue-700 text-white text-sm rounded-lg px-3 py-1.5">
                 Ajouter une ressource
             </a>
                 @endcan
+            @if((string)$status === 'récolte' && auth()->user()->can('launch project') && auth()->id() === $project->leader_id)
+                <form action="{{ route('projects.recolte.activate', $project) }}" method="POST" class="relative z-10">
+                    @csrf
+                    @method('PATCH')
+                    <x-projects.buttons text="Démarrer le projet" class="bg-green-700 text-white text-sm rounded-lg px-3 py-1.5" type="submit"/>
+                </form>
+            @endif
         </div>
     @endif
     <div class="relative z-10 pointer-events-none flex items-center justify-between mt-1">

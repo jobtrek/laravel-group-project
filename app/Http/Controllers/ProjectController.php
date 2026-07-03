@@ -42,6 +42,8 @@ class ProjectController extends Controller
 
     public function approve(Project $project)
     {
+        abort_if($project->proposer_id === auth()->id(), 403);
+
         ProjectService::approve($project);
 
         return Redirect::back()->with('status', 'project-approved');
@@ -49,9 +51,18 @@ class ProjectController extends Controller
 
     public function deny(Project $project)
     {
+        abort_if($project->proposer_id === auth()->id(), 403);
+
         ProjectService::deny($project);
 
         return Redirect::back()->with('status', 'project-denied');
+    }
+
+    public function sendToDirection(Project $project)
+    {
+        ProjectService::review($project);
+
+        return Redirect::back()->with('status', 'project-sent-to-direction');
     }
 
     public function requestMoreInfo(
@@ -71,6 +82,8 @@ class ProjectController extends Controller
 
     public function reSubmit(Project $project)
     {
+        abort_if($project->proposer_id !== auth()->id(), 403);
+
         ProjectService::reSubmit($project);
 
         return Redirect::back()->with('status', 'project-resubmitted');
@@ -105,6 +118,8 @@ class ProjectController extends Controller
 
     public function complete(Project $project)
     {
+        abort_if($project->leader_id !== auth()->id(), 403);
+
         try {
             ProjectService::complete($project);
         } catch (\RuntimeException $e) {
