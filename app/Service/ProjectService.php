@@ -38,7 +38,8 @@ class ProjectService
         $project->save();
 
         if ($proposer = $project->proposer) {
-            Mail::to($proposer->email)->queue(new ApprovedEmail($proposer->name));        }
+            Mail::to($proposer->email)->queue(new ApprovedEmail($proposer->name));
+        }
     }
 
     public static function deny(Project $project): void
