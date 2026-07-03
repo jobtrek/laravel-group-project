@@ -51,8 +51,7 @@ class ProjectController extends Controller
 
     public function deny(Project $project)
     {
-        abort_if($project->proposer_id === auth()->id(), 403);
-
+        abort_if($project->proposer_id === auth()->id() || !$project->status instanceof \App\Models\States\EvaluationState, 403);
         ProjectService::deny($project);
 
         return Redirect::back()->with('status', 'project-denied');
@@ -82,8 +81,7 @@ class ProjectController extends Controller
 
     public function reSubmit(Project $project)
     {
-        abort_if($project->proposer_id !== auth()->id(), 403);
-
+        abort_if($project->proposer_id !== auth()->id() || !$project->status instanceof \App\Models\States\RevisionState, 403);
         ProjectService::reSubmit($project);
 
         return Redirect::back()->with('status', 'project-resubmitted');
@@ -118,8 +116,7 @@ class ProjectController extends Controller
 
     public function complete(Project $project)
     {
-        abort_if($project->leader_id !== auth()->id(), 403);
-
+        abort_if($project->proposer_id === auth()->id() || !$project->status instanceof \App\Models\States\EvaluationState, 403);
         try {
             ProjectService::complete($project);
         } catch (\RuntimeException $e) {

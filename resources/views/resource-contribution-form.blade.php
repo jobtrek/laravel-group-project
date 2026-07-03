@@ -116,7 +116,7 @@
         </form>
 
         @if ($project->status instanceof \App\Models\States\RecolteState
-            && auth()->user()->can('launch project')
+            && auth()->user()?->can('launch project')
             && auth()->id() === $project->leader_id)
             <form method="POST" action="{{ route('projects.recolte.activate', $project) }}" class="mt-8">
                 @csrf

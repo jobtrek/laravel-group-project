@@ -68,8 +68,8 @@ use App\Http\Controllers\ProjectController;
                 </form>
             @endcan
             @elseif((string)$status === 'en cours')
-                @if($project->progress >= 100 && auth()->user()->can('complete project') && auth()->id() === $project->leader_id)
-                    <form action="{{ route('projects.complete', $project) }}" method="POST" class="relative z-10">
+                @if($project->progress >= 100 && auth()->user()?->can('complete project') && auth()->id() === $project->leader_id)                    
+                <form action="{{ route('projects.complete', $project) }}" method="POST" class="relative z-10">
                         @csrf
                         @method('PATCH')
                         <x-projects.buttons text="Marquer comme complété" class="bg-green-600 text-white p-2" type="submit"/>
@@ -95,8 +95,8 @@ use App\Http\Controllers\ProjectController;
                 Ajouter une ressource
             </a>
                 @endcan
-            @if((string)$status === 'récolte' && auth()->user()->can('launch project') && auth()->id() === $project->leader_id)
-                <form action="{{ route('projects.recolte.activate', $project) }}" method="POST" class="relative z-10">
+            @if((string)$status === 'récolte' && auth()->user()?->can('launch project') && auth()->id() === $project->leader_id)                
+            <form action="{{ route('projects.recolte.activate', $project) }}" method="POST" class="relative z-10">
                     @csrf
                     @method('PATCH')
                     <x-projects.buttons text="Démarrer le projet" class="bg-green-700 text-white text-sm rounded-lg px-3 py-1.5" type="submit"/>

@@ -141,7 +141,7 @@
                         || (auth()->user()->hasRole('chef_de_projet') && $project->status instanceof EncoursState))
                         <form action="{{ route('projects.comments.store', $project) }}" method="POST" class="mt-3 flex flex-col gap-2">
                             @csrf
-                            <input type="hidden" name="stage" value="{{ $project->status::getMorphClass() }}">
+                            <input type="hidden" name="stage" value="{{ $project->status->getValue() }}">                            
                             <textarea name="content" rows="2" required
                                       class="w-full rounded-md border border-gray-200 p-2 text-sm"
                                       placeholder="Ajouter un commentaire"></textarea>
