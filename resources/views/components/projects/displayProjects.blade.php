@@ -42,12 +42,15 @@ use App\Http\Controllers\ProjectController;
         </div>
         <div class="flex gap-2 pointer-events-auto">
             @if((string)$status === 'proposition')
-                <form action="{{ route('projects.review', $project) }}" method="POST" class="relative z-10">
+                @can('send to direction')
+                <form action="{{ route('projects.send-to-direction', $project) }}" method="POST" class="relative z-10">
                     @csrf
                     @method('PATCH')
-                    <x-projects.buttons text=" Evaluer" class="bg-blue-700 text-white p-2" type="submit"/>
+                    <x-projects.buttons text="Confirmer la proposition" class="bg-blue-700 text-white p-2" type="submit"/>
                 </form>
+                @endcan
             @elseif((string)$status === 'évaluation')
+                @can('evaluate projects')
                 <form action="{{ route('projects.deny', $project) }}" method="POST" class="relative z-10">
                     @csrf
                     @method('PATCH')
@@ -63,6 +66,7 @@ use App\Http\Controllers\ProjectController;
                     @method('PATCH')
                     <x-projects.buttons text="Accepter" class="bg-green-600 text-white p-2" type="submit"/>
                 </form>
+            @endcan
             @elseif((string)$status === 'en cours')
                 @if($project->progress >= 100)
                     <form action="{{ route('projects.complete', $project) }}" method="POST" class="relative z-10">
@@ -85,10 +89,12 @@ use App\Http\Controllers\ProjectController;
         </span>
         </div>
         <div class="relative z-10 flex justify-end">
+            @can('add resources')
             <a href="{{ route('projects.resources.create', $project) }}"
                class="bg-blue-700 text-white text-sm rounded-lg px-3 py-1.5">
                 Ajouter une ressource
             </a>
+                @endcan
         </div>
     @endif
     <div class="relative z-10 pointer-events-none flex items-center justify-between mt-1">
