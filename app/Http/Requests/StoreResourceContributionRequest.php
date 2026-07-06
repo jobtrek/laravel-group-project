@@ -10,7 +10,16 @@ class StoreResourceContributionRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // any authenticated user is allowed, per requirements
+        /** @var Project $project */
+        $project = $this->route('project');
+
+        abort_if(
+            !$project->status instanceof RecolteState &&
+            !$project->status instanceof EncoursState,
+            404
+        );
+
+        return true;
     }
 
     public function rules(): array
@@ -31,7 +40,7 @@ class StoreResourceContributionRequest extends FormRequest
 
             $phase = $project->phases()
                 ->with(['resources', 'contributions'])
-                ->find((int) $this->input('phase_id'));
+                ->find((int)$this->input('phase_id'));
 
             if ($phase === null) {
                 $validator->errors()->add('phase_id', 'This phase does not belong to the selected project.');
@@ -48,9 +57,9 @@ class StoreResourceContributionRequest extends FormRequest
                 return;
             }
 
-            $amount = round((float) $this->input('amount'), 2);
-            $found = (float) $phase->contributions->where('resource_type', $resourceType)->sum('amount');
-            $remaining = round((float) $resource->amount_needed - $found, 2);
+            $amount = round((float)$this->input('amount'), 2);
+            $found = (float)$phase->contributions->where('resource_type', $resourceType)->sum('amount');
+            $remaining = round((float)$resource->amount_needed - $found, 2);
 
             if ($amount > $remaining) {
                 $validator->errors()->add(
