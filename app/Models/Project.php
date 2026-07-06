@@ -64,16 +64,19 @@ class Project extends Model
         return $this->belongsTo(User::class, 'recolte_manager_id');
     }
 
+    /** @return BelongsToMany<User, $this> */
     public function members(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'project_members', 'project_id', 'user_id');
     }
 
+    /** @return HasMany<Comment, $this> */
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class, 'project_id');
     }
 
+    /** @return HasMany<ProjectReview, $this> */
     public function reviews(): HasMany
     {
         return $this->hasMany(ProjectReview::class, 'project_id');
@@ -85,6 +88,7 @@ class Project extends Model
         return $this->hasMany(ProjectPhase::class, 'project_id')->orderBy('order');
     }
 
+    /** @return HasOne<ProjectEvaluation, $this> */
     public function evaluation(): HasOne
     {
         return $this->hasOne(ProjectEvaluation::class, 'project_id');

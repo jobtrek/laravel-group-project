@@ -38,7 +38,7 @@ class ProjectService
         $project->save();
 
         if ($proposer = $project->proposer) {
-            Mail::to($proposer->email)->send(new ApprovedEmail($proposer->name));
+            Mail::to($proposer->email)->queue(new ApprovedEmail($proposer->name));
         }
     }
 
@@ -48,7 +48,7 @@ class ProjectService
         $project->save();
 
         if ($proposer = $project->proposer) {
-            Mail::to($proposer->email)->send(new DeniedEmail($proposer->name));
+            Mail::to($proposer->email)->queue(new DeniedEmail($proposer->name));
         }
     }
 

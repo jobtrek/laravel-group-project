@@ -19,7 +19,7 @@ class ApprovedEmail extends Mailable implements ShouldQueue
      */
     public function __construct(private string $name)
     {
-        //
+        $this->afterCommit();
     }
 
     /**

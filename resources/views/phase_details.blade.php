@@ -27,7 +27,7 @@
                         <div class="rounded-lg border border-blue-700 p-3 flex flex-col gap-4 shadow-lg">
                             <p class="text-[20px] font-semibold text-gray-800">Objectifs</p>
                             @forelse($phase->objectifs ?? [] as $objectif)
-                                <x-phase-details.phase_objectif_livrables :objectifs_text="$objectif"/>
+                                <x-phase-details.phase_objectif_livrables :project="$project" :objectifs_text="$objectif"/>
                             @empty
                                 <p class="text-sm text-gray-500">{{ __('Aucun objectif défini') }}</p>
                             @endforelse
@@ -36,21 +36,20 @@
                         <div class="rounded-lg border border-green-700 p-3 flex flex-col gap-4 shadow-lg">
                             <p class="text-[20px] font-semibold text-gray-800">Livrables :</p>
                             @forelse($phase->livrables ?? [] as $livrable)
-                                <x-phase-details.phase_objectif_livrables :livrables_text="$livrable"/>
+                                <x-phase-details.phase_objectif_livrables :project="$project" :livrables_text="$livrable"/>
                             @empty
                                 <p class="text-sm text-gray-500">{{ __('Aucun livrable défini') }}</p>
                             @endforelse
                         </div>
 
                         <div class="rounded-lg border border-purple-700 p-3 flex flex-col gap-4 shadow-lg">
-                            <p class="text-sm text-gray-500">{{ __('Aucune ressource requise') }}</p>
+                            <p class="text-[20px] font-semibold text-gray-800">Ressource requise :</p>
                             @forelse($phase->resources ?? [] as $resource)
                                 <x-phase-details.resources
                                     :resource_type="$resource->resource_type"
                                     :resource_quantity="number_format($phase->contributions->where('resource_type', $resource->resource_type)->sum('amount'), 2) . ' / ' . number_format($resource->amount_needed, 2) . ' CHF'"
                                 />
                             @empty
-                                <p class="text-sm text-gray-500">Aucune ressource requise</p>
                             @endforelse
                         </div>
                     </div>

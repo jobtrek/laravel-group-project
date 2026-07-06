@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Actions;
 
 use App\Models\Project;
@@ -92,7 +90,7 @@ class SubmitRevisionAction
         });
     }
 
-    /** @param array<int, array{resource_type: string, amount_needed: string}> $resources */
+    /** @param array<int, mixed> $resources */
     private function replaceResources(ProjectPhase $phase, array $resources): void
     {
         $phase->resources()->delete();

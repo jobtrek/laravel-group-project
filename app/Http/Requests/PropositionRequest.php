@@ -2,17 +2,21 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Role;
+use App\Http\Requests\Concerns\HasScoringRules;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class PropositionRequest extends FormRequest
 {
+    use HasScoringRules;
+
     /**
      * Determine if the user is authorized to make this request.
      */
     public function authorize(): bool
     {
-        return true;
+        return (bool) $this->user()?->hasRole(Role::Collaborateur->value);
     }
 
     /**
@@ -43,10 +47,7 @@ class PropositionRequest extends FormRequest
 
             'ressources_totales' => ['nullable', 'string'],
 
-            'portee' => ['required', 'numeric', 'min:0', 'max:50'],
-            'impact' => ['required', 'integer', 'min:1', 'max:5'],
-            'confiance' => ['required', 'integer', 'min:0', 'max:100'],
-            'effort' => ['required', 'integer', 'min:1', 'max:5'],
+            ...$this->scoringRules(),
         ];
     }
 }

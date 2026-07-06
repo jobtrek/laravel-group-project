@@ -43,12 +43,15 @@ use App\Http\Controllers\ProjectController;
         </div>
         <div class="flex gap-2 pointer-events-auto">
             @if((string)$status === 'proposition')
-                <form action="{{ route('projects.review', $project) }}" method="POST" class="relative z-10">
+                @can('send to direction')
+                <form action="{{ route('projects.send-to-direction', $project) }}" method="POST" class="relative z-10">
                     @csrf
                     @method('PATCH')
-                    <x-projects.buttons text=" Evaluer" class="bg-blue-700 text-white p-2" type="submit"/>
+                    <x-projects.buttons text="Confirmer la proposition" class="bg-blue-700 text-white p-2" type="submit"/>
                 </form>
+                @endcan
             @elseif((string)$status === 'évaluation')
+                @can('evaluate projects')
                 <form action="{{ route('projects.deny', $project) }}" method="POST" class="relative z-10">
                     @csrf
                     @method('PATCH')
@@ -64,9 +67,10 @@ use App\Http\Controllers\ProjectController;
                     @method('PATCH')
                     <x-projects.buttons text="Accepter" class="bg-green-600 text-white p-2" type="submit"/>
                 </form>
+            @endcan
             @elseif((string)$status === 'en cours')
-                @if($project->progress >= 100)
-                    <form action="{{ route('projects.complete', $project) }}" method="POST" class="relative z-10">
+                @if($project->progress >= 100 && auth()->user()?->can('complete project') && auth()->id() === $project->leader_id)                    
+                <form action="{{ route('projects.complete', $project) }}" method="POST" class="relative z-10">
                         @csrf
                         @method('PATCH')
                         <x-projects.buttons text="Marquer comme complété" class="bg-green-600 text-white p-2" type="submit"/>
@@ -85,11 +89,24 @@ use App\Http\Controllers\ProjectController;
             {{ $progress }}%
         </span>
         </div>
-        <div class="relative z-10 flex justify-end">
+        <div class="relative z-10 flex justify-end gap-2">
+            @can('add resources')
             <a href="{{ route('projects.resources.create', $project) }}"
                class="bg-blue-700 text-white text-sm rounded-lg px-3 py-1.5">
                 Ajouter une ressource
             </a>
+                @endcan
+            @if((string)$status === 'récolte' && auth()->user()?->can('launch project'))
+                @php $canLaunch = auth()->id() === $project->leader_id; @endphp
+            <form action="{{ route('projects.recolte.activate', $project) }}" method="POST" class="relative z-10">
+                    @csrf
+                    @method('PATCH')
+                                        <x-projects.buttons text="Démarrer le projet"
+                        class="text-sm rounded-lg px-3 py-1.5 {{ $canLaunch ? 'bg-green-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed' }}"
+                        type="submit"
+                        :disabled="!$canLaunch"/>
+                </form>
+            @endif
         </div>
     @endif
     <div class="relative z-10 pointer-events-none flex items-center justify-between mt-1">
@@ -102,13 +119,14 @@ use App\Http\Controllers\ProjectController;
             {{ $creationDate }}
         </span>
         @if($updatedAt instanceof Carbon)
-                <?php $bgColor = match (true) {
-                $updatedAt->lessThan(now()->subMonth(3)) => 'bg-red-400',
-                $updatedAt->lessThan(now()->subMonth(2)) => 'bg-orange-400',
-                $updatedAt->lessThan(now()->subMonth()) => 'bg-yellow-400',
-
-                default                                              => 'bg-green-400',
-            };
+                <?php
+                                $stalenessColors = config('projects.staleness_colors') ?? [];
+                $bgColor = match (true) {
+                    $updatedAt->lessThan(now()->subMonths($stalenessColors['red_after_months'] ?? 3)) => 'bg-red-400',
+                    $updatedAt->lessThan(now()->subMonths($stalenessColors['orange_after_months'] ?? 2)) => 'bg-orange-400',
+                    $updatedAt->lessThan(now()->subMonths($stalenessColors['warning_after_months'] ?? 1)) => 'bg-yellow-400',
+                    default => 'bg-green-400',
+                };
                 ?>
             <span class="text-xs px-1.5 py-0.5 rounded-full text-gray-700 {{ $bgColor }} flex items-center gap-1 italic">
                 Mis à jours {{ $updatedAt->locale('fr')->diffForHumans() }}

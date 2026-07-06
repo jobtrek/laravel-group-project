@@ -9,6 +9,9 @@ use App\Http\Requests\FilterProjectsRequest;
 use App\Http\Requests\RequestMoreInfoRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
+use App\Models\ProjectPhase;
+use App\Models\States\EvaluationState;
+use App\Models\States\RevisionState;
 use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Http\RedirectResponse;
@@ -24,7 +27,7 @@ class ProjectController extends Controller
     {
         $projects = $this->filter->apply(
             Project::with(['proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions']), $request
-        )->paginate(10)->withQueryString();
+        )->paginate((int) config('projects.per_page', 10))->withQueryString();
 
         $counts = Project::statusCounts();
 
@@ -42,6 +45,8 @@ class ProjectController extends Controller
 
     public function approve(Project $project)
     {
+        abort_if($project->proposer_id === auth()->id(), 403);
+
         ProjectService::approve($project);
 
         return Redirect::back()->with('status', 'project-approved');
@@ -49,9 +54,17 @@ class ProjectController extends Controller
 
     public function deny(Project $project)
     {
+        abort_if($project->proposer_id === auth()->id() || ! $project->status instanceof EvaluationState, 403);
         ProjectService::deny($project);
 
         return Redirect::back()->with('status', 'project-denied');
+    }
+
+    public function sendToDirection(Project $project)
+    {
+        ProjectService::review($project);
+
+        return Redirect::back()->with('status', 'project-sent-to-direction');
     }
 
     public function requestMoreInfo(
@@ -71,6 +84,7 @@ class ProjectController extends Controller
 
     public function reSubmit(Project $project)
     {
+        abort_if($project->proposer_id !== auth()->id() || ! $project->status instanceof RevisionState, 403);
         ProjectService::reSubmit($project);
 
         return Redirect::back()->with('status', 'project-resubmitted');
@@ -81,6 +95,13 @@ class ProjectController extends Controller
         $project->load(['proposer', 'leader', 'evaluation', 'phases', 'phases.resources', 'members', 'comments', 'comments.user']);
 
         return view('projectsDetails', compact('project'));
+    }
+
+    public function phaseDetail(Project $project, ProjectPhase $phase)
+    {
+        $phase->load(['resources', 'contributions']);
+
+        return view('phase_details', compact('phase', 'project'));
     }
 
     public function edit(Project $project)
@@ -105,9 +126,10 @@ class ProjectController extends Controller
 
     public function complete(Project $project)
     {
+        abort_if($project->proposer_id === auth()->id() || ! $project->status instanceof EvaluationState, 403);
         try {
             ProjectService::complete($project);
-        } catch (\RuntimeException $e) {
+        } catch (\Exception $e) {
             return back()->with('error', $e->getMessage());
         }
 

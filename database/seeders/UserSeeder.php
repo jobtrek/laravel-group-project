@@ -14,7 +14,7 @@ class UserSeeder extends Seeder
     {
         $users = User::factory(10)->create();
         foreach ($users as $user) {
-            $user->assignRole('user');
+            $user->assignRole('collaborateur');
         }
 
         User::factory()->create([
@@ -25,6 +25,26 @@ class UserSeeder extends Seeder
         User::factory()->create([
             'name' => 'Phil Direction',
             'email' => 'direction@mail.fr',
-        ])->assignRole(['user', 'direction']);
+        ])->assignRole(['collaborateur', 'direction']);
+
+        User::factory()->create([
+            'name' => 'Jean Ressources',
+            'email' => 'support@mail.fr',
+        ])->assignRole(['collaborateur', 'recolte_manager']);
+
+        User::factory()->create([
+            'name' => 'Jackson PManager',
+            'email' => 'pmanager@mail.fr',
+        ])->assignRole(['project_manager']);
+
+        User::factory()->create([
+            'name' => 'Chris ChefDeProjet',
+            'email' => 'chef@mail.fr',
+        ])->assignRole(['collaborateur', 'chef_de_projet']);
+
+        User::factory()->create([
+            'name' => 'Marc User',
+            'email' => 'user@mail.fr',
+        ])->assignRole(['collaborateur']);
     }
 }

@@ -204,9 +204,10 @@ Exception — Récolte: auto-archive at **12 months** (not 3).
 
 | Role | Key permissions |
 |------|----------------|
-| **Collaborateur** | Propose projects; edit own proposals; see own projects (except in En cours, which are visible to all) |
-| **Direction** | Approve / refuse / suspend proposals; comment in Direction module; see all |
+| **Collaborateur** | Propose projects; edit own proposals | he can see all projects
+| **Direction** | Approve / refuse / suspend proposals; comment in Direction module; see all | | he can also archive projects | and evaluate projects
 | **Récolte Manager** | Add/update resources on Récolte projects; see all |
+| **Project manager** | he can't evaluate, | but he can archive project. |. 
 | **Chef de projet** | Comment on all En cours projects; launch projects from Récolte; mark complete; see all |
 | **Admin** | Full access; only role that can assign/change roles |
 

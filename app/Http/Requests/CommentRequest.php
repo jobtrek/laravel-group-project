@@ -2,6 +2,10 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Role;
+use App\Models\Project;
+use App\Models\States\EncoursState;
+use App\Models\States\EvaluationState;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -12,6 +16,20 @@ class CommentRequest extends FormRequest
      */
     public function authorize(): bool
     {
+        $project = $this->route('project');
+
+        if (! $project instanceof Project) {
+            return false;
+        }
+
+        if ($project->status instanceof EvaluationState) {
+            return (bool) $this->user()?->hasRole(Role::Direction->value);
+        }
+
+        if ($project->status instanceof EncoursState) {
+            return (bool) $this->user()?->hasRole(Role::ChefDeProjet->value);
+        }
+
         return false;
     }
 
@@ -25,7 +43,6 @@ class CommentRequest extends FormRequest
         return [
             'content' => ['required', 'string'],
             'stage' => ['required', 'string', 'max:50'],
-            'project_id' => ['required', 'exists:projects,id'],
         ];
     }
 }

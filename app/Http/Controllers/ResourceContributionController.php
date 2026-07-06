@@ -54,8 +54,8 @@ class ResourceContributionController extends Controller
         ]);
 
         $redirectRoute = $project->status instanceof EncoursState
-        ? 'en-cours'
-        : 'recolte';
+            ? 'en-cours'
+            : 'recolte';
 
         return redirect()
             ->route($redirectRoute)

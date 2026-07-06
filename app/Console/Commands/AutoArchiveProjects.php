@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Console\Commands;
 
 use App\Mail\ProjectArchivedMail;
@@ -13,7 +11,6 @@ use App\Models\States\RevisionState;
 use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
 
 class AutoArchiveProjects extends Command
@@ -40,12 +37,11 @@ class AutoArchiveProjects extends Command
             EvaluationState::class,
         ])
             ->with('proposer')
-            ->where('updated_at', '<', now()->subMonths(3))
-            ->get();
+            ->where('updated_at', '<', now()->subMonths((int) config('projects.stale_after_months', 3)))->get();
 
         foreach ($projects as $project) {
             $this->archive($project);
-            $this->notify($project, collect([$project->proposer]));
+            $this->notify($project, array_filter([$project->proposer]));
         }
 
         return $projects->count();
@@ -64,7 +60,7 @@ class AutoArchiveProjects extends Command
         foreach ($projects as $project) {
             $lastActivityAt = $project->last_contribution_at ?? $project->updated_at;
 
-            if ($lastActivityAt->lt(now()->subMonths(12))) {
+            if ($lastActivityAt->lt(now()->subMonths((int) config('projects.recolte_archive_after_months', 12)))) {
                 $this->archive($project);
                 $this->notify($project, $this->recolteRecipients($project));
                 $archivedCount++;
@@ -79,20 +75,23 @@ class AutoArchiveProjects extends Command
         ProjectService::archive($project);
     }
 
-    /** @return Collection<int, User> */
-    private function recolteRecipients(Project $project): Collection
+    /** @return array<int, User> */
+    private function recolteRecipients(Project $project): array
     {
         return collect([$project->proposer, $project->recolteManager, $project->leader])
             ->merge($project->members)
             ->filter()
-            ->unique('email');
+            ->unique('email')
+            ->values()
+            ->all();
     }
 
-    /** @param Collection<int, User|null> $recipients */
-    private function notify(Project $project, Collection $recipients): void
+    /** @param array<int, User|null> $recipients */
+    /** @param array<int, User> $recipients */
+    private function notify(Project $project, array $recipients): void
     {
-        foreach ($recipients->filter()->unique('email') as $user) {
-            Mail::to($user->email)->send(new ProjectArchivedMail($user, $project));
+        foreach ($recipients as $user) {
+            Mail::to($user->email)->queue(new ProjectArchivedMail($user, $project));
         }
     }
 }

@@ -45,7 +45,7 @@
                             <div x-show="chiefId">
                                 <label class="block text-sm font-medium text-gray-700">Membres</label>
                                 <x-user-select-list :users="$users" name="membres" :selected="old('membres', $project->members->pluck('id')->map(fn($id) => (string) $id)->all() ?: [''])"
-                                    add-label="+ Ajouter un membre" />
+                                                    add-label="+ Ajouter un membre" />
                             </div>
 
                             <x-projects.buttons text="Enregistrer" type="submit" class="bg-blue-700 text-white p-2" />
@@ -66,13 +66,13 @@
                 @endif
 
                 <form method="POST" action="{{ route('projects.resources.store', $project) }}" class="flex flex-col gap-4"
-                    x-data="resourceForm()">
+                      x-data="resourceForm()">
                     @csrf
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Phase</label>
                         <select name="phase_id" x-model="selectedPhaseId" @change="selectedResourceType = ''"
-                            class="mt-1 block w-full rounded-md border-gray-300">
+                                class="mt-1 block w-full rounded-md border-gray-300">
                             @foreach ($project->phases as $phase)
                                 <option value="{{ $phase->id }}">{{ $phase->name }}</option>
                             @endforeach
@@ -85,7 +85,7 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Type de ressource</label>
                         <select name="resource_type" x-model="selectedResourceType"
-                            class="mt-1 block w-full rounded-md border-gray-300">
+                                class="mt-1 block w-full rounded-md border-gray-300">
                             <option value="" selected disabled hidden>Sélectionner un type de ressource…</option>
                             <template x-for="resource in selectedPhase?.resources ?? []" :key="resource.resource_type">
                                 <option :value="resource.resource_type" x-text="resource.resource_type"></option>
@@ -99,13 +99,13 @@
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Description</label>
                         <textarea name="description"
-                            class="mt-1 block w-full rounded-md border-gray-300">{{ old('description') }}</textarea>
+                                  class="mt-1 block w-full rounded-md border-gray-300">{{ old('description') }}</textarea>
                     </div>
 
                     <div>
                         <label class="block text-sm font-medium text-gray-700">Montant</label>
                         <input type="number" step="0.01" min="0.01" name="amount" x-model="amount"
-                            class="mt-1 block w-full rounded-md border-gray-300">
+                               class="mt-1 block w-full rounded-md border-gray-300">
                         <p class="text-xs text-gray-500 mt-1">
                             Cette contribution représente <span x-text="contributionPercent"></span>% du besoin de ce type de
                             ressource.
@@ -116,13 +116,15 @@
                     <x-projects.buttons text="Enregistrer" type="submit" class="bg-blue-700 text-white p-2" />
                 </form>
 
-                @if ($project->status instanceof \App\Models\States\RecolteState)
+                @if ($project->status instanceof \App\Models\States\RecolteState
+                    && auth()->user()?->can('launch project')
+                    && auth()->id() === $project->leader_id)
                     <form method="POST" action="{{ route('projects.recolte.activate', $project) }}" class="mt-8">
                         @csrf
                         @method('PATCH')
                         <button type="submit" :disabled="!chiefId"
-                            :class="chiefId ? 'bg-green-700 hover:bg-green-800' : 'bg-gray-300 cursor-not-allowed'"
-                            class="text-white p-2 rounded-md">
+                                :class="chiefId ? 'bg-green-700 hover:bg-green-800' : 'bg-gray-300 cursor-not-allowed'"
+                                class="text-white p-2 rounded-md">
                             Démarrer le projet (passer en cours)
                         </button>
                     </form>
@@ -168,7 +170,7 @@
                                 Math.round((total / this.selectedResource.needed) * 10000) / 100
                             );
                         }
-                    };
+                    }
                 }
             </script>
         </div>
