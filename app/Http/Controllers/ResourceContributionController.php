@@ -45,6 +45,12 @@ class ResourceContributionController extends Controller
 
     public function store(StoreResourceContributionRequest $request, Project $project): RedirectResponse
     {
+        abort_if(
+            ! $project->status instanceof RecolteState &&
+            ! $project->status instanceof EncoursState,
+            404
+        );
+
         ResourceContribution::create([
             'phase_id' => $request->validated('phase_id'),
             'user_id' => auth()->id(),
