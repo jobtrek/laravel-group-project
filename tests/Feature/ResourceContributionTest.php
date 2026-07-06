@@ -78,3 +78,17 @@ it('rejects a contribution that exceeds what is still needed for that specific r
 
     $response->assertSessionHasErrors('amount');
 });
+
+it('rejects a contribution on an archived project', function () {
+    $user = User::factory()->create();
+    $project = Project::factory()->archive()->create();
+
+    $response = $this->actingAs($user)->post(route('projects.resources.store', $project), [
+        'phase_id' => 1,
+        'resource_type' => 'Budget',
+        'amount' => 100,
+    ]);
+
+    $response->assertNotFound();
+    expect(ResourceContribution::count())->toBe(0);
+});
