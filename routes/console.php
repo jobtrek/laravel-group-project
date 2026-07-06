@@ -14,9 +14,10 @@ Artisan::command('inspire', function () {
 
 Artisan::command('mail:send-reminders', function () {
     $projects = Project::with('leader')
-        ->whereState('status', EncoursState::class)
-        ->whereNotNull('leader_id')
-        ->where('updated_at', '<', now()->subMonths((int) config('projects.reminder_after_months', 1)))->get();
+        ->needingProgressReminder()
+        ->get()
+        ->filter(fn (Project $project) => $project->last_leader_comment_at === null
+            || $project->last_leader_comment_at->lt(now()->subMonth()));
 
     foreach ($projects as $project) {
         SendMailProcess::dispatch($project->leader);
