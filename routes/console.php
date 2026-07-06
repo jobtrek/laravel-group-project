@@ -25,7 +25,7 @@ Artisan::command('mail:send-reminders', function () {
         })
         ->get();
 
-        foreach ($projects as $project) {
+    foreach ($projects as $project) {
         if ($project->leader) {
             SendMailProcess::dispatch($project->leader);
             $project->timestamps = false;
