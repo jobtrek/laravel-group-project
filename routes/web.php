@@ -66,7 +66,7 @@ Route::middleware('auth')->group(function () {
         });
 
     Route::patch('/projects/{project}/move-to-en-cours', [RecolteController::class, 'moveFromRecolteToActive'])
-        ->middleware('can:launch project')
+        ->middleware(['can:launch project', 'project.has-leader'])
         ->name('projects.recolte.activate');
 
     Route::patch('/projects/{project}/team', [RecolteController::class, 'assignTeam'])
