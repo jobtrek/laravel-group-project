@@ -2,11 +2,11 @@
     'users' => [],
 ])
 
-<div class="w-full bg-[#131c3f]">
+<div class="w-full">
     <form method="GET" action="{{ request()->url() }}"
-          class="w-full p-4 flex justify-center gap-10 items-center">
+          class="w-full flex justify-between gap-10 items-center">
         <div class="flex justify-between gap-4">
-            <div class="flex flex-col gap-1 min-w-[180px]">
+            <div class="flex flex-col gap-1">
                 <label for="sort" class="text-xs font-medium text-slate-400">Trier par</label>
                 <select name="sort" id="sort"
                         class="border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
@@ -61,7 +61,7 @@
                 </div>
             @endif
         </div>
-        <div class="flex items-end gap-2">
+        <div class="flex">
             <a href="{{ request()->url() }}"
                class="flex items-center gap-1 border border-slate-700 text-slate-400 rounded-lg px-4 py-2 text-sm hover:bg-slate-700 hover:text-slate-200 transition {{ request()->hasAny(['sort', 'score_min', 'date_from', 'date_to', 'proposer_id']) ? '' : 'invisible' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">

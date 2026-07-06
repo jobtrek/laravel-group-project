@@ -164,7 +164,7 @@
                             "phases.{$i}.livrables",
                             "phases.{$i}.ressources",
                         ];
-                        $hasPhaseComments = collect($phaseKeys)->contains(fn($k) => $comments->has($k));
+                        $hasPhaseComments = collect($phaseKpeys)->contains(fn($k) => $comments->has($k));
                     @endphp
 
                     @if ($hasPhaseComments)
