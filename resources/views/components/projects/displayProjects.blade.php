@@ -100,10 +100,10 @@ use App\Http\Controllers\ProjectController;
             <form action="{{ route('projects.recolte.activate', $project) }}" method="POST" class="relative z-10">
                     @csrf
                     @method('PATCH')
-                    <x-projects.buttons text="Démarrer le projet"
+                                        <x-projects.buttons text="Démarrer le projet"
                         class="text-sm rounded-lg px-3 py-1.5 {{ $canLaunch ? 'bg-green-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed' }}"
                         type="submit"
-                        @disabled(!$canLaunch)/>
+                        :disabled="!$canLaunch"/>
                 </form>
             @endif
         </div>
