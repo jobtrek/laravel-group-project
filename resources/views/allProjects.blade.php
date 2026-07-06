@@ -13,8 +13,10 @@
                                                   route="recolte"/>
                         <x-projects.countProjects text="En cours" :projets="$counts->get('en cours', 0)"
                                                   route="en-cours"/>
+                        <x-projects.countProjects text="Complété" :projets="$counts->get('complété', 0)"
+                                                  route="complete"/>
                         <x-projects.countProjects text="Frigo"
-                                                  :projets="$counts->get('archivé', 0) + $counts->get('complété', 0)"
+                                                  :projets="$counts->get('archivé', 0)"
                                                   route="frigo"/>
                     </div>
                     <div class="flex justify-between mb-2">
@@ -30,7 +32,7 @@
                     </div>
                     <div class="flex flex-col gap-3.5">
                         @foreach($projects as $project)
-                            @if($project && $project->status !== 'archivé')
+                            @if($project && $project->status !== 'archivé' && $project->status !== 'complété')
                                 <x-projects.displayProjects
                                     :project="$project"
                                     :status="$project->status"
@@ -38,7 +40,7 @@
                                     :chef="$project->leader?->name ?? $project->proposer?->name"
                                     :progress="$project->progress"
                                     :importance="$project->importance"
-                                    :creation-date="$project->created_at->format('d M Y')"
+                                    :creation-date="$project->created_at?->format('d M Y') ?? '—'"
                                     :updated_at="$project->updated_at"/>
                             @endif
                         @endforeach
