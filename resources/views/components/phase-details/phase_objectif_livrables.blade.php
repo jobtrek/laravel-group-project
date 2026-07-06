@@ -18,7 +18,7 @@
                :class="checked ? 'text-green-800' : 'text-gray-800'">{{ $objectifs_text }}</p>
         @endif
     </div>
-    @if((string)$project->status === 'en cours')
+    @if($project && (string)$project->status === 'en cours')
         @can('edit project')
             <input
                     x-model="checked"
