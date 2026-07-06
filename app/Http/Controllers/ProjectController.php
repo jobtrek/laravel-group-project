@@ -10,6 +10,7 @@ use App\Http\Requests\RequestMoreInfoRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
 use App\Models\User;
+use App\Models\ProjectPhase;
 use App\Service\ProjectService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -18,7 +19,9 @@ class ProjectController extends Controller
 {
     public function __construct(
         private readonly ProjectFilter $filter
-    ) {}
+    )
+    {
+    }
 
     public function index(FilterProjectsRequest $request)
     {
@@ -66,9 +69,10 @@ class ProjectController extends Controller
 
     public function requestMoreInfo(
         RequestMoreInfoRequest $request,
-        Project $project,
-        RequestMoreInfoAction $action,
-    ): RedirectResponse {
+        Project                $project,
+        RequestMoreInfoAction  $action,
+    ): RedirectResponse
+    {
         $action->execute(
             project: $project,
             fieldComments: $request->validated()['field_comments'],
@@ -94,9 +98,17 @@ class ProjectController extends Controller
         return view('projectsDetails', compact('project'));
     }
 
+    public function phaseDetail(Project $project, ProjectPhase $phase)
+    {
+        $project->load(['leader', 'phases',]);
+        $phase->load(['resources', 'contributions']);
+
+        return view('phase_details', compact('phase', 'project'));
+    }
+
     public function edit(Project $project)
     {
-        abort_if(! $project->status->isEditable() || auth()->id() !== $project->proposer_id, 403);
+        abort_if(!$project->status->isEditable() || auth()->id() !== $project->proposer_id, 403);
 
         $project->load(['phases.resources', 'evaluation', 'members']);
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
@@ -106,7 +118,7 @@ class ProjectController extends Controller
 
     public function update(UpdateProjectRequest $request, Project $project, UpdateProjectAction $action)
     {
-        abort_if(! $project->status->isEditable() || auth()->id() !== $project->proposer_id, 403);
+        abort_if(!$project->status->isEditable() || auth()->id() !== $project->proposer_id, 403);
 
         $action->execute($project, $request->validated());
 
