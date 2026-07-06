@@ -100,7 +100,6 @@ class ProjectController extends Controller
 
     public function phaseDetail(Project $project, ProjectPhase $phase)
     {
-        $project->load(['leader', 'phases',]);
         $phase->load(['resources', 'contributions']);
 
         return view('phase_details', compact('phase', 'project'));

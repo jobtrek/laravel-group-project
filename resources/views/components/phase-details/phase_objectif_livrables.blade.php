@@ -1,7 +1,6 @@
 @props([
     'livrables_text' => '',
     'objectifs_text' => '',
-    'project' => null,
 ])
 
 <div
