@@ -9,6 +9,7 @@ use App\Http\Requests\FilterProjectsRequest;
 use App\Http\Requests\RequestMoreInfoRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
+use App\Models\ProjectPhase;
 use App\Models\States\EvaluationState;
 use App\Models\States\RevisionState;
 use App\Models\User;
@@ -94,6 +95,13 @@ class ProjectController extends Controller
         $project->load(['proposer', 'leader', 'evaluation', 'phases', 'phases.resources', 'members', 'comments', 'comments.user']);
 
         return view('projectsDetails', compact('project'));
+    }
+
+    public function phaseDetail(Project $project, ProjectPhase $phase)
+    {
+        $phase->load(['resources', 'contributions']);
+
+        return view('phase_details', compact('phase', 'project'));
     }
 
     public function edit(Project $project)
