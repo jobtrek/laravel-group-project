@@ -13,8 +13,6 @@ class EnsureProjectHasLeader
     {
         $project = $request->route('project');
 
-        $project = $request->route('project');
-
         if (! $project instanceof Project || $project->leader_id === null) {
             return back()->with('error', 'Un chef de projet doit être assigné avant de démarrer le projet.');
         }
