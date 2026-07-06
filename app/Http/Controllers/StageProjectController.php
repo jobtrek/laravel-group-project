@@ -37,7 +37,7 @@ abstract class StageProjectController extends Controller
 
     public function index(FilterProjectsRequest $request): View
     {
-        $projects = $this->filter->apply($this->baseQuery(), $request)->paginate(10);
+        $projects = $this->filter->apply($this->baseQuery(), $request)->paginate(config('projects.per_page'));
 
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
 

@@ -27,7 +27,7 @@ class ProjectController extends Controller
     {
         $projects = $this->filter->apply(
             Project::with(['proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions']), $request
-        )->paginate(10)->withQueryString();
+        )->paginate(config('projects.per_page'))->withQueryString();
 
         $counts = Project::statusCounts();
 

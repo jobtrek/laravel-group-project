@@ -4,11 +4,14 @@ declare(strict_types=1);
 
 namespace App\Http\Requests;
 
+use App\Http\Requests\Concerns\HasScoringRules;
 use App\Models\Project;
 use Illuminate\Foundation\Http\FormRequest;
 
 class UpdateProjectRequest extends FormRequest
 {
+    use HasScoringRules;
+
     public function rules(): array
     {
         /** @var Project $project */
@@ -37,10 +40,7 @@ class UpdateProjectRequest extends FormRequest
             'phases.*.ressources.*.resource_type' => ['required', 'string', 'max:255'],
             'phases.*.ressources.*.amount_needed' => ['required', 'numeric', 'min:0'],
 
-            'portee' => ['required', 'numeric', 'min:0', 'max:50'],
-            'impact' => ['required', 'integer', 'min:1', 'max:5'],
-            'confiance' => ['required', 'integer', 'min:0', 'max:100'],
-            'effort' => ['required', 'integer', 'min:1', 'max:5'],
+            ...$this->scoringRules(),
         ];
 
         return $rules;

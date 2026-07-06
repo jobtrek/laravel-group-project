@@ -114,10 +114,12 @@ use App\Http\Controllers\ProjectController;
             {{ $creationDate }}
         </span>
         @if($updatedAt instanceof Carbon)
-                <?php $bgColor = match (true) {
-                $updatedAt->lessThan(now()->subMonth(3)) => 'bg-red-400',
-                $updatedAt->lessThan(now()->subMonth(2)) => 'bg-orange-400',
-                $updatedAt->lessThan(now()->subMonth()) => 'bg-yellow-400',
+                <?php
+                $stalenessColors = config('projects.staleness_colors');
+                $bgColor = match (true) {
+                $updatedAt->lessThan(now()->subMonths($stalenessColors['red_after_months'])) => 'bg-red-400',
+                $updatedAt->lessThan(now()->subMonths($stalenessColors['orange_after_months'])) => 'bg-orange-400',
+                $updatedAt->lessThan(now()->subMonths($stalenessColors['warning_after_months'])) => 'bg-yellow-400',
 
                 default                                              => 'bg-green-400',
             };

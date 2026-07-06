@@ -39,7 +39,7 @@ class AutoArchiveProjects extends Command
             EvaluationState::class,
         ])
             ->with('proposer')
-            ->where('updated_at', '<', now()->subMonths(3))
+            ->where('updated_at', '<', now()->subMonths(config('projects.stale_after_months')))
             ->get();
 
         foreach ($projects as $project) {
@@ -63,7 +63,7 @@ class AutoArchiveProjects extends Command
         foreach ($projects as $project) {
             $lastActivityAt = $project->last_contribution_at ?? $project->updated_at;
 
-            if ($lastActivityAt->lt(now()->subMonths(12))) {
+            if ($lastActivityAt->lt(now()->subMonths(config('projects.recolte_archive_after_months')))) {
                 $this->archive($project);
                 $this->notify($project, $this->recolteRecipients($project));
                 $archivedCount++;
