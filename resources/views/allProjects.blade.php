@@ -19,7 +19,7 @@
                     </div>
                     <div class="flex justify-between mb-2">
                         <a href="{{ route('create') }}" class="p-2 inline-block mb-4 rounded-lg border border-white/25 bg-white/10 px-4.5 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors">
-                            New proposal
+                            Nouveau projet
                         </a>
                         <button @click="showFilter = !showFilter" class="p-2 inline-block mb-4 rounded-lg border border-white/25 bg-white/10 px-4.5 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors">
                             Filtrer
