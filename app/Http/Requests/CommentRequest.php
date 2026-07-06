@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Enums\Role;
 use App\Models\Project;
 use App\Models\States\EncoursState;
 use App\Models\States\EvaluationState;
@@ -22,11 +23,11 @@ class CommentRequest extends FormRequest
         }
 
         if ($project->status instanceof EvaluationState) {
-            return (bool) $this->user()?->hasRole('direction');
+            return (bool) $this->user()?->hasRole(Role::Direction->value);
         }
 
         if ($project->status instanceof EncoursState) {
-            return (bool) $this->user()?->hasRole('chef_de_projet');
+            return (bool) $this->user()?->hasRole(Role::ChefDeProjet->value);
         }
 
         return false;
