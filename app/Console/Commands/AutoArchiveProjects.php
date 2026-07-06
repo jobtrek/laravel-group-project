@@ -13,7 +13,6 @@ use App\Models\States\RevisionState;
 use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Console\Command;
-use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\Mail;
 
 class AutoArchiveProjects extends Command
@@ -45,7 +44,7 @@ class AutoArchiveProjects extends Command
 
         foreach ($projects as $project) {
             $this->archive($project);
-            $this->notify($project, collect([$project->proposer]));
+            $this->notify($project, array_filter([$project->proposer]));
         }
 
         return $projects->count();
@@ -79,19 +78,22 @@ class AutoArchiveProjects extends Command
         ProjectService::archive($project);
     }
 
-    /** @return Collection<int, User> */
-    private function recolteRecipients(Project $project): Collection
+    /** @return array<int, User> */
+    private function recolteRecipients(Project $project): array
     {
         return collect([$project->proposer, $project->recolteManager, $project->leader])
             ->merge($project->members)
             ->filter()
-            ->unique('email');
+            ->unique('email')
+            ->values()
+            ->all();
     }
 
-    /** @param Collection<int, User|null> $recipients */
-    private function notify(Project $project, Collection $recipients): void
+    /** @param array<int, User|null> $recipients */
+    /** @param array<int, User> $recipients */
+    private function notify(Project $project, array $recipients): void
     {
-        foreach ($recipients->filter()->unique('email') as $user) {
+        foreach ($recipients as $user) {
             Mail::to($user->email)->queue(new ProjectArchivedMail($user, $project));
         }
     }
