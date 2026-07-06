@@ -74,7 +74,7 @@ class ProjectFactory extends Factory
 
             if ($project->status instanceof EncoursState && is_null($project->leader_id)) {
                 $userIds = $this->getUserIds();
-                if (!empty($userIds)) {
+                if (! empty($userIds)) {
                     $project->timestamps = false;
                     $project->leader_id = fake()->randomElement($userIds);
                     $project->save();
