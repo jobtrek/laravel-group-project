@@ -6,7 +6,7 @@
     <div class="flex items-start justify-between gap-6">
 
         <div class="flex-1 min-w-0">
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">
+            <p class="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-1">
                 {{ $label }}
             </p>
             {{ $slot }}
@@ -19,12 +19,12 @@
                 @change="fields['{{ $fieldKey }}'].checked = $event.target.checked"
                 :checked="fields['{{ $fieldKey }}'].checked"
             >
-            <span class="text-xs text-gray-500 group-hover:text-gray-700 transition">Annoter</span>
+            <span class="text-sm text-gray-500 group-hover:text-gray-700 transition">Annoter</span>
         </label>
     </div>
 
     <div x-show="fields['{{ $fieldKey }}'].checked" x-cloak class="mt-4">
-        <label class="block text-xs text-gray-500 mb-1">Votre commentaire pour le proposeur :</label>
+        <label class="block text-sm text-gray-500 mb-1">Votre commentaire pour le proposeur :</label>
 
         <textarea
             name="field_comments[{{ $fieldKey }}]"

@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Console\Commands;
 
 use App\Mail\ProjectArchivedMail;
@@ -39,8 +37,7 @@ class AutoArchiveProjects extends Command
             EvaluationState::class,
         ])
             ->with('proposer')
-            ->where('updated_at', '<', now()->subMonths(3))
-            ->get();
+            ->where('updated_at', '<', now()->subMonths((int) config('projects.stale_after_months', 3)))->get();
 
         foreach ($projects as $project) {
             $this->archive($project);
@@ -63,7 +60,7 @@ class AutoArchiveProjects extends Command
         foreach ($projects as $project) {
             $lastActivityAt = $project->last_contribution_at ?? $project->updated_at;
 
-            if ($lastActivityAt->lt(now()->subMonths(12))) {
+            if ($lastActivityAt->lt(now()->subMonths((int) config('projects.recolte_archive_after_months', 12)))) {
                 $this->archive($project);
                 $this->notify($project, $this->recolteRecipients($project));
                 $archivedCount++;

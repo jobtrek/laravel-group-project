@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Enums\Role as RoleEnum;
 use Illuminate\Database\Seeder;
 use Spatie\Permission\Models\Permission;
 use Spatie\Permission\Models\Role;
@@ -38,12 +39,14 @@ class RoleAndPermissionSeeder extends Seeder
                 'guard_name' => 'web']);
         }
 
-        $collaborateur = Role::firstOrCreate(['name' => 'collaborateur', 'guard_name' => 'web']);
-        $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
-        $directionRole = Role::firstOrCreate(['name' => 'direction', 'guard_name' => 'web']);
-        $chefDeProjet = Role::firstOrCreate(['name' => 'chef_de_projet', 'guard_name' => 'web']);
-        $projectManager = Role::firstOrCreate(['name' => 'project_manager', 'guard_name' => 'web']);
-        $recolteManager = Role::firstOrCreate(['name' => 'recolte_manager', 'guard_name' => 'web']);
+        $collaborateur = Role::firstOrCreate(['name' => RoleEnum::Collaborateur->value, 'guard_name' => 'web']);
+        $adminRole = Role::firstOrCreate(['name' => RoleEnum::Admin->value, 'guard_name' => 'web']);
+        $directionRole = Role::firstOrCreate(['name' => RoleEnum::Direction->value, 'guard_name' => 'web']);
+        $chefDeProjet = Role::firstOrCreate(['name' => RoleEnum::ChefDeProjet->value, 'guard_name' => 'web']);
+        $projectManager = Role::firstOrCreate(['name' => RoleEnum::ProjectManager->value, 'guard_name' => 'web']);
+        $recolteManager = Role::firstOrCreate(['name' => RoleEnum::RecolteManager->value, 'guard_name' => 'web']);
+
+        $collaborateur->givePermissionTo('create project');
 
         $collaborateur->givePermissionTo('create project');
 

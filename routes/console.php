@@ -14,10 +14,10 @@ Artisan::command('inspire', function () {
 
 Artisan::command('mail:send-reminders', function () {
     $projects = Project::with('leader')
-        ->whereState('status', EncoursState::class)
-        ->whereNotNull('leader_id')
-        ->where('updated_at', '<', now()->subMonth())
-        ->get();
+        ->needingProgressReminder()
+        ->get()
+        ->filter(fn (Project $project) => $project->last_leader_comment_at === null
+            || $project->last_leader_comment_at->lt(now()->subMonth()));
 
     foreach ($projects as $project) {
         SendMailProcess::dispatch($project->leader);
@@ -31,8 +31,7 @@ Artisan::command('mail:send-warnings', function () {
     $overdueProjects = Project::with('members')
         ->whereState('status', EncoursState::class)
         ->whereNotNull('last_reminder_at')
-        ->where('last_reminder_at', '<', now()->subWeek())
-        ->whereColumn('updated_at', '<', 'last_reminder_at')
+        ->where('last_reminder_at', '<', now()->subWeeks((int) config('projects.escalation_after_weeks', 1)))->whereColumn('updated_at', '<', 'last_reminder_at')
         ->get();
 
     foreach ($overdueProjects as $project) {
@@ -46,5 +45,4 @@ Artisan::command('mail:send-warnings', function () {
 // It checks if any of the projects meet the criteria within a weekly basis.
 Schedule::command('mail:send-reminders')->weeklyOn(1, '09:00');
 Schedule::command('mail:send-warnings')->weeklyOn(3, '09:00');
-Schedule::command('recolte:archiving')->dailyAt('00:00');
 Schedule::command('projects:auto-archive')->dailyAt('00:00');
