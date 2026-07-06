@@ -1,0 +1,11 @@
+# Changelog
+
+## #245 — Prevent project from starting if no project leader selected
+
+**What:** Added `App\Http\Middleware\EnsureProjectHasLeader`, registered as the `project.has-leader` alias in `bootstrap/app.php` and applied to the `projects.recolte.activate` route (`routes/web.php`) alongside the existing `can:launch project` gate. It aborts the request with a flashed error if `Project::leader_id` is null, before the request ever reaches `RecolteController::moveFromRecolteToActive`.
+
+**Why:** The "Démarrer le projet" (launch) action moves a project from Récolte to En cours, but nothing stopped a direct `PATCH /projects/{project}/move-to-en-cours` call from doing that on a project with no assigned chef de projet. The service layer (`ProjectService::moveToEncours`) already silently refused the transition, but the issue explicitly asked for a middleware-level guard so a URL-level call is rejected before any controller logic runs, not just deep inside the service.
+
+**Where verified:** Checked the two front-end surfaces that render the launch button — `resources/views/components/projects/displayProjects.blade.php` and `resources/views/resource-contribution-form.blade.php`. `resource-contribution-form.blade.php` already greys out the button via Alpine (`:disabled="!chiefId"`) rather than hiding it. `displayProjects.blade.php` previously gated the whole button on `auth()->id() === $project->leader_id`, which hid it entirely (for everyone) whenever no leader was set — satisfying the issue's "or not displaying" wording but not the acceptance criteria's explicit greyed-out states. Updated it to show the button to anyone with `launch project` permission and disable it (`@disabled`, grey classes) unless the current user is the assigned leader, matching the other surface's pattern. Added `tests/Feature/ProjectTransitions/EnsureProjectHasLeaderMiddlewareTest.php` covering both the blocked and allowed paths through the new middleware directly.
+
+**Note:** `tests/Feature/ProjectTransitions/{AssignTeamTest,MoveFromRecolteToActiveTest}.php` fail independently of this change, on `main` as well, because the test database is never seeded with the `manage everything` permission that `AppServiceProvider::boot()`'s `Gate::before` callback looks up — this is a pre-existing gap (CI doesn't run `php artisan test` at all) and out of scope for this issue.

@@ -95,11 +95,15 @@ use App\Http\Controllers\ProjectController;
                 Ajouter une ressource
             </a>
                 @endcan
-            @if((string)$status === 'récolte' && auth()->user()?->can('launch project') && auth()->id() === $project->leader_id)                
+            @if((string)$status === 'récolte' && auth()->user()?->can('launch project'))
+                @php $canLaunch = auth()->id() === $project->leader_id; @endphp
             <form action="{{ route('projects.recolte.activate', $project) }}" method="POST" class="relative z-10">
                     @csrf
                     @method('PATCH')
-                    <x-projects.buttons text="Démarrer le projet" class="bg-green-700 text-white text-sm rounded-lg px-3 py-1.5" type="submit"/>
+                                        <x-projects.buttons text="Démarrer le projet"
+                        class="text-sm rounded-lg px-3 py-1.5 {{ $canLaunch ? 'bg-green-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed' }}"
+                        type="submit"
+                        :disabled="!$canLaunch"/>
                 </form>
             @endif
         </div>
