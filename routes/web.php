@@ -1,7 +1,6 @@
 <?php
 
 use App\Http\Controllers\ArchiveController;
-use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CompleteController;
 use App\Http\Controllers\EnCoursController;
 use App\Http\Controllers\ProfileController;
@@ -11,7 +10,6 @@ use App\Http\Controllers\RecolteController;
 use App\Http\Controllers\ResourceContributionController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RevisionController;
-use App\Models\ProjectPhase;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => view('auth.login'))->middleware('guest');
@@ -25,25 +23,14 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/en-cours', [EnCoursController::class, 'index'])->name('en-cours');
     Route::get('/complete', [CompleteController::class, 'index'])->name('complete');
     Route::get('/frigo', [ArchiveController::class, 'index'])->name('frigo');
-    Route::get('/projects/{project}/direction-review', [ReviewController::class, 'showForm'])
-        ->middleware('can:review')
-        ->name('projects.direction-review');
-    Route::get('/projects/{project}/revision', [RevisionController::class, 'showForm'])
-        ->name('projects.revision-form');
-    Route::post('/projects/{project}/revision-submit', [RevisionController::class, 'submit'])
-        ->name('projects.revision-submit');
+    Route::get('/projects/{project}/direction-review', [ReviewController::class, 'showForm'])->name('projects.direction-review');
+    Route::get('/projects/{project}/revision', [RevisionController::class, 'showForm'])->name('projects.revision-form');
+    Route::post('/projects/{project}/revision-submit', [RevisionController::class, 'submit'])->name('projects.revision-submit');
 });
 
-Route::get('/projects_details/{project}', [ProjectController::class, 'detailPage'])
-    ->middleware(['auth', 'verified'])
-    ->name('projects-details');
+Route::get('/projects_details/{project}', [ProjectController::class, 'detailPage'])->middleware(['auth', 'verified'])->name('projects-details');
 
-Route::get('/phase_details/{phase}', function (ProjectPhase $phase) {
-    $phase->load(['resources', 'contributions']);
-
-    return view('phase_details', compact('phase'));
-})->middleware(['auth', 'verified'])
-    ->name('phase_details');
+Route::get('/projects_details/{project}/phase_details/{phase}', [ProjectController::class, 'phaseDetail'])->middleware(['auth', 'verified'])->name('phase_details')->scopeBindings();
 
 Route::middleware('auth')->group(function () {
     Route::get('/create', fn () => view('create'))->name('create');
@@ -64,10 +51,10 @@ Route::middleware('auth')->group(function () {
         Route::patch('/resubmit', 'reSubmit')->name('projects.resubmit');
         Route::get('/edit', 'edit')->name('projects.edit');
         Route::patch('/', 'update')->name('projects.update');
-        Route::patch('/complete', 'complete')->middleware('can:complete project')->name('projects.complete');
-        Route::patch('/archive', 'archive')->middleware('can:archive projects')->name('projects.archive');
         Route::post('/comments', [CommentController::class, 'store'])
             ->name('projects.comments.store');
+        Route::patch('/complete', 'complete')->middleware('can:complete project')->name('projects.complete');
+        Route::patch('/archive', 'archive')->middleware('role:admin')->name('projects.archive');
         Route::patch('/send-to-direction', 'sendToDirection')->middleware('can:send to direction')->name('projects.send-to-direction');
     });
 
