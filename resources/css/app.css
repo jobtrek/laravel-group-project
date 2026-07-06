@@ -3,3 +3,7 @@
 @tailwind utilities;
 
 @import 'tailwindcss';
+
+body{
+background: linear-gradient(to bottom, #0d1b3d, #0d1b3d, #172554);
+}
