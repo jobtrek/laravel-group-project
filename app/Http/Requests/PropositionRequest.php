@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\Role;
 use App\Http\Requests\Concerns\HasScoringRules;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
