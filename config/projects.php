@@ -1,6 +1,5 @@
 <?php
 
-
 return [
 
     'per_page' => env('PROJECTS_PER_PAGE', 10),

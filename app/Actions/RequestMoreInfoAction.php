@@ -1,6 +1,5 @@
 <?php
 
-
 namespace App\Actions;
 
 use App\Mail\RequestMoreInfoMail;
