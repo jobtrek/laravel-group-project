@@ -2,7 +2,7 @@
     use App\Models\States\RevisionState;
     use App\Models\States\EncoursState;
     use App\Models\States\EvaluationState;
-    
+
     function canModify($project)
     {
         return (auth()->user()->can('edit project') && auth()->id() === $project->leader_id) ||
@@ -79,8 +79,13 @@
                         <div class="rounded-lg border border-gray-200 p-3">
                             <p class="text-sm font-semibold text-gray-800">Equipe</p>
                             <div>
+                                @if($project->leader)
+                                    <x-projects-details.teamUsers :team_name_user="$project->leader->name" :user_status="'Chef de projet'" />
+                                @endif
                                 @foreach ($project->members as $member)
-                                    <x-projects-details.teamUsers :team_name_user="$member->name" :user_status="$member->id === $project->leader_id" />
+                                    @if($member->id !== $project->leader_id)
+                                        <x-projects-details.teamUsers :team_name_user="$member->name" />
+                                    @endif
                                 @endforeach
                             </div>
                         </div>
