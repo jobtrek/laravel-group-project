@@ -29,6 +29,7 @@ class RoleAndPermissionSeeder extends Seeder
             'assign team',
             'launch project',
             'complete project',
+            'create project',
         ];
 
         foreach ($permissions as $permission) {
@@ -37,12 +38,14 @@ class RoleAndPermissionSeeder extends Seeder
                 'guard_name' => 'web']);
         }
 
-        Role::firstOrCreate(['name' => 'collaborateur', 'guard_name' => 'web']);
+        $collaborateur = Role::firstOrCreate(['name' => 'collaborateur', 'guard_name' => 'web']);
         $adminRole = Role::firstOrCreate(['name' => 'admin', 'guard_name' => 'web']);
         $directionRole = Role::firstOrCreate(['name' => 'direction', 'guard_name' => 'web']);
         $chefDeProjet = Role::firstOrCreate(['name' => 'chef_de_projet', 'guard_name' => 'web']);
         $projectManager = Role::firstOrCreate(['name' => 'project_manager', 'guard_name' => 'web']);
         $recolteManager = Role::firstOrCreate(['name' => 'recolte_manager', 'guard_name' => 'web']);
+
+        $collaborateur->givePermissionTo('create project');
 
         $adminRole->givePermissionTo([
             'manage everything',

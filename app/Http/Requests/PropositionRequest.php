@@ -12,7 +12,7 @@ class PropositionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return (bool) $this->user()?->hasRole('collaborateur');
+        return (bool) $this->user()?->can('create project');
     }
 
     /**
