@@ -44,7 +44,7 @@ class AutoArchiveProjects extends Command
 
         foreach ($projects as $project) {
             $this->archive($project);
-            $this->notify($project, [$project->proposer]);
+            $this->notify($project, array_filter([$project->proposer]));
         }
 
         return $projects->count();
@@ -90,9 +90,10 @@ class AutoArchiveProjects extends Command
     }
 
     /** @param array<int, User|null> $recipients */
+    /** @param array<int, User> $recipients */
     private function notify(Project $project, array $recipients): void
     {
-        foreach (collect($recipients)->filter()->unique('email') as $user) {
+        foreach ($recipients as $user) {
             Mail::to($user->email)->queue(new ProjectArchivedMail($user, $project));
         }
     }
