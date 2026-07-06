@@ -16,8 +16,7 @@ Artisan::command('mail:send-reminders', function () {
     $projects = Project::with('leader')
         ->whereState('status', EncoursState::class)
         ->whereNotNull('leader_id')
-        ->where('updated_at', '<', now()->subMonths(config('projects.reminder_after_months')))
-        ->get();
+        ->where('updated_at', '<', now()->subMonths((int) config('projects.reminder_after_months', 1)))->get();
 
     foreach ($projects as $project) {
         SendMailProcess::dispatch($project->leader);
@@ -31,8 +30,7 @@ Artisan::command('mail:send-warnings', function () {
     $overdueProjects = Project::with('members')
         ->whereState('status', EncoursState::class)
         ->whereNotNull('last_reminder_at')
-        ->where('last_reminder_at', '<', now()->subWeeks(config('projects.escalation_after_weeks')))
-        ->whereColumn('updated_at', '<', 'last_reminder_at')
+        ->where('last_reminder_at', '<', now()->subWeeks((int) config('projects.escalation_after_weeks', 1)))->whereColumn('updated_at', '<', 'last_reminder_at')
         ->get();
 
     foreach ($overdueProjects as $project) {
