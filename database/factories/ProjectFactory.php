@@ -50,7 +50,7 @@ class ProjectFactory extends Factory
             'updated_at' => $this->faker->dateTimeBetween('-4 months', '-20 days'),
             'created_at' => $this->faker->dateTimeBetween('-8 months', '-2 days'),
             'proposer_id' => fake()->randomElement($userIds),
-            'leader_id' => fake()->randomElement($userIds),
+            'leader_id' => null,
             'recolte_manager_id' => fake()->randomElement($userIds),
         ];
     }
@@ -64,6 +64,13 @@ class ProjectFactory extends Factory
                 'confiance' => fake()->numberBetween(0, 100),
                 'effort' => fake()->numberBetween(1, 5),
             ]);
+
+            if ($project->status instanceof EncoursState) {
+                $userIds = once(fn () => User::pluck('id')->toArray());
+                $project->timestamps = false;
+                $project->leader_id = fake()->randomElement($userIds);
+                $project->save();
+            }
         });
     }
 
