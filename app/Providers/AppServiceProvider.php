@@ -22,7 +22,7 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::before(function ($user, $ability) {
-            if (! method_exists($user, 'hasPermissionTo')) {
+            if (! $user || ! method_exists($user, 'hasPermissionTo')) {
                 return null;
             }
 
