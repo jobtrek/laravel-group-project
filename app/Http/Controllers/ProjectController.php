@@ -9,6 +9,9 @@ use App\Http\Requests\FilterProjectsRequest;
 use App\Http\Requests\RequestMoreInfoRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
+use App\Models\ProjectPhase;
+use App\Models\States\EvaluationState;
+use App\Models\States\RevisionState;
 use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Http\RedirectResponse;
@@ -51,7 +54,7 @@ class ProjectController extends Controller
 
     public function deny(Project $project)
     {
-        abort_if($project->proposer_id === auth()->id() || !$project->status instanceof \App\Models\States\EvaluationState, 403);
+        abort_if($project->proposer_id === auth()->id() || ! $project->status instanceof EvaluationState, 403);
         ProjectService::deny($project);
 
         return Redirect::back()->with('status', 'project-denied');
@@ -81,7 +84,7 @@ class ProjectController extends Controller
 
     public function reSubmit(Project $project)
     {
-        abort_if($project->proposer_id !== auth()->id() || !$project->status instanceof \App\Models\States\RevisionState, 403);
+        abort_if($project->proposer_id !== auth()->id() || ! $project->status instanceof RevisionState, 403);
         ProjectService::reSubmit($project);
 
         return Redirect::back()->with('status', 'project-resubmitted');
@@ -92,6 +95,13 @@ class ProjectController extends Controller
         $project->load(['proposer', 'leader', 'evaluation', 'phases', 'phases.resources', 'members', 'comments', 'comments.user']);
 
         return view('projectsDetails', compact('project'));
+    }
+
+    public function phaseDetail(Project $project, ProjectPhase $phase)
+    {
+        $phase->load(['resources', 'contributions']);
+
+        return view('phase_details', compact('phase', 'project'));
     }
 
     public function edit(Project $project)
@@ -116,7 +126,7 @@ class ProjectController extends Controller
 
     public function complete(Project $project)
     {
-        abort_if($project->proposer_id === auth()->id() || !$project->status instanceof \App\Models\States\EvaluationState, 403);
+        abort_if($project->proposer_id === auth()->id() || ! $project->status instanceof EvaluationState, 403);
         try {
             ProjectService::complete($project);
         } catch (\Exception $e) {

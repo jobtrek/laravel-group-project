@@ -26,7 +26,7 @@ abstract class StageProjectController extends Controller
     protected function baseQuery(): Builder
     {
         return Project::with([
-            'proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions'
+            'proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions',
         ])->whereState('status', $this->states());
     }
 
@@ -42,9 +42,9 @@ abstract class StageProjectController extends Controller
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
         return view('stage', [
-            'stage'      => $this->stage(),
-            'projects'   => $projects,
-            'users'      => $users,
+            'stage' => $this->stage(),
+            'projects' => $projects,
+            'users' => $users,
             'myProposals' => $this->myProposals(),
         ]);
     }
