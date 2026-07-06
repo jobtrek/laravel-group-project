@@ -19,6 +19,11 @@ class UserFactory extends Factory
      *
      * @return array<string, mixed>
      */
+    public function unverified(): static
+    {
+        return $this->state(['email_verified_at' => null]);
+    }
+
     public function definition(): array
     {
         return [
