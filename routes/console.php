@@ -13,13 +13,21 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Artisan::command('mail:send-reminders', function () {
+    $reminderAfterMonths = (int) config('projects.reminder_after_months', 1);
+
     $projects = Project::with('leader')
         ->whereState('status', EncoursState::class)
         ->whereNotNull('leader_id')
-        ->where('updated_at', '<', now()->subMonths((int) config('projects.reminder_after_months', 1)))->get();
+        ->where('updated_at', '<', now()->subMonths($reminderAfterMonths))
+        ->where(function ($query) use ($reminderAfterMonths) {
+            $query->whereNull('last_reminder_at')
+                ->orWhere('last_reminder_at', '<', now()->subMonths($reminderAfterMonths));
+        })
+        ->get();
 
     foreach ($projects as $project) {
         SendMailProcess::dispatch($project->leader);
+        $project->timestamps = false;
         $project->forceFill(['last_reminder_at' => now()])->saveQuietly();
     }
 
@@ -35,7 +43,8 @@ Artisan::command('mail:send-warnings', function () {
 
     foreach ($overdueProjects as $project) {
         SendStrongerMailProcess::dispatch($project);
-        $project->update(['last_reminder_at' => now()]);
+        $project->timestamps = false;
+        $project->forceFill(['last_reminder_at' => now()])->saveQuietly();
     }
 
     $this->info("Warning emails queued for {$overdueProjects->count()} project(s).");
