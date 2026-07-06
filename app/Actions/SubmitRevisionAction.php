@@ -92,7 +92,7 @@ class SubmitRevisionAction
         });
     }
 
-    /** @param array<int, array{resource_type: string, amount_needed: string}> $resources */
+    /** @param array<int, mixed> $resources */
     private function replaceResources(ProjectPhase $phase, array $resources): void
     {
         $phase->resources()->delete();

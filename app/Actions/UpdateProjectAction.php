@@ -60,10 +60,6 @@ class UpdateProjectAction
                 $phase = $project->phases()->create($attributes);
             }
 
-            if (! $phase) {
-                continue;
-            }
-
             $keptIds[] = $phase->id;
             $this->syncResources($phase, $phaseData['ressources'] ?? []);
         }
