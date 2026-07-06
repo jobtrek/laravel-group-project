@@ -37,7 +37,7 @@ class ProjectFactory extends Factory
             ArchiveState::class,
         ]);
 
-        $userIds = once(fn () => User::pluck('id')->toArray());
+        $userIds = once(fn() => User::pluck('id')->toArray());
 
         return [
             'title' => $this->faker->sentence(3),
@@ -65,11 +65,13 @@ class ProjectFactory extends Factory
                 'effort' => fake()->numberBetween(1, 5),
             ]);
 
-            if ($project->status instanceof EncoursState) {
-                $userIds = once(fn () => User::pluck('id')->toArray());
-                $project->timestamps = false;
-                $project->leader_id = fake()->randomElement($userIds);
-                $project->save();
+            if ($project->status instanceof EncoursState && is_null($project->leader_id)) {
+                $userIds = once(fn() => User::pluck('id')->toArray());
+                if (!empty($userIds)) {
+                    $project->timestamps = false;
+                    $project->leader_id = fake()->randomElement($userIds);
+                    $project->save();
+                }
             }
         });
     }
