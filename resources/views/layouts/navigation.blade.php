@@ -16,7 +16,7 @@
                         {{ __('Home') }}
                     </x-nav-link>
                     @can('manage everything')
-                        <x-nav-link :href="route('register')" :active="request()->routeIs('register')">
+                        <x-nav-link :href="route('administration')" :active="request()->routeIs('register')">
                             {{ __('Administration') }}
                         </x-nav-link>
                     @endcan

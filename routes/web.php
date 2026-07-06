@@ -73,4 +73,8 @@ Route::middleware('auth')->group(function () {
         ->name('projects.recolte.team');
 });
 
+Route::get('administration', function () {
+    return view('administration');
+})->middleware('can:manage everything')->name('administration');
+
 require __DIR__.'/auth.php';
