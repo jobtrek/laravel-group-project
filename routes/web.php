@@ -54,7 +54,7 @@ Route::middleware('auth')->group(function () {
         Route::patch('/', 'update')->name('projects.update');
         Route::post('/comments', [CommentController::class, 'store'])
             ->name('projects.comments.store');
-        Route::patch('/complete', 'complete')->name('projects.complete');
+        Route::patch('/complete', 'complete')->middleware('can:complete project')->name('projects.complete');
         Route::patch('/archive', 'archive')->middleware('role:admin')->name('projects.archive');
         Route::patch('/send-to-direction', 'sendToDirection')->middleware('can:send to direction')->name('projects.send-to-direction');
     });
