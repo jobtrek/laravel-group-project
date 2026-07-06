@@ -17,22 +17,22 @@ class ResourceContributionController extends Controller
     public function create(Project $project): View
     {
         abort_if(
-            !$project->status instanceof RecolteState &&
-            !$project->status instanceof EncoursState,
+            ! $project->status instanceof RecolteState &&
+            ! $project->status instanceof EncoursState,
             404
         );
 
         $project->load(['phases.resources', 'phases.contributions', 'leader', 'members']);
 
-        $phasesData = $project->phases->map(fn(ProjectPhase $phase) => [
+        $phasesData = $project->phases->map(fn (ProjectPhase $phase) => [
             'id' => $phase->id,
             'name' => $phase->name,
             'needed' => $phase->amount_needed,
             'found' => $phase->amount_found,
-            'resources' => $phase->resources->map(fn($resource) => [
+            'resources' => $phase->resources->map(fn ($resource) => [
                 'resource_type' => $resource->resource_type,
-                'needed' => (float)$resource->amount_needed,
-                'found' => (float)$phase->contributions
+                'needed' => (float) $resource->amount_needed,
+                'found' => (float) $phase->contributions
                     ->where('resource_type', $resource->resource_type)
                     ->sum('amount'),
             ])->values()->all(),
