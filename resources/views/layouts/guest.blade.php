@@ -15,7 +15,7 @@
         @vite(['resources/css/app.css', 'resources/js/app.js'])
     </head>
     <body class="font-sans text-gray-900 antialiased">
-    <div class="fixed inset-0 min-h-screen flex flex-col items-center justify-center overflow-y-auto bg-[linear-gradient(160deg,#0e1636_0%,#17356b_32%,#2f8a4a_68%,#a9d144_100%)] z-50">
+    <div class="fixed inset-0 min-h-screen flex flex-col items-center justify-center overflow-x-hidden overflow-y-auto bg-[linear-gradient(160deg,#0e1636_0%,#17356b_32%,#2f8a4a_68%,#a9d144_100%)] z-50">
 
             <div class="absolute inset-0 opacity-5 bg-[radial-gradient(#fff_1px,transparent_1px)] bg-[size:3px_3px]"></div>
 
@@ -29,7 +29,7 @@
                 <circle cx="20" cy="400" r="7" fill="none" stroke="#c9e070" stroke-width="2"/>
             </svg>
 
-            <div class="text-white w-52 mb-12">
+            <div class="text-white w-44 sm:w-52 mb-8 sm:mb-12">
                 <img src="{{ Vite::asset('resources/views/Images/logo-white.svg') }}" alt="JobtrekLogo">
             </div>
 

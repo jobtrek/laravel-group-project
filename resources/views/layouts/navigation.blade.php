@@ -3,7 +3,7 @@
         <div class="flex justify-between h-[64px]">
 
             <div class="flex items-center gap-8">
-                <div class="text-white w-20">
+                <div class="text-white w-16 sm:w-20">
                     <img src="{{ Vite::asset('resources/views/Images/logo-white.svg') }}" alt="JobtrekLogo">
                 </div>
                 <div class="hidden sm:flex sm:items-center sm:gap-7 mt-1">
@@ -56,7 +56,7 @@
     <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden bg-[#1b2a5b] border-t border-white/10 shadow-lg">
         <div class="pt-2 pb-3 space-y-1">
             <a href="{{ route('projects') }}" class="block w-full ps-3 pe-4 py-2 border-l-4 text-left text-base font-medium transition duration-150 ease-in-out {{ request()->routeIs('projects') ? 'border-[#93c83a] text-white bg-white/5' : 'border-transparent text-[#b9c1de] hover:text-white hover:bg-white/5' }}">
-                {{ __('Voir tous les projets') }}
+                {{ __('Home') }}
             </a>
         </div>
 

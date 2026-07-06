@@ -10,7 +10,7 @@
     </x-slot>
 
     <div class="py-10">
-        <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             @php
                 $butData = old('but', $project->but ?? []);
@@ -93,36 +93,36 @@
                 @csrf
                 @method('PATCH')
 
-                <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
+                <p class="text-xs font-bold uppercase tracking-widest text-white mb-3 mt-8">
                     Informations générales
                 </p>
 
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Titre du projet</label>
+                <div class="bg-white shadow-sm rounded-lg p-5 mb-3 border border-gray-100">
+                    <p class="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-2">Titre du projet</p>
                     <input type="text" name="title" x-model="title"
                            class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                 </div>
 
-                <div class="mb-4">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                <div class="bg-white shadow-sm rounded-lg p-5 mb-3 border border-gray-100">
+                    <p class="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-2">Description</p>
                     <textarea name="description" x-model="description" rows="4"
                               class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
                 </div>
 
-                <div class="mb-8">
-                    <label class="block text-sm font-medium text-gray-700 mb-1">Périmètre</label>
+                <div class="bg-white shadow-sm rounded-lg p-5 mb-3 border border-gray-100">
+                    <p class="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-2">Périmètre</p>
                     <textarea name="perimetre" x-model="perimetre" rows="3"
                               class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
                 </div>
 
-                <div class="mb-8">
-                    <label class="block text-sm font-medium text-gray-700">Membres</label>
+                <div class="bg-white shadow-sm rounded-lg p-5 mb-3 border border-gray-100">
+                    <p class="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-2">Membres</p>
                     <p class="text-xs text-gray-500 mb-2">Toutes les personnes impliquées dans le projet</p>
                     <div class="space-y-2">
                         <template x-for="(membre, idx) in membres" :key="idx">
                             <div class="flex gap-2">
                                 <select :name="'membres[' + idx + ']'" x-model="membres[idx]"
-                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
+                                        class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                                     <option value="">Sélectionner un utilisateur…</option>
                                     @foreach($users as $user)
                                         <option value="{{ $user->id }}"
@@ -133,7 +133,7 @@
                                 </select>
                                 <button type="button" @click="removeMembre(idx)"
                                         x-show="membres.length > 1"
-                                        class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">
+                                        class="shrink-0 px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">
                                     &times;
                                 </button>
                             </div>
@@ -144,10 +144,11 @@
                     </button>
                 </div>
 
-                <div class="mb-8">
-                    <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
-                        Buts
-                    </p>
+                <p class="text-xs font-bold uppercase tracking-widest text-white mb-3 mt-8">
+                    Buts
+                </p>
+
+                <div class="bg-white shadow-sm rounded-lg p-5 mb-3 border border-gray-100">
                     <div class="space-y-2">
                         <template x-for="(item, bIndex) in but" :key="bIndex">
                             <div class="flex gap-2">
@@ -164,12 +165,11 @@
                     </button>
                 </div>
 
-                <div class="mb-8">
+                <p class="text-xs font-bold uppercase tracking-widest text-white mb-3 mt-8">
+                    Évaluation
+                </p>
 
-                    <p class="text-xs font-bold uppercase tracking-widest text-gray-400 mb-3">
-                        Évaluation
-                    </p>
-
+                <div class="bg-white shadow-sm rounded-lg p-5 mb-3 border border-gray-100">
                     <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                         <div>
                             <label class="block text-sm font-medium text-gray-700 mb-1">Portée</label>
@@ -200,39 +200,43 @@
                     </div>
                 </div>
 
+                <p class="text-xs font-bold uppercase tracking-widest text-white mb-3 mt-8">
+                    Phases
+                </p>
+
                 <template x-for="(phase, pIndex) in phases" :key="pIndex">
-                    <div class="mb-8 border-t border-gray-200 pt-6">
-                        <div class="flex items-center justify-between mb-3">
-                            <p class="text-xs font-bold uppercase tracking-widest text-gray-400">
+                    <div class="bg-white shadow-sm rounded-lg p-5 mb-3 border border-gray-100">
+                        <div class="flex items-center justify-between mb-4">
+                            <p class="text-sm font-semibold text-gray-400 uppercase tracking-widest">
                                 Phase <span x-text="pIndex + 1"></span>
                             </p>
                             <button type="button" @click="removePhase(pIndex)" x-show="phases.length > 1"
-                                    class="text-red-500 hover:text-red-700 text-sm">✕ Supprimer la phase
+                                    class="text-red-500 hover:text-red-700 text-sm">✕ Supprimer
                             </button>
                         </div>
 
                         <input type="hidden" :name="`phases[${pIndex}][id]`" :value="phase.id ?? ''">
 
-                        <div class="mb-3">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Titre</label>
+                        <div class="mb-4">
+                            <p class="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-2">Titre</p>
                             <input type="text" x-model="phase.titre" :name="`phases[${pIndex}][titre]`"
                                    class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                         </div>
 
-                        <div class="mb-3">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Durée</label>
+                        <div class="mb-4">
+                            <p class="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-2">Durée</p>
                             <input type="text" x-model="phase.duree" :name="`phases[${pIndex}][duree]`"
                                    class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm">
                         </div>
 
-                        <div class="mb-3">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Description</label>
+                        <div class="mb-4">
+                            <p class="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-2">Description</p>
                             <textarea x-model="phase.description" :name="`phases[${pIndex}][description]`" rows="3"
                                       class="w-full rounded-lg border-gray-300 focus:border-indigo-500 focus:ring-indigo-500 text-sm"></textarea>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Objectifs</label>
+                        <div class="mb-4">
+                            <p class="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-2">Objectifs</p>
                             <div class="space-y-2">
                                 <template x-for="(obj, oIndex) in phase.objectifs" :key="oIndex">
                                     <div class="flex gap-2">
@@ -251,8 +255,8 @@
                             </button>
                         </div>
 
-                        <div class="mb-3">
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Livrables</label>
+                        <div class="mb-4">
+                            <p class="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-2">Livrables</p>
                             <div class="space-y-2">
                                 <template x-for="(liv, lIndex) in phase.livrables" :key="lIndex">
                                     <div class="flex gap-2">
@@ -272,10 +276,10 @@
                         </div>
 
                         <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-1">Ressources nécessaires</label>
+                            <p class="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-2">Ressources nécessaires</p>
 
-                            <div>
-                                <table class="w-full text-sm border-collapse mb-2">
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm border-collapse mb-2 min-w-[320px]">
                                     <thead>
                                     <tr class="text-left">
                                         <th class="pb-1 text-xs font-semibold text-gray-500 pr-4">Type</th>
@@ -316,13 +320,13 @@
                                     ressource
                                 </button>
                             </div>
-
                         </div>
                     </div>
                 </template>
 
                 <button type="button" @click="addPhase()"
-                        class="mb-8 text-sm text-indigo-600 hover:text-indigo-800">+ Ajouter une phase
+                        class="mb-8 w-full py-3 border-2 border-dashed border-white/30 rounded-lg text-sm font-medium text-white hover:border-white/60 hover:bg-white/5 transition">
+                    + Ajouter une phase
                 </button>
 
                 <div class="sticky bottom-6 flex justify-end mt-8">

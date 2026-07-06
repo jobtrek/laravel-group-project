@@ -6,7 +6,7 @@
 
 <div class="w-full">
     <form method="GET" action="{{ request()->url() }}"
-          class="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 flex flex-wrap gap-3 items-end">
+          class="bg-white border border-gray-200 rounded-2xl shadow-sm p-4 flex flex-col sm:flex-row sm:flex-wrap gap-3 sm:items-end">
 
         <div class="flex flex-col gap-1 min-w-[180px]">
             <label for="sort" class="text-xs font-medium text-gray-500">Trier par</label>
@@ -69,7 +69,7 @@
             </div>
         @endif
 
-        <div class="flex gap-2">
+        <div class="flex gap-2 self-end sm:self-auto">
             <a href="{{ request()->url() }}"
                class="flex items-center gap-1 border border-gray-200 text-gray-500 rounded-lg px-4 py-2 text-sm hover:bg-gray-100 hover:text-gray-700 transition {{ request()->hasAny(['sort', 'score_min', 'date_from', 'date_to', 'proposer_id']) ? '' : 'invisible' }}">
                 <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.5" viewBox="0 0 24 24">
