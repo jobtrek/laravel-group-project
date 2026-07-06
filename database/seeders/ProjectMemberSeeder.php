@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use App\Models\Project;
+use App\Models\States\EncoursState;
 use App\Models\User;
 use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
@@ -14,7 +15,7 @@ class ProjectMemberSeeder extends Seeder
 
     public function run(): void
     {
-        $projects = Project::all();
+        $projects = Project::whereState('status', EncoursState::class)->get();
         $users = User::all();
 
         $members = $projects->flatMap(function ($project) use ($users) {
