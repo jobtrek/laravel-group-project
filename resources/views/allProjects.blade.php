@@ -35,7 +35,7 @@
                                     :project="$project"
                                     :status="$project->status"
                                     :title="$project->title"
-                                    :chef="$project->proposer?->name"
+                                    :chef="$project->leader?->name ?? $project->proposer?->name"
                                     :progress="$project->progress"
                                     :importance="$project->importance"
                                     :creation-date="$project->created_at->format('d M Y')"

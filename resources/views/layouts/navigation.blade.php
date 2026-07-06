@@ -18,7 +18,7 @@
                     <x-slot name="trigger">
                         <button class="flex items-center gap-2 bg-white/10 hover:bg-white/20 transition-colors px-3 py-1.5 rounded-full text-[13px] font-semibold text-white focus:outline-none">
                             <span class="w-6 h-6 rounded-full bg-[#93c83a] text-[#131c3f] flex items-center justify-center font-extrabold text-[12px]">
-                                {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                                {{ mb_strtoupper(mb_substr(Auth::user()->name, 0, 1)) }}
                             </span>
                             <span>{{ Auth::user()->name }}</span>
                             <span class="opacity-60 text-xs ml-1">▾</span>
@@ -63,7 +63,7 @@
         <div class="pt-4 pb-2 border-t border-white/10">
             <div class="px-4 flex items-center gap-3">
                 <div class="w-9 h-9 rounded-full bg-[#93c83a] text-[#131c3f] flex items-center justify-center font-extrabold text-[14px]">
-                    {{ strtoupper(substr(Auth::user()->name, 0, 1)) }}
+                    {{ mb_strtoupper(mb_substr(Auth::user()->name, 0, 1)) }}
                 </div>
                 <div>
                     <div class="font-medium text-base text-white">{{ Auth::user()->name }}</div>
