@@ -15,7 +15,7 @@ class ProjectMemberSeeder extends Seeder
 
     public function run(): void
     {
-        $projects = Project::where('status', EncoursState::$name)->get();
+        $projects = Project::whereState('status', EncoursState::class)->get();
         $users = User::all();
 
         $members = $projects->flatMap(function ($project) use ($users) {
@@ -26,7 +26,7 @@ class ProjectMemberSeeder extends Seeder
             }
 
             return $users->random($count)
-                ->map(fn ($user) => ['project_id' => $project->id, 'user_id' => $user->id]);
+                ->map(fn($user) => ['project_id' => $project->id, 'user_id' => $user->id]);
         });
 
         DB::table('project_members')->insert($members->toArray());
