@@ -16,8 +16,8 @@ class StoreResourceContributionRequest extends FormRequest
         $project = $this->route('project');
 
         abort_if(
-            ! $project->status instanceof RecolteState &&
-            ! $project->status instanceof EncoursState,
+            ! $project?->status instanceof RecolteState &&
+            ! $project?->status instanceof EncoursState,
             404
         );
 
