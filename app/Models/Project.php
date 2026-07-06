@@ -12,6 +12,8 @@ use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Facades\DB;
 use Spatie\ModelStates\HasStates;
+use App\Models\States\EncoursState;
+use Illuminate\Database\Eloquent\Builder;
 
 class Project extends Model
 {
@@ -135,4 +137,26 @@ class Project extends Model
             'id'          // local key on project_phases
         );
     }
+
+    public function canComment(?User $user): bool
+{
+    return $this->status instanceof EncoursState
+        && (bool) $user?->hasRole('chef_de_projet')
+        && $user?->id === $this->leader_id;
+}
+
+public function scopeNeedingProgressReminder(Builder $query): Builder
+{
+    return $query
+        ->whereState('status', EncoursState::class)
+        ->whereNotNull('leader_id')
+        ->addSelect(['last_leader_comment_at' => Comment::select('created_at')
+            ->whereColumn('comments.project_id', 'projects.id')
+            ->whereColumn('comments.user_id', 'projects.leader_id')
+            ->latest('created_at')
+            ->limit(1),
+        ])
+        ->withCasts(['last_leader_comment_at' => 'datetime']);
+}
+
 }

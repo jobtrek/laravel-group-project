@@ -1,7 +1,6 @@
 @php
     use App\Models\States\RevisionState;
     use App\Models\States\EncoursState;
-    use App\Models\States\EvaluationState;
     function canModify($project) {
         return (auth()->user()->can('edit project') && auth()->id() === $project->leader_id)
         || auth()->id() === $project->proposer_id
@@ -20,7 +19,7 @@
                     <div class="flex items-center gap-3">
                         @if (auth()->id() === $project->proposer_id)
                             @if ($project->status instanceof RevisionState)
-                                <a
+                                
                                         href="{{ route('projects.revision-form', $project) }}"
                                         class="px-4 py-2 bg-amber-500 text-white rounded-md hover:bg-amber-600 text-sm font-medium transition-colors shadow-sm"
                                 >
@@ -120,38 +119,38 @@
                         :effort="$project->evaluation?->effort_normalized ?? 0" />
                 </div>
 
-                <div class="mt-4 rounded-lg border border-gray-200 p-3">
+                @if($project->status instanceof EncoursState)
+                    <div class="mt-4 rounded-lg border border-gray-200 p-3">
 
-                    <p class="text-sm font-semibold text-gray-800">Commentaires</p>
+                        <p class="text-sm font-semibold text-gray-800">Commentaires</p>
 
-                    <div class="mt-3 space-y-3 overflow-y-auto">
+                        <div class="mt-3 space-y-3 overflow-y-auto">
 
-                        @forelse($project->comments as $comment)
-                            <x-projects-details.Comment_msg :messager_name="$comment->user?->name ?? 'Unknown'" :commentaire_msg="$comment->content" :date_msg="$comment->created_at?->format('d/m/Y')" />
+                            @forelse($project->comments->whereNull('field_key') as $comment)
+                                <x-projects-details.Comment_msg :messager_name="$comment->user?->name ?? 'Unknown'" :commentaire_msg="$comment->content" :date_msg="$comment->created_at?->format('d/m/Y H:i')" />
+                            @empty
+                                <span class="mt-1 text-sm text-gray-600">
+                                    Actuellement, aucun commentaire n'a été ajouté
+                                </span>
+                            @endforelse
 
-                        @empty
-                            <span class="mt-1 text-sm text-gray-600">
-                                Actuellement, aucun commentaire n'a été ajouté
-                            </span>
-                        @endforelse
+                        </div>
+
+                        @if($project->canComment(auth()->user()))
+                            <form action="{{ route('projects.comments.store', $project) }}" method="POST" class="mt-3 flex flex-col gap-2">
+                                @csrf
+                                <input type="hidden" name="stage" value="{{ $project->status->getValue() }}">
+                                <textarea name="content" rows="2" required
+                                          class="w-full rounded-md border border-gray-200 p-2 text-sm"
+                                          placeholder="Ajouter un commentaire"></textarea>
+                                <button type="submit" class="self-end px-4 py-2 bg-blue-700 text-white rounded-md text-sm font-medium">
+                                    Commenter
+                                </button>
+                            </form>
+                        @endif
 
                     </div>
-
-                    @if((auth()->user()->hasRole('direction') && $project->status instanceof EvaluationState)
-                        || (auth()->user()->hasRole('chef_de_projet') && $project->status instanceof EncoursState))
-                        <form action="{{ route('projects.comments.store', $project) }}" method="POST" class="mt-3 flex flex-col gap-2">
-                            @csrf
-                            <input type="hidden" name="stage" value="{{ $project->status->getValue() }}">                            
-                            <textarea name="content" rows="2" required
-                                      class="w-full rounded-md border border-gray-200 p-2 text-sm"
-                                      placeholder="Ajouter un commentaire"></textarea>
-                            <button type="submit" class="self-end px-4 py-2 bg-blue-700 text-white rounded-md text-sm font-medium">
-                                Commenter
-                            </button>
-                        </form>
-                    @endif
-
-                </div>
+                @endif
 
             </div>
         </div>

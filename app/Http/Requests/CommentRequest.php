@@ -1,40 +1,22 @@
-<?php
+<?php declare(strict_types=1);
 
 namespace App\Http\Requests;
 
 use App\Models\Project;
-use App\Models\States\EncoursState;
-use App\Models\States\EvaluationState;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
 class CommentRequest extends FormRequest
 {
-    /**
-     * Determine if the user is authorized to make this request.
-     */
     public function authorize(): bool
     {
         $project = $this->route('project');
 
-        if (! $project instanceof Project) {
-            return false;
-        }
-
-        if ($project->status instanceof EvaluationState) {
-            return (bool) $this->user()?->hasRole('direction');
-        }
-
-        if ($project->status instanceof EncoursState) {
-            return (bool) $this->user()?->hasRole('chef_de_projet');
-        }
-
-        return false;
+        return $project instanceof Project
+            && $project->canComment($this->user());
     }
 
     /**
-     * Get the validation rules that apply to the request.
-     *
      * @return array<string, ValidationRule|array<mixed>|string>
      */
     public function rules(): array
