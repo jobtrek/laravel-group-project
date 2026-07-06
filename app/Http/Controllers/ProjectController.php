@@ -9,8 +9,10 @@ use App\Http\Requests\FilterProjectsRequest;
 use App\Http\Requests\RequestMoreInfoRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
-use App\Models\User;
 use App\Models\ProjectPhase;
+use App\Models\States\EvaluationState;
+use App\Models\States\RevisionState;
+use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
@@ -19,9 +21,7 @@ class ProjectController extends Controller
 {
     public function __construct(
         private readonly ProjectFilter $filter
-    )
-    {
-    }
+    ) {}
 
     public function index(FilterProjectsRequest $request)
     {
@@ -54,7 +54,7 @@ class ProjectController extends Controller
 
     public function deny(Project $project)
     {
-        abort_if($project->proposer_id === auth()->id() || !$project->status instanceof \App\Models\States\EvaluationState, 403);
+        abort_if($project->proposer_id === auth()->id() || ! $project->status instanceof EvaluationState, 403);
         ProjectService::deny($project);
 
         return Redirect::back()->with('status', 'project-denied');
@@ -69,10 +69,9 @@ class ProjectController extends Controller
 
     public function requestMoreInfo(
         RequestMoreInfoRequest $request,
-        Project                $project,
-        RequestMoreInfoAction  $action,
-    ): RedirectResponse
-    {
+        Project $project,
+        RequestMoreInfoAction $action,
+    ): RedirectResponse {
         $action->execute(
             project: $project,
             fieldComments: $request->validated()['field_comments'],
@@ -85,7 +84,7 @@ class ProjectController extends Controller
 
     public function reSubmit(Project $project)
     {
-        abort_if($project->proposer_id !== auth()->id() || !$project->status instanceof \App\Models\States\RevisionState, 403);
+        abort_if($project->proposer_id !== auth()->id() || ! $project->status instanceof RevisionState, 403);
         ProjectService::reSubmit($project);
 
         return Redirect::back()->with('status', 'project-resubmitted');
@@ -107,7 +106,7 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
-        abort_if(!$project->status->isEditable() || auth()->id() !== $project->proposer_id, 403);
+        abort_if(! $project->status->isEditable() || auth()->id() !== $project->proposer_id, 403);
 
         $project->load(['phases.resources', 'evaluation', 'members']);
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
@@ -117,7 +116,7 @@ class ProjectController extends Controller
 
     public function update(UpdateProjectRequest $request, Project $project, UpdateProjectAction $action)
     {
-        abort_if(!$project->status->isEditable() || auth()->id() !== $project->proposer_id, 403);
+        abort_if(! $project->status->isEditable() || auth()->id() !== $project->proposer_id, 403);
 
         $action->execute($project, $request->validated());
 
@@ -127,7 +126,7 @@ class ProjectController extends Controller
 
     public function complete(Project $project)
     {
-        abort_if($project->proposer_id === auth()->id() || !$project->status instanceof \App\Models\States\EvaluationState, 403);
+        abort_if($project->proposer_id === auth()->id() || ! $project->status instanceof EvaluationState, 403);
         try {
             ProjectService::complete($project);
         } catch (\Exception $e) {

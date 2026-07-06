@@ -12,10 +12,10 @@ use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RevisionController;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn() => view('auth.login'))->middleware('guest');
+Route::get('/', fn () => view('auth.login'))->middleware('guest');
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', fn() => redirect()->route('projects'))->name('dashboard');
+    Route::get('/dashboard', fn () => redirect()->route('projects'))->name('dashboard');
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
     Route::get('/propositions', [PropositionController::class, 'index'])->name('propositions');
     Route::get('/evaluation', [ReviewController::class, 'index'])->name('evaluation');
@@ -33,7 +33,7 @@ Route::get('/projects_details/{project}', [ProjectController::class, 'detailPage
 Route::get('/projects_details/{project}/phase_details/{phase}', [ProjectController::class, 'phaseDetail'])->middleware(['auth', 'verified'])->name('phase_details')->scopeBindings();
 
 Route::middleware('auth')->group(function () {
-    Route::get('/create', fn() => view('create'))->name('create');
+    Route::get('/create', fn () => view('create'))->name('create');
 
     Route::post('/propositions', [PropositionController::class, 'store'])->name('proposition.store');
 
@@ -75,4 +75,4 @@ Route::middleware('auth')->group(function () {
         ->name('projects.recolte.team');
 });
 
-require __DIR__ . '/auth.php';
+require __DIR__.'/auth.php';
