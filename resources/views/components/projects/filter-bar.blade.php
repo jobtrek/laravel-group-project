@@ -58,7 +58,7 @@
                 <div class="flex flex-col gap-1 min-w-[160px]">
                     <label for="proposer_id" class="text-xs font-medium text-gray-500">Proposeur</label>
                     <select name="proposer_id" id="proposer_id"
-                            class="border border-gray-200 rounded-lg px-3 py-2 text-sm text-gray-700 bg-white focus:outline-none focus:ring-2 focus:ring-blue-200">
+                            class="border border-slate-700 rounded-lg px-3 py-2 text-sm text-slate-200 bg-slate-900 focus:outline-none focus:ring-2 focus:ring-blue-500">
                         <option value=""     {{ request('proposer_id') !== 'mine' ? 'selected' : '' }}>Tous les proposeurs</option>
                         <option value="mine" {{ request('proposer_id') === 'mine' ? 'selected' : '' }}>Mes projets</option>
                     </select>
