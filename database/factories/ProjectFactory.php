@@ -22,6 +22,11 @@ class ProjectFactory extends Factory
 
     private ?array $cachedUserIds = null;
 
+    private function getUserIds(): array
+    {
+        return $this->cachedUserIds ??= User::pluck('id')->toArray() ?: [User::factory()->create()->id];
+    }
+
     /**
      * Define the model's default state.
      *
@@ -39,7 +44,7 @@ class ProjectFactory extends Factory
             ArchiveState::class,
         ]);
 
-        $userIds = $this->cachedUserIds ??= User::pluck('id')->toArray() ?: [User::factory()->create()->id];
+        $userIds = $this->getUserIds();
 
         return [
             'title' => $this->faker->sentence(3),
@@ -68,8 +73,8 @@ class ProjectFactory extends Factory
             ]);
 
             if ($project->status instanceof EncoursState && is_null($project->leader_id)) {
-                $userIds = $this->cachedUserIds ??= User::pluck('id')->toArray() ?: [User::factory()->create()->id];
-                if (! empty($userIds)) {
+                $userIds = $this->getUserIds();
+                if (!empty($userIds)) {
                     $project->timestamps = false;
                     $project->leader_id = fake()->randomElement($userIds);
                     $project->save();
