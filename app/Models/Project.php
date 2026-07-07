@@ -146,8 +146,8 @@ class Project extends Model
     public function canComment(?User $user): bool
     {
         return $this->status instanceof EncoursState
-            && (bool) $user?->hasRole(Role::ChefDeProjet->value)
-            && $user?->id === $this->leader_id;
+            && (bool) $user->hasRole(Role::ChefDeProjet->value)
+            && $user->id === $this->leader_id;
     }
 
     public function scopeNeedingProgressReminder(Builder $query): Builder
