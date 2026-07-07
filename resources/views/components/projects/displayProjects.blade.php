@@ -69,7 +69,7 @@ use App\Http\Controllers\ProjectController;
                 </form>
             @endcan
             @elseif((string)$status === 'en cours')
-                @if($project->progress >= 100 && auth()->user()?->can('complete project') && auth()->id() === $project->leader_id)                    
+                @if($project->progress >= 100 && auth()->user()?->can('complete project') && auth()->id() === $project->leader_id)
                 <form action="{{ route('projects.complete', $project) }}" method="POST" class="relative z-10">
                         @csrf
                         @method('PATCH')
@@ -97,14 +97,16 @@ use App\Http\Controllers\ProjectController;
             </a>
                 @endcan
             @if((string)$status === 'récolte' && auth()->user()?->can('launch project'))
-                @php $canLaunch = auth()->id() === $project->leader_id; @endphp
+                @php $canLaunch = auth()->id() === $project->leader_id;
+                     $isAdmin = auth()->user()->can('manage everything');
+                @endphp
             <form action="{{ route('projects.recolte.activate', $project) }}" method="POST" class="relative z-10">
                     @csrf
                     @method('PATCH')
                                         <x-projects.buttons text="Démarrer le projet"
-                        class="text-sm rounded-lg px-3 py-1.5 {{ $canLaunch ? 'bg-green-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed' }}"
+                        class="text-sm rounded-lg px-3 py-1.5 {{ $canLaunch || $isAdmin ? 'bg-green-700 text-white' : 'bg-gray-300 text-gray-500 cursor-not-allowed' }}"
                         type="submit"
-                        :disabled="!$canLaunch"/>
+                        :disabled="!$canLaunch && !$isAdmin"/>
                 </form>
             @endif
         </div>
