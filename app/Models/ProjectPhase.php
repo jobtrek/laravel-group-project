@@ -67,6 +67,7 @@ class ProjectPhase extends Model
         return max(0.0, min($progress, 200.0));
     }
 
+    /** @return HasMany<PhaseItemCompletion, $this> */
     public function itemCompletions(): HasMany
     {
         return $this->hasMany(PhaseItemCompletion::class, 'phase_id');
@@ -74,11 +75,12 @@ class ProjectPhase extends Model
 
     public function isItemCompleted(string $itemType, int $itemIndex): bool
     {
-        return $this->itemCompletions
+        $completion = $this->itemCompletions
             ->where('item_type', $itemType)
             ->where('item_index', $itemIndex)
-            ->first()
-            ?->completed ?? false;
+            ->first();
+
+        return $completion !== null && $completion->completed;
     }
 
     public function isResourceComplete(PhaseResource $resource): bool
@@ -96,6 +98,6 @@ class ProjectPhase extends Model
             ->where('resource_type', $resource->resource_type)
             ->sum('amount');
 
-        return number_format($found, 2).' / '.number_format($resource->amount_needed, 2).' CHF';
+        return number_format($found, 2).' / '.number_format((float) $resource->amount_needed, 2).' CHF';
     }
 }

@@ -23,6 +23,7 @@ class PhaseItemCompletionController extends Controller
         $items = match ($itemType) {
             'objectif' => $phase->objectifs ?? [],
             'livrable' => $phase->livrables ?? [],
+            default => abort(404),
         };
 
         abort_if($itemIndex < 0 || $itemIndex >= count($items), 404);
