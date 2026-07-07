@@ -64,7 +64,7 @@ class ProjectPhase extends Model
 
         $progress = round(($this->amount_found / $this->amount_needed) * 100, 2);
 
-        return max(0.0, min($progress, 100.0));
+        return max(0.0, min($progress, 200.0));
     }
 
     public function itemCompletions(): HasMany
