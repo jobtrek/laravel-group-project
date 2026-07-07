@@ -164,7 +164,7 @@ class ProjectController extends Controller
                 $query->where('proposer_id', $userId)
                     ->orWhere('leader_id', $userId);
             })
-            ->paginate((int) config('projects.per_page', 10));
+            ->paginate((int) config('projects.per_page', 10)->withQueryString());
 
         return view('myProjects', compact('projects'));
     }

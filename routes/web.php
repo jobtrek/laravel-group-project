@@ -28,6 +28,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/projects/{project}/direction-review', [ReviewController::class, 'showForm'])->name('projects.direction-review');
     Route::get('/projects/{project}/revision', [RevisionController::class, 'showForm'])->name('projects.revision-form');
     Route::post('/projects/{project}/revision-submit', [RevisionController::class, 'submit'])->name('projects.revision-submit');
+    Route::get('/my-projects', [ProjectController::class, 'showUsersProjects'])->name('my-projects');
 });
 
 Route::get('/projects_details/{project}', [ProjectController::class, 'detailPage'])->middleware(['auth', 'verified'])->name('projects-details');
@@ -89,7 +90,5 @@ Route::get('administration', function () {
 
     return view('administration', compact('users'));
 })->middleware('can:manage everything')->name('administration');
-
-Route::get('/my-projects', [ProjectController::class, 'showUsersProjects'])->middleware(['auth', 'verified'])->name('my-projects');
 
 require __DIR__.'/auth.php';
