@@ -22,7 +22,6 @@ class RecolteController extends StageProjectController
     {
         return [RecolteState::class];
     }
-    
 
     public function assignTeam(AssignProjectTeamRequest $request, Project $project): RedirectResponse
     {
