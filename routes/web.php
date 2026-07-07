@@ -10,6 +10,8 @@ use App\Http\Controllers\RecolteController;
 use App\Http\Controllers\ResourceContributionController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RevisionController;
+use App\Http\Controllers\CommentController;
+use App\Http\Controllers\PhaseItemCompletionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => view('auth.login'))->middleware('guest');
@@ -31,6 +33,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/projects_details/{project}', [ProjectController::class, 'detailPage'])->middleware(['auth', 'verified'])->name('projects-details');
 
 Route::get('/projects_details/{project}/phase_details/{phase}', [ProjectController::class, 'phaseDetail'])->middleware(['auth', 'verified'])->name('phase_details')->scopeBindings();
+Route::patch(
+    '/projects_details/{project}/phase_details/{phase}/items/{itemType}/{itemIndex}',
+    [PhaseItemCompletionController::class, 'toggle']
+)
+    ->whereIn('itemType', ['objectif', 'livrable'])
+    ->whereNumber('itemIndex')
+    ->middleware(['auth', 'verified', 'can:edit project'])
+    ->name('phase_details.items.toggle')
+    ->scopeBindings();
 
 Route::middleware('auth')->group(function () {
     Route::get('/create', fn () => view('create'))->name('create');
