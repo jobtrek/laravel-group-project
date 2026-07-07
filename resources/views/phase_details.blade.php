@@ -17,12 +17,7 @@
                         </div>
                         <x-projects-details.comeBackButton/>
                     </div>
-                    <div class="rounded-lg border border-gray-200 p-3 flex flex-col justify-center">
-                        <p class="text-sm font-semibold text-gray-800">Avancement</p>
-                        <div class="mt-3 h-1.5 w-full rounded-full bg-gray-100">
-                            <div class="h-1.5 rounded-full bg-emerald-400" style="width: {{ $phase->progress }}%"></div>
-                        </div>
-                    </div>
+                    <x-progressBar :progress="$phase->progress"/>
                     <div class="flex flex-col gap-4">
                         <div class="rounded-lg border border-blue-700 p-3 flex flex-col gap-4 shadow-lg">
                             <p class="text-[20px] font-semibold text-gray-800">Objectifs</p>

@@ -69,7 +69,7 @@ use App\Http\Controllers\ProjectController;
                 </form>
             @endcan
             @elseif((string)$status === 'en cours')
-                @if($project->progress >= 100 && auth()->user()?->can('complete project') && auth()->id() === $project->leader_id)                    
+                @if($project->progress >= 100 && auth()->user()?->can('complete project') && auth()->id() === $project->leader_id)
                 <form action="{{ route('projects.complete', $project) }}" method="POST" class="relative z-10">
                         @csrf
                         @method('PATCH')
@@ -80,15 +80,7 @@ use App\Http\Controllers\ProjectController;
         </div>
     </div>
     @if((string)$status === 'récolte' || (string)$status === 'en cours')
-        <div class="relative z-10 pointer-events-none flex items-center gap-2 w-full">
-            <div class="w-full bg-gray-200 rounded-full h-1.5">
-                <div class="{{ $progress <= 20 ? 'bg-red-500' : 'bg-green-700' }} h-1.5 rounded-full"
-                     style="width: {{ $progress }}%"></div>
-            </div>
-            <span class="text-xs font-semibold text-gray-700 whitespace-nowrap">
-            {{ $progress }}%
-        </span>
-        </div>
+        <x-progressBar :progress="$progress"/>
         <div class="relative z-10 flex justify-end gap-2">
             @can('add resources')
             <a href="{{ route('projects.resources.create', $project) }}"

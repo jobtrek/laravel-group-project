@@ -158,7 +158,7 @@
                         get contributionPercent() {
                             if (!this.selectedResource || this.selectedResource.needed <= 0) return 0;
                             return Math.min(
-                                100,
+                                200,
                                 Math.round((Number(this.amount || 0) / this.selectedResource.needed) * 10000) / 100
                             );
                         },
@@ -166,7 +166,7 @@
                             if (!this.selectedResource || this.selectedResource.needed <= 0) return 0;
                             const total = this.selectedResource.found + Number(this.amount || 0);
                             return Math.min(
-                                100,
+                                200,
                                 Math.round((total / this.selectedResource.needed) * 10000) / 100
                             );
                         }
