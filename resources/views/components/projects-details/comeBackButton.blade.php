@@ -3,8 +3,8 @@
 <button
         type="button"
         @if($fallbackUrl)
-            onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = @js($fallbackUrl); }"
-        @else
+            onclick='if (window.history.length > 1) { window.history.back(); } else { window.location.href = @js($fallbackUrl); }'
+                    @else
             onclick="window.history.back()"
         @endif
         {{ $attributes->merge(['class' => 'text-gray-400 hover:text-gray-600']) }}
