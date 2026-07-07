@@ -48,8 +48,6 @@ class RoleAndPermissionSeeder extends Seeder
 
         $collaborateur->givePermissionTo('create project');
 
-        $collaborateur->givePermissionTo('create project');
-
         $adminRole->givePermissionTo([
             'manage everything',
         ]);
