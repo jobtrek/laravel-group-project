@@ -2,7 +2,7 @@
     use App\Models\States\RevisionState;
     use App\Models\States\EncoursState;
     use App\Models\States\EvaluationState;
-    
+
     function canModify($project)
     {
         return (auth()->user()->can('edit project') && auth()->id() === $project->leader_id) ||

@@ -13,15 +13,20 @@ Artisan::command('inspire', function () {
 })->purpose('Display an inspiring quote');
 
 Artisan::command('mail:send-reminders', function () {
+    $reminderAfterMonths = (int) config('projects.reminder_after_months', 1);
+
     $projects = Project::with('leader')
         ->needingProgressReminder()
         ->get()
         ->filter(fn (Project $project) => $project->last_leader_comment_at === null
-            || $project->last_leader_comment_at->lt(now()->subMonth()));
+            || $project->last_leader_comment_at->lt(now()->subMonths($reminderAfterMonths)));
 
     foreach ($projects as $project) {
-        SendMailProcess::dispatch($project->leader);
-        $project->forceFill(['last_reminder_at' => now()])->saveQuietly();
+        if ($project->leader) {
+            SendMailProcess::dispatch($project->leader);
+            $project->timestamps = false;
+            $project->forceFill(['last_reminder_at' => now()])->saveQuietly();
+        }
     }
 
     $this->info("Friendly reminders queued for {$projects->count()} project(s).");
@@ -36,7 +41,8 @@ Artisan::command('mail:send-warnings', function () {
 
     foreach ($overdueProjects as $project) {
         SendStrongerMailProcess::dispatch($project);
-        $project->update(['last_reminder_at' => now()]);
+        $project->timestamps = false;
+        $project->forceFill(['last_reminder_at' => now()])->saveQuietly();
     }
 
     $this->info("Warning emails queued for {$overdueProjects->count()} project(s).");

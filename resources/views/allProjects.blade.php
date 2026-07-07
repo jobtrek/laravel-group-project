@@ -3,7 +3,7 @@
         <div class="min-h-screen mt-9 p-4">
             <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
                 <div class="text-gray-900">
-                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-5 gap-3 mb-4">
+                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-4">
                         <x-projects.countProjects text="Propositions"
                                                   :projets="$counts->get('proposition', 0) + $counts->get('révision', 0)"
                                                   route="propositions"/>
@@ -13,8 +13,10 @@
                                                   route="recolte"/>
                         <x-projects.countProjects text="En cours" :projets="$counts->get('en cours', 0)"
                                                   route="en-cours"/>
+                        <x-projects.countProjects text="Complété" :projets="$counts->get('complété', 0)"
+                                                  route="complete"/>
                         <x-projects.countProjects text="Frigo"
-                                                  :projets="$counts->get('archivé', 0) + $counts->get('complété', 0)"
+                                                  :projets="$counts->get('archivé', 0)"
                                                   route="frigo"/>
                     </div>
                     <div class="flex flex-wrap gap-2 justify-between mb-2">
@@ -32,7 +34,7 @@
                     </div>
                     <div class="flex flex-col gap-3.5">
                         @foreach($projects as $project)
-                            @if($project && $project->status !== 'archivé')
+                            @if($project && $project->status !== 'archivé' && $project->status !== 'complété')
                                 <x-projects.displayProjects
                                         :project="$project"
                                         :status="$project->status"
@@ -40,7 +42,7 @@
                                         :chef="$project->leader?->name ?? $project->proposer?->name"
                                         :progress="$project->progress"
                                         :importance="$project->importance"
-                                        :creation-date="$project->created_at->format('d M Y')"
+                                        :creation-date="$project->created_at?->format('d M Y') ?? '—'"
                                         :updated_at="$project->updated_at"/>
                             @endif
                         @endforeach
