@@ -70,8 +70,7 @@ Route::middleware('auth')->group(function () {
     });
 
     Route::controller(ResourceContributionController::class)->prefix('/projects/{project}/resources')
-        ->middleware('can:add resources')->
-        group(function () {
+        ->middleware('can:add resources')->group(function () {
             Route::get('/create', 'create')->name('projects.resources.create');
             Route::post('/', 'store')->name('projects.resources.store');
         });
@@ -90,5 +89,7 @@ Route::get('administration', function () {
 
     return view('administration', compact('users'));
 })->middleware('can:manage everything')->name('administration');
+
+Route::get('/my-projects', [ProjectController::class, 'showUsersProjects'])->middleware(['auth', 'verified'])->name('my-projects');
 
 require __DIR__.'/auth.php';

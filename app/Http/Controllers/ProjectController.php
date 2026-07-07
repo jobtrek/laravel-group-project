@@ -26,7 +26,8 @@ class ProjectController extends Controller
     public function index(FilterProjectsRequest $request)
     {
         $projects = $this->filter->apply(
-            Project::with(['proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions']), $request
+            Project::with(['proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions']),
+            $request
         )->paginate((int) config('projects.per_page', 10))->withQueryString();
 
         $counts = Project::statusCounts();
@@ -145,5 +146,26 @@ class ProjectController extends Controller
         ProjectService::archive($project);
 
         return back()->with('status', 'project-archived');
+    }
+
+    public function showUsersProjects()
+    {
+        $userId = auth()->id();
+
+        $projects = Project::query()
+            ->with([
+                'proposer',
+                'leader',
+                'evaluation',
+                'phases.resources',
+                'phases.contributions',
+            ])
+            ->where(function ($query) use ($userId) {
+                $query->where('proposer_id', $userId)
+                    ->orWhere('leader_id', $userId);
+            })
+            ->paginate((int) config('projects.per_page', 10));
+
+        return view('myProjects', compact('projects'));
     }
 }
