@@ -16,6 +16,8 @@ use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
+use App\Enums\Role;
+use App\Models\States\EncoursState;
 
 class ProjectController extends Controller
 {
@@ -122,16 +124,22 @@ class ProjectController extends Controller
     }
 
     public function complete(Project $project)
-    {
-        abort_if($project->proposer_id === auth()->id() || ! $project->status instanceof EvaluationState, 403);
-        try {
-            ProjectService::complete($project);
-        } catch (\Exception $e) {
-            return back()->with('error', $e->getMessage());
-        }
+{
+    abort_if(
+        ! $project->status instanceof EncoursState
+            || $project->progress < 100
+            || (auth()->id() !== $project->leader_id && ! auth()->user()?->hasRole(Role::ProjectManager->value)),
+        403
+    );
 
-        return back()->with('status', 'project-completed');
+    try {
+        ProjectService::complete($project);
+    } catch (\Exception $e) {
+        return back()->with('error', $e->getMessage());
     }
+
+    return back()->with('status', 'project-completed');
+}
 
     public function archive(Project $project)
     {

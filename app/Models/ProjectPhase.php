@@ -80,7 +80,11 @@ class ProjectPhase extends Model
             ->where('item_index', $itemIndex)
             ->first();
 
-        return $completion !== null && $completion->completed;
+        if (! $completion instanceof PhaseItemCompletion) {
+            return false;
+        }
+
+        return $completion->completed;
     }
 
     public function isResourceComplete(PhaseResource $resource): bool

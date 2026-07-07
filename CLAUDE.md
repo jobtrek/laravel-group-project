@@ -12,7 +12,7 @@ See `docs/Source_of_truth.md` for the authoritative requirements.
 
 - **PHP 8.3 / Laravel 13** — Blade templates, Eloquent ORM, spatie/laravel-model-states, queued mail
 - **Frontend** — Vite + Tailwind CSS v4 (no JS framework, no inline styles)
-- **Database** — PostgreSQL (Sail/Docker); SQLite (`DB_DATABASE=testing`) for tests
+- **Database** — PostgreSQL (Sail/Docker);
 
 ## Commands
 
