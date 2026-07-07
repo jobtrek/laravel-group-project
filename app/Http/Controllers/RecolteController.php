@@ -11,6 +11,7 @@ use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
+
 class RecolteController extends StageProjectController
 {
     protected function stage(): Stage
@@ -27,7 +28,6 @@ class RecolteController extends StageProjectController
     {
         abort_if(! $project->status instanceof RecolteState, 404);
 
-
         $members = array_filter($request->validated('membres', []));
         $leaderId = $request->validated('leader_id');
 
@@ -43,7 +43,7 @@ class RecolteController extends StageProjectController
 
             if ($oldLeaderId && $oldLeaderId !== $leaderId) {
                 $oldLeader = User::find($oldLeaderId);
-                if ($oldLeader && !Project::where('leader_id', $oldLeaderId)->exists()) {
+                if ($oldLeader && ! Project::where('leader_id', $oldLeaderId)->exists()) {
                     $oldLeader->removeRole(Role::ChefDeProjet->value);
                 }
             }
