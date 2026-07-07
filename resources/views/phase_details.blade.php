@@ -6,7 +6,7 @@
                     <div class="flex items-start justify-between">
                         <div>
                             <h2 class="mt-3 text-2xl font-bold text-gray-900">
-                                {{ $phase->order }} - {{ $phase->name }}
+                                {{ $phaseNumber }} - {{ $phase->name }}
                             </h2>
                             <p class="mt-1 text-sm text-gray-500">{{ $phase->description }}</p>
                             @if($phase->duration)

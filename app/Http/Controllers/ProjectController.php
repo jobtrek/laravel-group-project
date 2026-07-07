@@ -99,9 +99,13 @@ class ProjectController extends Controller
 
     public function phaseDetail(Project $project, ProjectPhase $phase)
     {
+        abort_if($phase->project_id !== $project->id, 404);
+
         $phase->load(['resources', 'contributions']);
 
-        return view('phase_details', compact('phase', 'project'));
+        $phaseNumber = $project->phases->pluck('id')->search($phase->id) + 1;
+
+        return view('phase_details', compact('phase', 'project', 'phaseNumber'));
     }
 
     public function edit(Project $project)
