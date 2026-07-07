@@ -2,10 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Enums\Role;
 use App\Enums\Stage;
 use App\Http\Requests\AssignProjectTeamRequest;
 use App\Models\Project;
 use App\Models\States\RecolteState;
+use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Http\RedirectResponse;
 
@@ -20,15 +22,20 @@ class RecolteController extends StageProjectController
     {
         return [RecolteState::class];
     }
+    
 
     public function assignTeam(AssignProjectTeamRequest $request, Project $project): RedirectResponse
     {
         abort_if(! $project->status instanceof RecolteState, 404);
 
         $members = array_filter($request->validated('membres', []));
+        $leaderId = $request->validated('leader_id');
 
-        $project->update(['leader_id' => $request->validated('leader_id')]);
+        $project->update(['leader_id' => $leaderId]);
+
         $project->members()->sync($members);
+
+        User::find($leaderId)?->assignRole(Role::ChefDeProjet->value);
 
         return redirect()->back()->with('success', 'Équipe du projet mise à jour avec succès.');
     }
