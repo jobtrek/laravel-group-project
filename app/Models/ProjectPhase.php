@@ -68,25 +68,25 @@ class ProjectPhase extends Model
     }
 
     public function itemCompletions(): HasMany
-{
-    return $this->hasMany(PhaseItemCompletion::class, 'phase_id');
-}
+    {
+        return $this->hasMany(PhaseItemCompletion::class, 'phase_id');
+    }
 
-public function isItemCompleted(string $itemType, int $itemIndex): bool
-{
-    return $this->itemCompletions
-        ->where('item_type', $itemType)
-        ->where('item_index', $itemIndex)
-        ->first()
-        ?->completed ?? false;
-}
+    public function isItemCompleted(string $itemType, int $itemIndex): bool
+    {
+        return $this->itemCompletions
+            ->where('item_type', $itemType)
+            ->where('item_index', $itemIndex)
+            ->first()
+            ?->completed ?? false;
+    }
 
-public function isResourceComplete(PhaseResource $resource): bool
-{
-    $found = (float) $this->contributions
-        ->where('resource_type', $resource->resource_type)
-        ->sum('amount');
+    public function isResourceComplete(PhaseResource $resource): bool
+    {
+        $found = (float) $this->contributions
+            ->where('resource_type', $resource->resource_type)
+            ->sum('amount');
 
-    return $found >= (float) $resource->amount_needed;
-}
+        return $found >= (float) $resource->amount_needed;
+    }
 }

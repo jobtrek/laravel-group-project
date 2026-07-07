@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
             $table->foreignId('phase_id')->constrained('project_phases')->cascadeOnDelete();
             $table->string('item_type', 20); // 'objectif' | 'livrable'
-            $table->unsignedInteger('item_index'); 
+            $table->unsignedInteger('item_index');
             $table->boolean('completed')->default(false);
             $table->foreignId('completed_by')->nullable()->constrained('users')->nullOnDelete();
             $table->timestamp('completed_at')->nullable();

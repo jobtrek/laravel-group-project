@@ -97,12 +97,12 @@ class ProjectController extends Controller
         return view('projectsDetails', compact('project'));
     }
 
- public function phaseDetail(Project $project, ProjectPhase $phase)
-{
-    $phase->load(['resources', 'contributions', 'itemCompletions']);
+    public function phaseDetail(Project $project, ProjectPhase $phase)
+    {
+        $phase->load(['resources', 'contributions', 'itemCompletions']);
 
-    return view('phase_details', compact('phase', 'project'));
-}
+        return view('phase_details', compact('phase', 'project'));
+    }
 
     public function edit(Project $project)
     {

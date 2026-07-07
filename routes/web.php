@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CompleteController;
 use App\Http\Controllers\EnCoursController;
+use App\Http\Controllers\PhaseItemCompletionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
@@ -10,8 +12,6 @@ use App\Http\Controllers\RecolteController;
 use App\Http\Controllers\ResourceContributionController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RevisionController;
-use App\Http\Controllers\CommentController;
-use App\Http\Controllers\PhaseItemCompletionController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => view('auth.login'))->middleware('guest');
