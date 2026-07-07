@@ -46,7 +46,7 @@ class RegisteredUserController extends Controller
 
         event(new Registered($user));
 
-        return redirect()->route('register')
+        return redirect()->route('administration')
             ->with('status', __('Utilisateur créé avec succès.'));
 
         Auth::login($user);
