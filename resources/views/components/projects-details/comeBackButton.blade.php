@@ -3,7 +3,7 @@
 <button
         type="button"
         @if($fallbackUrl)
-            onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = '{{ $fallbackUrl }}'; }"
+            onclick="if (window.history.length > 1) { window.history.back(); } else { window.location.href = @js($fallbackUrl); }"
         @else
             onclick="window.history.back()"
         @endif
