@@ -49,6 +49,8 @@ class RecolteController extends StageProjectController
             }
         });
 
+        User::find($leaderId)?->assignRole(Role::ChefDeProjet->value);
+
         return redirect()->back()->with('success', 'Équipe du projet mise à jour avec succès.');
     }
 
