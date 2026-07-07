@@ -59,15 +59,11 @@
                         <div class="rounded-lg border border-purple-700 p-3 flex flex-col gap-4 shadow-lg">
                             <p class="text-[20px] font-semibold text-gray-800">Ressource requise :</p>
                             @forelse($phase->resources ?? [] as $resource)
-                                <x-phase-details.resources :resource_type="$resource->resource_type" :resource_quantity="number_format(
-                                    $phase->contributions
-                                        ->where('resource_type', $resource->resource_type)
-                                        ->sum('amount'),
-                                    2,
-                                ) .
-                                    ' / ' .
-                                    number_format($resource->amount_needed, 2) .
-                                    ' CHF'" :is_complete="$phase->isResourceComplete($resource)" />          
+                                <x-phase-details.resources
+                                    :resource_type="$resource->resource_type"
+                                    :resource_quantity="$phase->getResourceQuantityString($resource)"
+                                    :is_complete="$phase->isResourceComplete($resource)"
+                                />      
                             @empty
                             @endforelse
                         </div>

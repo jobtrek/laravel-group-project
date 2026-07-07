@@ -89,4 +89,13 @@ class ProjectPhase extends Model
 
         return $found >= (float) $resource->amount_needed;
     }
+
+    public function getResourceQuantityString(PhaseResource $resource): string
+    {
+        $found = (float) $this->contributions
+            ->where('resource_type', $resource->resource_type)
+            ->sum('amount');
+
+        return number_format($found, 2).' / '.number_format($resource->amount_needed, 2).' CHF';
+    }
 }

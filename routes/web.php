@@ -39,7 +39,7 @@ Route::patch(
 )
     ->whereIn('itemType', ['objectif', 'livrable'])
     ->whereNumber('itemIndex')
-    ->middleware(['auth', 'verified', 'can:edit project'])
+    ->middleware(['auth', 'verified', 'can:edit project,project'])
     ->name('phase_details.items.toggle')
     ->scopeBindings();
 
