@@ -16,7 +16,7 @@
             </x-slot>
 
             <div class="py-10">
-                <div class="max-w-7xl mx-auto sm:px-6 lg:px-8">
+                <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
                     @php
                         $fieldKeys = ['title', 'description', 'but', 'perimetre',
@@ -183,7 +183,8 @@
                             <x-direction.annotatable-field
                                     :field-key="'phases.' . $i . '.ressources'"
                                     label="Ressources nécessaires">
-                                <table class="w-full text-sm border-collapse">
+                                <div class="overflow-x-auto">
+                                <table class="w-full text-sm border-collapse min-w-[280px]">
                                     <thead>
                                     <tr class="text-left">
                                         <th class="pb-1 text-xs font-semibold text-gray-500 pr-4">Type</th>
@@ -203,6 +204,7 @@
                                     @endforeach
                                     </tbody>
                                 </table>
+                                </div>
                             </x-direction.annotatable-field>
                         @endforeach
 
