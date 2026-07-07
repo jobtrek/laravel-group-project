@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
+use Spatie\Permission\Exceptions\PermissionDoesNotExist;
 
 class AppServiceProvider extends ServiceProvider
 {
@@ -21,7 +22,15 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::before(function ($user, $ability) {
-            return method_exists($user, 'hasPermissionTo') && $user->hasPermissionTo('manage everything') ? true : null;
+            if (! $user || ! method_exists($user, 'hasPermissionTo')) {
+                return null;
+            }
+
+            try {
+                return $user->hasPermissionTo('manage everything') ? true : null;
+            } catch (PermissionDoesNotExist) {
+                return null;
+            }
         });
     }
 }
