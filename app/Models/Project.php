@@ -118,7 +118,7 @@ class Project extends Model
 
         $progress = round(($totalFound / $totalNeeded) * 100, 2);
 
-        return $progress;
+        return max(0.0, min($progress, 200.0));
     }
 
     public static function statusCounts()
