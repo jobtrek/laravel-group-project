@@ -2,7 +2,10 @@
 
 namespace App\Models;
 
+use App\Enums\Role;
+use App\Models\States\EncoursState;
 use App\Models\States\ProjectState;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -138,5 +141,26 @@ class Project extends Model
             'id',         // local key on projects
             'id'          // local key on project_phases
         );
+    }
+
+    public function canComment(?User $user): bool
+    {
+        return $this->status instanceof EncoursState
+            && (bool) $user?->hasRole(Role::ChefDeProjet->value)
+            && $user?->id === $this->leader_id;
+    }
+
+    public function scopeNeedingProgressReminder(Builder $query): Builder
+    {
+        return $query
+            ->whereState('status', EncoursState::class)
+            ->whereNotNull('leader_id')
+            ->addSelect(['last_leader_comment_at' => Comment::select('created_at')
+                ->whereColumn('comments.project_id', 'projects.id')
+                ->whereColumn('comments.user_id', 'projects.leader_id')
+                ->latest('created_at')
+                ->limit(1),
+            ])
+            ->withCasts(['last_leader_comment_at' => 'datetime']);
     }
 }

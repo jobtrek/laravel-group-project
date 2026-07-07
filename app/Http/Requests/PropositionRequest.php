@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\Role;
 use App\Http\Requests\Concerns\HasScoringRules;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
@@ -16,7 +15,7 @@ class PropositionRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return (bool) $this->user()?->hasRole(Role::Collaborateur->value);
+        return (bool) $this->user()?->can('create project');
     }
 
     /**
