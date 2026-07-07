@@ -8,7 +8,6 @@ use App\Models\User;
 use Illuminate\Auth\Events\Registered;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules;
 use Illuminate\Validation\ValidationException;
@@ -48,9 +47,5 @@ class RegisteredUserController extends Controller
 
         return redirect()->route('administration')
             ->with('status', __('Utilisateur créé avec succès.'));
-
-        Auth::login($user);
-
-        return redirect(route('dashboard', absolute: false));
     }
 }
