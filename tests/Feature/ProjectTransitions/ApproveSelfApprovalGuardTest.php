@@ -4,11 +4,9 @@ use App\Models\Project;
 use App\Models\States\EvaluationState;
 use App\Models\States\RecolteState;
 use App\Models\User;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Permission;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-
-
 
 uses(RefreshDatabase::class);
 
@@ -19,9 +17,7 @@ beforeEach(function () {
     Permission::firstOrCreate(['name' => 'manage everything', 'guard_name' => 'web']);
 });
 
-
 it('forbids a direction user from approving their own project', function () {
-
 
     $direction = User::factory()->create();
     $direction->givePermissionTo('approve');
