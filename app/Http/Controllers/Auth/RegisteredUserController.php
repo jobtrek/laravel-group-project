@@ -35,7 +35,7 @@ class RegisteredUserController extends Controller
             'name' => ['required', 'string', 'max:255'],
             'email' => ['required', 'string', 'lowercase', 'email', 'max:255', 'unique:'.User::class],
             'password' => ['required', 'confirmed', Rules\Password::defaults()],
-            'role' => ['required', 'string', Rule::in(array_column(Role::cases(), 'value'))],
+            'role' => ['nullable', 'string', Rule::in(array_column(Role::cases(), 'value'))],
         ]);
 
         $user = User::create([
@@ -43,7 +43,10 @@ class RegisteredUserController extends Controller
             'email' => $request->email,
             'password' => Hash::make($request->password),
         ]);
-        $user->assignRole([Role::Collaborateur, Role::from($request->role)]);
+        $user->assignRole($request->role
+            ? [Role::Collaborateur, Role::from($request->role)]
+            : [Role::Collaborateur]
+        );
 
         event(new Registered($user));
 

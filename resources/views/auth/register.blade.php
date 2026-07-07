@@ -31,7 +31,7 @@
 
                 <div class="mt-4">
                     <x-input-label for="role" :value="__('Rôle')" />
-                    <select id="role" name="role" required
+                    <select id="role" name="role"
                             class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         <option value="">{{ __('Sélectionner un rôle') }}</option>
                         @foreach (array_filter(Role::cases(), fn($r) => !in_array($r, $excludedRoles) ) as $role)
@@ -40,7 +40,6 @@
                             </option>
                         @endforeach
                     </select>
-                    <x-input-error :messages="$errors->get('role')" class="mt-2" />
                 </div>
 
                 <div class="mt-4">
