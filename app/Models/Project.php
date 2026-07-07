@@ -118,7 +118,7 @@ class Project extends Model
 
         $progress = round(($totalFound / $totalNeeded) * 100, 2);
 
-        return max(0.0, min($progress, 100.0));
+        return $progress;
     }
 
     public static function statusCounts()
@@ -155,11 +155,12 @@ class Project extends Model
         return $query
             ->whereState('status', EncoursState::class)
             ->whereNotNull('leader_id')
-            ->addSelect(['last_leader_comment_at' => Comment::select('created_at')
-                ->whereColumn('comments.project_id', 'projects.id')
-                ->whereColumn('comments.user_id', 'projects.leader_id')
-                ->latest('created_at')
-                ->limit(1),
+            ->addSelect([
+                'last_leader_comment_at' => Comment::select('created_at')
+                    ->whereColumn('comments.project_id', 'projects.id')
+                    ->whereColumn('comments.user_id', 'projects.leader_id')
+                    ->latest('created_at')
+                    ->limit(1),
             ])
             ->withCasts(['last_leader_comment_at' => 'datetime']);
     }
