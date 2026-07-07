@@ -1,3 +1,6 @@
+@php
+use App\Enums\Role;
+@endphp;
 <x-app-layout>
     <div class="bg-[#131c3f]">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
@@ -32,7 +35,7 @@
                             <div class="flex flex-wrap gap-1.5 mt-3">
                                 @foreach($user->roles as $role)
                                     <span class="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 font-medium">
-                                        {{ $role->name }}
+                                        {{ Role::tryFrom($role->name)->label() ?? $role->name }}
                                     </span>
                                 @endforeach
                             </div>
