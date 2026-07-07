@@ -58,11 +58,8 @@
 
                     <div class="mt-4 flex gap-3">
                         <div class="rounded-lg w-full border border-gray-200 p-3 flex flex-col justify-center">
-                            <p class="text-sm font-semibold text-gray-800">Avancement</p>
-                            <div class="mt-3 h-1.5 w-full rounded-full bg-gray-100">
-                                <div class="h-1.5 rounded-full bg-emerald-400" style="width: {{ $project->progress }}%">
-                                </div>
-                            </div>
+                            <p class="mb-2 text-sm font-semibold text-gray-800">Avancement</p>
+                            <x-progressBar :progress="$project->progress"/>
                         </div>
                     </div>
 
