@@ -46,7 +46,7 @@
                         {{ $project->description }}
                     </p>
 
-                    <div class="flex justify-between mt-4">
+                    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mt-4">
                         <x-projects-details.baseInfo name="Proposeur :" :valeur="$project->proposer?->name ?? '—'" />
 
                         <x-projects-details.baseInfo name="Importance :" :valeur="$project->importance !== null ? number_format($project->importance, 2) : '—'" />
@@ -58,15 +58,12 @@
 
                     <div class="mt-4 flex gap-3">
                         <div class="rounded-lg w-full border border-gray-200 p-3 flex flex-col justify-center">
-                            <p class="text-sm font-semibold text-gray-800">Avancement</p>
-                            <div class="mt-3 h-1.5 w-full rounded-full bg-gray-100">
-                                <div class="h-1.5 rounded-full bg-emerald-400" style="width: {{ $project->progress }}%">
-                                </div>
-                            </div>
+                            <p class="mb-2 text-sm font-semibold text-gray-800">Avancement</p>
+                            <x-progressBar :progress="$project->progress"/>
                         </div>
                     </div>
 
-                    <div class="mt-3 grid grid-cols-2 gap-3">
+                    <div class="mt-3 grid grid-cols-1 sm:grid-cols-2 gap-3">
                         <div class="rounded-lg border border-gray-200 p-3 flex flex-col gap-3">
                             <p class="text-sm font-semibold text-gray-800 p-1">Buts</p>
                             @forelse($project->but ?? [] as $but)
@@ -79,8 +76,13 @@
                         <div class="rounded-lg border border-gray-200 p-3">
                             <p class="text-sm font-semibold text-gray-800">Equipe</p>
                             <div>
+                                @if($project->leader)
+                                    <x-projects-details.teamUsers :team_name_user="$project->leader->name" :user_status="'Chef de projet'" />
+                                @endif
                                 @foreach ($project->members as $member)
-                                    <x-projects-details.teamUsers :team_name_user="$member->name" :user_status="$member->id === $project->leader_id" />
+                                    @if($member->id !== $project->leader_id)
+                                        <x-projects-details.teamUsers :team_name_user="$member->name" />
+                                    @endif
                                 @endforeach
                             </div>
                         </div>
@@ -88,10 +90,10 @@
 
                     <div class="mt-4 rounded-lg border border-gray-200 p-3">
                         <p class="text-sm font-semibold text-gray-800 break-words">Phases :</p>
-                        <div class="mt-3 grid grid-cols-4 gap-4">
+                        <div class="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                             @foreach($project->phases as $phase)
                                 <a class="bg-gray-50 p-1 pl-3 pr-3 border rounded-xl hover:bg-gray-100" href="{{ route('phase_details', ['project' => $project, 'phase' => $phase]) }}">
-                                    {{ $phase->name }}
+                                    {{ $loop->iteration }} - {{ $phase->name }}
                                 </a>
                             @endforeach
                         </div>
@@ -108,7 +110,7 @@
 
                             <div class="mt-3 space-y-3 overflow-y-auto">
                                 @forelse($project->comments->whereNull('field_key') as $comment)
-                                    <x-projects-details.Comment_msg :messager_name="$comment->user?->name ?? 'Unknown'" :commentaire_msg="$comment->content"
+                                    <x-projects-details.Comment_msg :messager_name="$comment->user?->name ?? 'Inconnu'" :commentaire_msg="$comment->content"
                                                                     :date_msg="$comment->created_at?->format('d/m/Y H:i')" />
                                 @empty
                                     <span class="mt-1 text-sm text-gray-600">

@@ -82,11 +82,11 @@
                         <p class="text-xs text-gray-500 mb-2">ex. "1 personne à 20% durant toute la phase", "1000 CHF pour l'achat de matériel"</p>
                         <div class="space-y-2">
                             <template x-for="(res, ri) in phase.ressources_necessaires" :key="ri">
-                                <div class="flex gap-2">
+                                <div class="flex flex-col sm:flex-row gap-2">
                                     <input type="text" :name="'phases[' + pi + '][ressources_necessaires][' + ri + '][resource_type]'"
                                         x-model="res.resource_type" placeholder="Type de ressource"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    <div class="relative w-32">
+                                    <div class="relative w-full sm:w-32">
                                         <input type="number" :name="'phases[' + pi + '][ressources_necessaires][' + ri + '][amount_needed]'"
                                             x-model="res.amount_needed" placeholder="Quantité" min="0" step="0.01"
                                             class="block w-full rounded-md border-gray-300 shadow-sm pr-12 focus:border-indigo-500 focus:ring-indigo-500">
@@ -94,7 +94,7 @@
                                     </div>
                                     <button type="button" @click="removeItem(phase.ressources_necessaires, ri)"
                                         x-show="phase.ressources_necessaires.length > 1"
-                                        class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
+                                        class="self-start sm:self-center px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
                                 </div>
                             </template>
                         </div>

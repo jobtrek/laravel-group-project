@@ -1,8 +1,10 @@
 <?php
 
 use App\Http\Controllers\ArchiveController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CompleteController;
 use App\Http\Controllers\EnCoursController;
+use App\Http\Controllers\PhaseItemCompletionController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\ProjectController;
 use App\Http\Controllers\PropositionController;
@@ -10,10 +12,10 @@ use App\Http\Controllers\RecolteController;
 use App\Http\Controllers\ResourceContributionController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RevisionController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => view('auth.login'))->middleware('guest');
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', fn () => redirect()->route('projects'))->name('dashboard');
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
@@ -31,6 +33,15 @@ Route::middleware(['auth', 'verified'])->group(function () {
 Route::get('/projects_details/{project}', [ProjectController::class, 'detailPage'])->middleware(['auth', 'verified'])->name('projects-details');
 
 Route::get('/projects_details/{project}/phase_details/{phase}', [ProjectController::class, 'phaseDetail'])->middleware(['auth', 'verified'])->name('phase_details')->scopeBindings();
+Route::patch(
+    '/projects_details/{project}/phase_details/{phase}/items/{itemType}/{itemIndex}',
+    [PhaseItemCompletionController::class, 'toggle']
+)
+    ->whereIn('itemType', ['objectif', 'livrable'])
+    ->whereNumber('itemIndex')
+    ->middleware(['auth', 'verified', 'can:edit project,project'])
+    ->name('phase_details.items.toggle')
+    ->scopeBindings();
 
 Route::middleware('auth')->group(function () {
     Route::get('/create', fn () => view('create'))->name('create');
@@ -73,5 +84,11 @@ Route::middleware('auth')->group(function () {
         ->middleware('can:assign team')
         ->name('projects.recolte.team');
 });
+
+Route::get('administration', function () {
+    $users = User::with('roles')->orderBy('name')->get();
+
+    return view('administration', compact('users'));
+})->middleware('can:manage everything')->name('administration');
 
 require __DIR__.'/auth.php';
