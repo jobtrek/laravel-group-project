@@ -50,7 +50,7 @@
                             :chef="$project->leader?->name ?? $project->proposer?->name"
                             :progress="$project->progress"
                             :importance="$project->importance"
-                            :creation-date="$project->created_at->format('d M Y')"
+                            :creation-date="$project->created_at->locale('fr')->translatedFormat('d M Y')"
                             :updated_at="$project->updated_at"
                     />
                 @endforeach

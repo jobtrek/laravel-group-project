@@ -91,7 +91,7 @@
                         <div class="mt-3 grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
                             @foreach($project->phases as $phase)
                                 <a class="bg-gray-50 p-1 pl-3 pr-3 border rounded-xl hover:bg-gray-100" href="{{ route('phase_details', ['project' => $project, 'phase' => $phase]) }}">
-                                    {{ $phase->name }}
+                                    {{ $loop->iteration }} - {{ $phase->name }}
                                 </a>
                             @endforeach
                         </div>
@@ -108,7 +108,7 @@
 
                             <div class="mt-3 space-y-3 overflow-y-auto">
                                 @forelse($project->comments->whereNull('field_key') as $comment)
-                                    <x-projects-details.Comment_msg :messager_name="$comment->user?->name ?? 'Unknown'" :commentaire_msg="$comment->content"
+                                    <x-projects-details.Comment_msg :messager_name="$comment->user?->name ?? 'Inconnu'" :commentaire_msg="$comment->content"
                                                                     :date_msg="$comment->created_at?->format('d/m/Y H:i')" />
                                 @empty
                                     <span class="mt-1 text-sm text-gray-600">

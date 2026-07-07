@@ -30,7 +30,7 @@
             </svg>
 
             <div class="text-white w-44 sm:w-52 mb-8 sm:mb-12">
-                <img src="{{ Vite::asset('resources/views/Images/logo-white.svg') }}" alt="JobtrekLogo">
+                <img src="{{ Vite::asset('resources/views/Images/logo-white.svg') }}" alt="Logo Jobtrek">
             </div>
 
             <div class="relative z-10 w-full sm:max-w-md px-6 py-4 bg-white shadow-md overflow-hidden sm:rounded-lg">

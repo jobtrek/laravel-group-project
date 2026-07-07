@@ -6,7 +6,7 @@
 ])
 
 <div>
-    <h2 class="mb-2 text-sm font-semibold text-gray-800">Portée / Confiance / Effort</h2>
+    <h2 class="mb-2 text-sm font-semibold text-gray-800">Portée / Impact / Confiance / Effort</h2>
     <div class="flex items-end gap-2 sm:gap-4">
         <div class="flex flex-1 flex-col items-center">
             <div class="flex h-[10rem] sm:h-[14rem] md:h-[20rem] w-[2.5rem] sm:w-[4rem] md:w-[5rem] items-end bg-gray-200 rounded-md">
