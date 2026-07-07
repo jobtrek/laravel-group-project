@@ -10,7 +10,7 @@ use App\Models\States\RecolteState;
 use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Http\RedirectResponse;
-
+use Illuminate\Support\Facades\DB;
 class RecolteController extends StageProjectController
 {
     protected function stage(): Stage
@@ -27,14 +27,27 @@ class RecolteController extends StageProjectController
     {
         abort_if(! $project->status instanceof RecolteState, 404);
 
+
         $members = array_filter($request->validated('membres', []));
         $leaderId = $request->validated('leader_id');
 
-        $project->update(['leader_id' => $leaderId]);
+        DB::transaction(function () use ($project, $leaderId, $members) {
+            $oldLeaderId = $project->leader_id;
 
-        $project->members()->sync($members);
+            $project->update(['leader_id' => $leaderId]);
+            $project->members()->sync($members);
 
-        User::find($leaderId)?->assignRole(Role::ChefDeProjet->value);
+            if ($leaderId) {
+                User::find($leaderId)?->assignRole(Role::ChefDeProjet->value);
+            }
+
+            if ($oldLeaderId && $oldLeaderId !== $leaderId) {
+                $oldLeader = User::find($oldLeaderId);
+                if ($oldLeader && !Project::where('leader_id', $oldLeaderId)->exists()) {
+                    $oldLeader->removeRole(Role::ChefDeProjet->value);
+                }
+            }
+        });
 
         return redirect()->back()->with('success', 'Équipe du projet mise à jour avec succès.');
     }
