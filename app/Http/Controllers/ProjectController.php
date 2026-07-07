@@ -36,13 +36,6 @@ class ProjectController extends Controller
         return view('allProjects', compact('projects', 'counts', 'users'));
     }
 
-    public function review(Project $project)
-    {
-        ProjectService::review($project);
-
-        return Redirect::back()->with('status', 'project-in-review');
-    }
-
     public function approve(Project $project)
     {
         abort_if($project->proposer_id === auth()->id() && ! auth()->user()->can('manage everything'), 403);
