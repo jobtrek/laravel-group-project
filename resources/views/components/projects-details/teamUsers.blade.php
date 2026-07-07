@@ -10,8 +10,6 @@
         </svg>
         {{ $team_name_user }}
     </p>
-    @if($users_status)
     <p class="mt-1 text-sm text-gray-600">{{ $user_status }}</p>
-    @endif
 </div>
 
