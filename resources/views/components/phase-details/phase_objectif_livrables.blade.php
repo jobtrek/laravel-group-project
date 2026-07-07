@@ -10,6 +10,9 @@
 
 <div
     class="rounded-lg border p-3 flex justify-between transition-colors {{ $completed ? 'bg-green-50 border-green-400' : 'border-gray-200' }}"
+        x-data="{ checked: false }"
+        class="rounded-lg border p-3 flex justify-between items-start gap-2 transition-colors"
+        :class="checked ? 'bg-green-50 border-green-400' : 'border-gray-200'"
 >
     <div class="flex flex-col gap-4">
         @if($livrables_text)
