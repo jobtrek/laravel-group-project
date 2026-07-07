@@ -6,12 +6,22 @@ use App\Models\States\RecolteState;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 use Spatie\Permission\Models\Permission;
+use Illuminate\Foundation\Testing\RefreshDatabase;
 
-it('forbids a direction user from approving their own project', function () {
+
+
+uses(RefreshDatabase::class);
+
+beforeEach(function () {
     Mail::fake();
 
     Permission::firstOrCreate(['name' => 'approve', 'guard_name' => 'web']);
     Permission::firstOrCreate(['name' => 'manage everything', 'guard_name' => 'web']);
+});
+
+
+it('forbids a direction user from approving their own project', function () {
+
 
     $direction = User::factory()->create();
     $direction->givePermissionTo('approve');
@@ -25,10 +35,6 @@ it('forbids a direction user from approving their own project', function () {
 });
 
 it('allows a direction user to approve a project they did not propose', function () {
-    Mail::fake();
-
-    Permission::firstOrCreate(['name' => 'approve', 'guard_name' => 'web']);
-    Permission::firstOrCreate(['name' => 'manage everything', 'guard_name' => 'web']);
 
     $direction = User::factory()->create();
     $direction->givePermissionTo('approve');
@@ -43,10 +49,6 @@ it('allows a direction user to approve a project they did not propose', function
 });
 
 it('allows an admin with manage everything permission to approve their own project', function () {
-    Mail::fake();
-
-    Permission::firstOrCreate(['name' => 'approve', 'guard_name' => 'web']);
-    Permission::firstOrCreate(['name' => 'manage everything', 'guard_name' => 'web']);
 
     $admin = User::factory()->create();
     $admin->givePermissionTo(['approve', 'manage everything']);
