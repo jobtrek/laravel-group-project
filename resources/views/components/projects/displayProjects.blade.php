@@ -71,7 +71,7 @@ use App\Http\Controllers\ProjectController;
                     </form>
                 @endcan
             @elseif((string)$status === 'en cours')
-                @if($project->progress >= 100 && auth()->user()?->can('complete project') && auth()->id() === $project->leader_id)
+               @if($project->progress >= 100 && auth()->user()?->can('complete project') && (auth()->id() === $project->leader_id || auth()->user()?->hasRole(\App\Enums\Role::ProjectManager->value)))
                     <form action="{{ route('projects.complete', $project) }}" method="POST" class="relative z-10">
                         @csrf
                         @method('PATCH')
