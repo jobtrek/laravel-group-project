@@ -1,27 +1,87 @@
 ---
 name: fix-simple-issues-implementer
 description: >
-  Trigger when the person mentions on fixing issue number x or with the tag 'Agent'
+  Implements or fixes a specific, well-scoped GitHub issue in an isolated git
+  worktree, validates it against the project's formatting/static-analysis
+  gates, and leaves a log for human review. Trigger whenever the person asks
+  to fix, implement, or pick up a specific issue by number (e.g. "fix issue
+  #42", "implement issue 17", "can you handle issue #8"), or when an issue
+  is tagged/labeled "Agent". Do not commit or open a PR — that stays with
+  the human.
 ---
 
-## Context
+## Purpose
 
-You're job is to basically implement or fix a simple issue
-or a feature that a user has asked, if there are things that are unclear you may use the grill skill to ask the user
-persistant questions.
+Pick up one GitHub issue, implement it in isolation, and hand it back ready
+for human review — without touching git history or opening a PR yourself.
+The human reviews the diff, decides whether to commit, and owns the PR.
 
-## Format
-You will use github worktrees to have a local copy of each issue, within each worktree you must setup
-the functional project, and a local version of the app should be easily launched by doing sail up -d and npm run dev 
-in another terminal.
+## Workflow
 
-when implementing an issue, after finishing it, you should **NOT COMMIT** a human will review the code by reading the diffs.
-after implementing an issue, you must create a log file called ISSUELOG.md inside of `/docs/logs`, depending on the issue you create, you need to increment
-the amount so, ISSUELOG_1.md etc.., The fix/feature must also pass the the formating so ./vendor/bin/pint, and also phpstan so ./vendor/bin/pint, the feature is not done if phpstan and formatting will not pass, if the issue is significent enough, you may start a grilling session with the user if the issue is outside of the scope.
+### 1. Set up an isolated worktree
 
-the commit and creation of the PR will be up to the human.
+Create a git worktree per issue rather than switching branches in the main
+checkout, so several issues can be worked on in parallel without stepping on
+each other or on the person's own in-progress work:
 
-## inside of ISSUELOG
-within these files, you must write what changed, why you implemented x or y feature. and which file did you change. this should be short but consistent
-a review can easily understand why and how you implemented these fixes. 
+```bash
+git worktree add ../<project>-issue-<N> -b fix/issue-<N>
+```
 
+Inside the worktree, get the app into a runnable state so you can actually
+verify the fix, not just read the code:
+
+```bash
+./vendor/bin/sail up -d
+npm run dev   # in a separate terminal
+```
+
+### 2. Implement the fix
+
+Keep the change scoped to what the issue describes. If something is
+genuinely ambiguous — acceptance criteria, expected behavior, which of two
+reasonable approaches to take — use the `grill` skill to interview the
+person until it's resolved, rather than guessing. Likewise, if partway
+through you find the issue is bigger than it looked (it touches areas
+clearly outside its stated scope), pause and grill the person on whether to
+expand scope, split the issue, or stop where you are.
+
+### 3. Validate before calling it done
+
+The fix isn't finished until it passes both:
+
+```bash
+./vendor/bin/pint          # code style
+./vendor/bin/phpstan analyse  # static analysis
+```
+
+Both must be clean. A fix that "works" but fails formatting or static
+analysis just creates cleanup work for the human reviewer later — treat
+these as part of the implementation, not an optional last step.
+
+### 4. Log the change
+
+Write a log file to `/docs/logs/`, numbered sequentially: check what's
+already in that directory and use the next number (`ISSUELOG_1.md`,
+`ISSUELOG_2.md`, ...).
+
+The log exists so a reviewer can understand your reasoning from the diff
+alone, without re-deriving it. Keep each one short but complete:
+
+```markdown
+# Issue #<N>: <short title>
+
+## What changed
+- <file>: <one-line summary of the change>
+- <file>: <one-line summary of the change>
+
+## Why
+<Why this approach — the reasoning a reviewer would otherwise have to guess at.>
+```
+
+### 5. Stop — do not commit
+
+Leave the working tree as-is with the changes unstaged/uncommitted. Do not
+run `git commit`, and do not open a PR. The person reviews the diff
+themselves and decides what happens next; committing on their behalf would
+skip that review.
