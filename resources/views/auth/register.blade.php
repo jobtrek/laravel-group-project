@@ -1,5 +1,6 @@
 @php
     use App\Enums\Role;
+    $excludedRoles = [Role::Admin, Role::Collaborateur, Role::ChefDeProjet]
 @endphp;
 <x-app-layout>
     <div class="bg-[#131c3f]">
@@ -33,7 +34,7 @@
                     <select id="role" name="role" required
                             class="block w-full mt-1 rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                         <option value="">{{ __('Sélectionner un rôle') }}</option>
-                        @foreach (array_filter(Role::cases(), fn($r) => $r !== Role::Admin) as $role)
+                        @foreach (array_filter(Role::cases(), fn($r) => !in_array($r, $excludedRoles) ) as $role)
                             <option value="{{ $role->value }}" @selected(old('role') === $role->value)>
                                 {{ $role->label() }}
                             </option>
