@@ -101,7 +101,7 @@ class ProjectController extends Controller
     {
         abort_if($phase->project_id !== $project->id, 404);
 
-        $phase->load(['resources', 'contributions']);
+        $phase->load(['resources', 'contributions', 'itemCompletions']);
 
         $phaseNumber = $project->phases->pluck('id')->search($phase->id) + 1;
 
