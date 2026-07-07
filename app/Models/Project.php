@@ -147,7 +147,7 @@ class Project extends Model
     {
         return $this->status instanceof EncoursState
             && (bool) $user?->hasRole(Role::ChefDeProjet->value)
-            && $user?->id === $this->leader_id;
+            && $user->id === $this->leader_id;
     }
 
     public function scopeNeedingProgressReminder(Builder $query): Builder
