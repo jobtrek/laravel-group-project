@@ -1,9 +1,9 @@
 @props(['items', 'name', 'placeholder' => '', 'addLabel' => '+ Ajouter'])
 
 <div class="space-y-2">
-    <template x-for="(item, idx) in {{ $items }}" :key="idx">
+    <template x-for="(item, idx) in {{ $items }}" :key="item.id">
         <div class="flex gap-2">
-            <input type="text" name="{{ $name }}" x-model="{{ $items }}[idx]"
+            <input type="text" name="{{ $name }}" x-model="item.value"
                 placeholder="{{ $placeholder }}"
                 class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
             <button type="button" @click="{{ $items }}.splice(idx, 1)"
@@ -12,5 +12,5 @@
         </div>
     </template>
 </div>
-<button type="button" @click="{{ $items }}.push('')"
+<button type="button" @click="{{ $items }}.push({ id: crypto.randomUUID(), value: '' })"
     class="mt-2 text-sm text-indigo-600 hover:underline">{{ $addLabel }}</button>
