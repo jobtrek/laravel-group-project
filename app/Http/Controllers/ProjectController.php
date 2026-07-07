@@ -45,7 +45,7 @@ class ProjectController extends Controller
 
     public function approve(Project $project)
     {
-        abort_if($project->proposer_id === auth()->id(), 403);
+        abort_if($project->proposer_id === auth()->id() && ! auth()->user()->hasPermissionTo('manage everything'), 403);
 
         ProjectService::approve($project);
 
