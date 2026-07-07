@@ -61,11 +61,13 @@ class StoreResourceContributionRequest extends FormRequest
 
             $amount = round((float) $this->input('amount'), 2);
             $maxAllowed = round((float) $resource->amount_needed * 2, 2);
+            $found = (float) $phase->contributions->where('resource_type', $resourceType)->sum('amount');
+            $remaining = round(((float) $resource->amount_needed * 2) - $found, 2);
 
-            if ($amount > $maxAllowed) {
+            if ($amount > $remaining) {
                 $validator->errors()->add(
                     'amount',
-                    sprintf('This contribution exceeds what is still needed for this resource type (%.2f max).', $maxAllowed)
+                    sprintf('This contribution exceeds what is still needed for this resource type (%.2f remaining).', $remaining)
                 );
             }
         });

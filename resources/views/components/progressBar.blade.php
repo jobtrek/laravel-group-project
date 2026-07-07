@@ -2,16 +2,6 @@
     'progress' => 0,
 ])
 
-<?php
-
-
-
-use Carbon\Carbon;
-$bgColor = '';
-use App\Http\Controllers\ProjectController;
-
-?>
-
 
 <div class="relative z-10 pointer-events-none flex items-center gap-2 w-full">
     <div class="w-full bg-gray-200 rounded-full h-1.5 flex overflow-hidden">
