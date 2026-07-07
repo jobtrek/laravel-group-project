@@ -12,10 +12,10 @@ use App\Http\Controllers\RecolteController;
 use App\Http\Controllers\ResourceContributionController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RevisionController;
+use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', fn () => view('auth.login'))->middleware('guest');
-
 Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/dashboard', fn () => redirect()->route('projects'))->name('dashboard');
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
@@ -84,5 +84,11 @@ Route::middleware('auth')->group(function () {
         ->middleware('can:assign team')
         ->name('projects.recolte.team');
 });
+
+Route::get('administration', function () {
+    $users = User::with('roles')->orderBy('name')->get();
+
+    return view('administration', compact('users'));
+})->middleware('can:manage everything')->name('administration');
 
 require __DIR__.'/auth.php';

@@ -10,6 +10,12 @@
                     <a href="{{ route('projects') }}" class="text-[13.5px] font-semibold px-0 py-2 border-b-2 transition-colors duration-150 {{ request()->routeIs('projects') ? 'text-white border-[#93c83a]' : 'text-[#b9c1de] border-transparent hover:text-white hover:border-[#b9c1de]' }}">
                         Accueil
                     </a>
+                    @can('manage everything')
+                        <a href="{{ route('administration') }}" class="text-[13.5px] font-semibold px-0 py-2 border-b-2 transition-colors duration-150 {{ request()->routeIs('administration') ? 'text-white border-[#93c83a]' : 'text-[#b9c1de] border-transparent hover:text-white hover:border-[#b9c1de]' }}">
+                            {{ __('Administration') }}
+                        </a>
+                    @endcan
+
                 </div>
             </div>
 
