@@ -1,7 +1,7 @@
 <x-app-layout>
     <div class="min-h-screen">
-        <div class="w-full max-w-7xl mx-auto sm:px-6 lg:px-8">
-            <div class="bg-white rounded-xl shadow-xl mx-auto py-8 px-6 sm:px-10" x-data="{
+        <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="bg-white rounded-xl shadow-xl mx-auto py-8 px-4 sm:px-6 md:px-10" x-data="{
                 initialChiefId: @js((string) $project->leader_id),
                 chiefId: @js(old('leader_id', (string) $project->leader_id))
             }">
@@ -158,7 +158,7 @@
                         get contributionPercent() {
                             if (!this.selectedResource || this.selectedResource.needed <= 0) return 0;
                             return Math.min(
-                                100,
+                                200,
                                 Math.round((Number(this.amount || 0) / this.selectedResource.needed) * 10000) / 100
                             );
                         },
@@ -166,7 +166,7 @@
                             if (!this.selectedResource || this.selectedResource.needed <= 0) return 0;
                             const total = this.selectedResource.found + Number(this.amount || 0);
                             return Math.min(
-                                100,
+                                200,
                                 Math.round((total / this.selectedResource.needed) * 10000) / 100
                             );
                         }

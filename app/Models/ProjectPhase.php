@@ -64,6 +64,38 @@ class ProjectPhase extends Model
 
         $progress = round(($this->amount_found / $this->amount_needed) * 100, 2);
 
-        return max(0.0, min($progress, 100.0));
+        return max(0.0, min($progress, 200.0));
+    }
+
+    public function itemCompletions(): HasMany
+    {
+        return $this->hasMany(PhaseItemCompletion::class, 'phase_id');
+    }
+
+    public function isItemCompleted(string $itemType, int $itemIndex): bool
+    {
+        return $this->itemCompletions
+            ->where('item_type', $itemType)
+            ->where('item_index', $itemIndex)
+            ->first()
+            ?->completed ?? false;
+    }
+
+    public function isResourceComplete(PhaseResource $resource): bool
+    {
+        $found = (float) $this->contributions
+            ->where('resource_type', $resource->resource_type)
+            ->sum('amount');
+
+        return $found >= (float) $resource->amount_needed;
+    }
+
+    public function getResourceQuantityString(PhaseResource $resource): string
+    {
+        $found = (float) $this->contributions
+            ->where('resource_type', $resource->resource_type)
+            ->sum('amount');
+
+        return number_format($found, 2).' / '.number_format($resource->amount_needed, 2).' CHF';
     }
 }
