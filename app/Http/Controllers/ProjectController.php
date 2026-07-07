@@ -45,7 +45,7 @@ class ProjectController extends Controller
 
     public function approve(Project $project)
     {
-        abort_if($project->proposer_id === auth()->id(), 403);
+        abort_if($project->proposer_id === auth()->id() && ! auth()->user()->can('manage everything'), 403);
 
         ProjectService::approve($project);
 
@@ -99,9 +99,13 @@ class ProjectController extends Controller
 
     public function phaseDetail(Project $project, ProjectPhase $phase)
     {
-        $phase->load(['resources', 'contributions']);
+        abort_if($phase->project_id !== $project->id, 404);
 
-        return view('phase_details', compact('phase', 'project'));
+        $phase->load(['resources', 'contributions', 'itemCompletions']);
+
+        $phaseNumber = $project->phases->pluck('id')->search($phase->id) + 1;
+
+        return view('phase_details', compact('phase', 'project', 'phaseNumber'));
     }
 
     public function edit(Project $project)

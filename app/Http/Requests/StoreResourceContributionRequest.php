@@ -60,8 +60,9 @@ class StoreResourceContributionRequest extends FormRequest
             }
 
             $amount = round((float) $this->input('amount'), 2);
+            $maxAllowed = round((float) $resource->amount_needed * 2, 2);
             $found = (float) $phase->contributions->where('resource_type', $resourceType)->sum('amount');
-            $remaining = round((float) $resource->amount_needed - $found, 2);
+            $remaining = round(((float) $resource->amount_needed * 2) - $found, 2);
 
             if ($amount > $remaining) {
                 $validator->errors()->add(
