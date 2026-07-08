@@ -11,10 +11,8 @@
 
 <?php
 
-
-
+$bgColor = '';
 use Carbon\Carbon;
-$bgColor = 'bg-gray-50';
 
 ?>
 <div class="relative border border-white/25 bg-gray-50 text-sm font-medium hover:border-blue-500 transition-colors rounded-2xl p-3 sm:p-5 flex flex-col gap-3">
@@ -41,7 +39,7 @@ $bgColor = 'bg-gray-50';
             </p>
         </div>
         <div class="flex flex-wrap gap-1.5 sm:gap-2 pointer-events-auto">
-            @if((string)$status === 'proposition')
+            @if($project->isProposition())
                 @can('send to direction')
                     <form action="{{ route('projects.send-to-direction', $project) }}" method="POST"
                           class="relative z-10">
@@ -51,7 +49,7 @@ $bgColor = 'bg-gray-50';
                                             type="submit"/>
                     </form>
                 @endcan
-            @elseif((string)$status === 'évaluation')
+            @elseif($project->isInEvaluation())
                 @can('evaluate projects')
                     <form action="{{ route('projects.deny', $project) }}" method="POST" class="relative z-10">
                         @csrf
@@ -69,7 +67,7 @@ $bgColor = 'bg-gray-50';
                         <x-projects.buttons text="Accepter" class="bg-green-600 text-white p-2" type="submit"/>
                     </form>
                 @endcan
-            @elseif((string)$status === 'en cours')
+            @elseif($project->isInProgress())
                @if($project->progress >= 100 && auth()->user()?->can('complete project') && (auth()->id() === $project->leader_id || auth()->user()?->hasRole(\App\Enums\Role::ProjectManager->value)))
                     <form action="{{ route('projects.complete', $project) }}" method="POST" class="relative z-10">
                         @csrf
@@ -81,7 +79,7 @@ $bgColor = 'bg-gray-50';
             @endif
         </div>
     </div>
-    @if((string)$status === 'récolte' || (string)$status === 'en cours')
+    @if($project->isInRecolte() || $project->isInProgress())
         <x-progressBar :progress="$progress"/>
         <div class="relative z-10 flex justify-end gap-2">
             @can('add resources')
@@ -90,7 +88,7 @@ $bgColor = 'bg-gray-50';
                     Ajouter une ressource
                 </a>
             @endcan
-            @if((string)$status === 'récolte' && auth()->user()?->can('launch project'))
+            @if($project->isInRecolte() && auth()->user()?->can('launch project'))
                 @php $canLaunch = auth()->id() === $project->leader_id;
                      $isAdmin = auth()->user()->can('manage everything');
                 @endphp
@@ -117,16 +115,13 @@ $bgColor = 'bg-gray-50';
         @if($updatedAt instanceof Carbon)
                 <?php
                 $stalenessColors = config('projects.staleness_colors') ?? [];
-                [$bgColor, $textColor, $dotColor] = match (true) {
-                    $updatedAt->lessThan(now()->subMonths($stalenessColors['red_after_months'] ?? 3))
-                    => ['bg-red-50', 'text-red-700', 'bg-red-500'],
-                    $updatedAt->lessThan(now()->subMonths($stalenessColors['orange_after_months'] ?? 2))
-                    => ['bg-orange-50', 'text-orange-700', 'bg-orange-500'],
-                    $updatedAt->lessThan(now()->subMonths($stalenessColors['warning_after_months'] ?? 1))
-                    => ['bg-yellow-50', 'text-yellow-700', 'bg-yellow-500'],
-                    default => ['bg-green-50', 'text-green-700', 'bg-green-500'],
-                };
-                ?>
+[$bgColor, $textColor, $dotColor] = match (true) {
+    $updatedAt->lessThan(now()->subMonths($stalenessColors['red_after_months'] ?? 3)) => ['bg-red-50', 'text-red-700', 'bg-red-500'],
+    $updatedAt->lessThan(now()->subMonths($stalenessColors['orange_after_months'] ?? 2)) => ['bg-orange-50', 'text-orange-700', 'bg-orange-500'],
+    $updatedAt->lessThan(now()->subMonths($stalenessColors['warning_after_months'] ?? 1)) => ['bg-yellow-50', 'text-yellow-700', 'bg-yellow-500'],
+    default => ['bg-green-50', 'text-green-700', 'bg-green-500'],
+};
+?>
             <span class="inline-flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded-full {{ $bgColor }} {{ $textColor }} ring-1 ring-inset ring-black/5">
         <span class="w-1.5 h-1.5 rounded-full {{ $dotColor }}"></span>
         <span class="italic">Mis à jour {{ $updatedAt->locale('fr')->diffForHumans() }}</span>
