@@ -1,16 +1,13 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Corrections requises —
-                <span class="text-indigo-600">{{ $project->title }}</span>
-            </h2>
-            <a href="{{ route('propositions') }}" class="text-sm text-gray-500 hover:text-gray-700 transition">
-                ← Retour aux propositions
-            </a>
-        </div>
-    </x-slot>
-
+    <div class="flex items-center justify-between">
+        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
+            Corrections requises —
+            <span class="text-indigo-600">{{ $project->title }}</span>
+        </h2>
+        <a href="{{ route('propositions') }}" class="text-sm text-gray-500 hover:text-gray-700 transition">
+            ← Retour aux propositions
+        </a>
+    </div>
     <div class="py-10">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
