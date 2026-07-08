@@ -10,6 +10,7 @@ use App\Models\States\PropositionState;
 use App\Models\States\RecolteState;
 use App\Models\States\RevisionState;
 use App\Models\User;
+use App\Service\ProjectService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
@@ -32,13 +33,15 @@ class AutoArchiveProjects extends Command
 
     private function archiveStalePropositionsAndEvaluations(): int
     {
+        $staleAfterMonths = (int) config('projects.stale_after_months', 3);
+
         $projects = Project::whereState('status', [
             PropositionState::class,
             RevisionState::class,
             EvaluationState::class,
         ])
             ->with('proposer')
-            ->where('updated_at', '<', now()->subMonths(3))
+            ->where('updated_at', '<', now()->subMonths($staleAfterMonths))
             ->get();
 
         $archivedCount = 0;
@@ -55,6 +58,8 @@ class AutoArchiveProjects extends Command
 
     private function archiveStaleRecolte(): int
     {
+        $recolteArchiveAfterMonths = (int) config('projects.recolte_archive_after_months', 12);
+
         $projects = Project::whereState('status', RecolteState::class)
             ->withMax('resourceContributions as last_contribution_at', 'created_at')
             ->withCasts(['last_contribution_at' => 'datetime'])
@@ -66,7 +71,7 @@ class AutoArchiveProjects extends Command
         foreach ($projects as $project) {
             $lastActivityAt = $project->last_contribution_at ?? $project->updated_at;
 
-            if (! $lastActivityAt->lt(now()->subMonths(12))) {
+            if (! $lastActivityAt->lt(now()->subMonths($recolteArchiveAfterMonths))) {
                 continue;
             }
 
@@ -89,10 +94,7 @@ class AutoArchiveProjects extends Command
             }
 
             $locked->setRelations($project->getRelations());
-            $locked->current_stage = $locked->getRawOriginal('status');
-            $locked->status->transitionTo(ArchiveState::class);
-            $locked->archived_at = now();
-            $locked->save();
+            ProjectService::archive($locked);
 
             return $locked;
         });
