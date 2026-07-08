@@ -1,6 +1,6 @@
 @php
     use App\Enums\Role;
-    $excludedRoles = [Role::Admin, Role::Collaborateur, Role::ChefDeProjet]
+    $excludedRoles = [Role::Admin, Role::Collaborateur, Role::ChefDeProjet];
 @endphp
 <x-app-layout>
     <div class="bg-[#131c3f]">
