@@ -6,6 +6,7 @@ use App\Enums\Role;
 use App\Models\States\EncoursState;
 use App\Models\States\ProjectState;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -24,7 +25,6 @@ class Project extends Model
     protected $fillable = [
         'title',
         'description',
-        'budget_global',
         'but',
         'perimetre',
         'status',
@@ -39,7 +39,6 @@ class Project extends Model
     ];
 
     protected $casts = [
-        'budget_global' => 'decimal:2',
         'but' => 'array',
         'created_at' => 'datetime',
         'updated_at' => 'datetime',
@@ -140,6 +139,17 @@ class Project extends Model
             'phase_id',   // FK on resource_contributions pointing to project_phases
             'id',         // local key on projects
             'id'          // local key on project_phases
+        );
+    }
+
+    protected function budgetGlobal(): Attribute
+    {
+        return Attribute::make(
+            get: function (): float {
+                $totalNeeded = $this->loadMissing('phases.resources')->phases->sum('amount_needed');
+
+                return $totalNeeded;
+            }
         );
     }
 

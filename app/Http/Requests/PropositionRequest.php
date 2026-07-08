@@ -30,7 +30,7 @@ class PropositionRequest extends FormRequest
             'description' => ['required', 'string'],
             'buts' => ['required', 'array', 'min:1'],
             'buts.*' => ['required', 'string', 'max:255'],
-            'perimetre' => ['nullable', 'string'],
+            'perimetre' => ['required', 'string'],
 
             'phases' => ['required', 'array', 'min:1'],
             'phases.*.titre' => ['required', 'string', 'max:255'],

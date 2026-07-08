@@ -49,7 +49,6 @@ class ProjectFactory extends Factory
         return [
             'title' => $this->faker->sentence(3),
             'description' => $this->faker->paragraph(),
-            'budget_global' => $this->faker->randomFloat(2, 1000, 100000),
             'but' => ['goal' => $this->faker->sentence()],
             'perimetre' => $this->faker->paragraph(),
             'status' => $statusClass,
