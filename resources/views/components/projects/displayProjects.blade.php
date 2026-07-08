@@ -14,8 +14,7 @@
 
 
 use Carbon\Carbon;
-$bgColor = '';
-use App\Http\Controllers\ProjectController;
+$bgColor = 'bg-gray-50';
 
 ?>
 <div class="relative border border-white/25 bg-gray-50 text-sm font-medium hover:border-blue-500 transition-colors rounded-2xl p-3 sm:p-5 flex flex-col gap-3">
