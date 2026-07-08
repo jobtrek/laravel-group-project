@@ -118,16 +118,20 @@ use App\Http\Controllers\ProjectController;
         @if($updatedAt instanceof Carbon)
                 <?php
                 $stalenessColors = config('projects.staleness_colors') ?? [];
-                $bgColor = match (true) {
-                    $updatedAt->lessThan(now()->subMonths($stalenessColors['red_after_months'] ?? 3)) => 'bg-red-400',
-                    $updatedAt->lessThan(now()->subMonths($stalenessColors['orange_after_months'] ?? 2)) => 'bg-orange-400',
-                    $updatedAt->lessThan(now()->subMonths($stalenessColors['warning_after_months'] ?? 1)) => 'bg-yellow-400',
-                    default => 'bg-green-400',
+                [$bgColor, $textColor, $dotColor] = match (true) {
+                    $updatedAt->lessThan(now()->subMonths($stalenessColors['red_after_months'] ?? 3))
+                    => ['bg-red-50', 'text-red-700', 'bg-red-500'],
+                    $updatedAt->lessThan(now()->subMonths($stalenessColors['orange_after_months'] ?? 2))
+                    => ['bg-orange-50', 'text-orange-700', 'bg-orange-500'],
+                    $updatedAt->lessThan(now()->subMonths($stalenessColors['warning_after_months'] ?? 1))
+                    => ['bg-yellow-50', 'text-yellow-700', 'bg-yellow-500'],
+                    default => ['bg-green-50', 'text-green-700', 'bg-green-500'],
                 };
                 ?>
-            <span class="text-xs px-1.5 py-0.5 rounded-full text-gray-700 {{ $bgColor }} flex items-center gap-1 italic">
-                Mis à jours {{ $updatedAt->locale('fr')->diffForHumans() }}
-            </span>
+            <span class="inline-flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded-full {{ $bgColor }} {{ $textColor }} ring-1 ring-inset ring-black/5">
+        <span class="w-1.5 h-1.5 rounded-full {{ $dotColor }}"></span>
+        <span class="italic">Mis à jour {{ $updatedAt->locale('fr')->diffForHumans() }}</span>
+        </span>
         @endif
     </div>
 </div>
