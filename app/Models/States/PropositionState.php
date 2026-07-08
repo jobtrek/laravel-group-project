@@ -8,7 +8,12 @@ class PropositionState extends ProjectState
 
     public function label(): string
     {
-        return 'proposition';
+        return 'Proposition';
+    }
+
+    public function color(): string
+    {
+        return 'inline-block rounded-full bg-cyan-100 px-3 py-1 text-xs font-medium text-indigo-700';
     }
 
     public function isEditable(): bool
