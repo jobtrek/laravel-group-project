@@ -8,7 +8,7 @@
 
 <div x-data="userMultiSelect(@js($selected))">
     <div class="space-y-2">
-        <template x-for="(item, idx) in selected" :key="idx">
+        <template x-for="(item, idx) in selected" :key="item.id">
             <div class="flex gap-2">
                 <select :name="@js($name) + '[' + idx + ']'" x-model="selected[idx]"
                     class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">

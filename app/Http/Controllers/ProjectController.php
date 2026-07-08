@@ -4,20 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Actions\RequestMoreInfoAction;
 use App\Actions\UpdateProjectAction;
+use App\Enums\Role;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Http\Requests\RequestMoreInfoRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
 use App\Models\ProjectPhase;
+use App\Models\States\EncoursState;
 use App\Models\States\EvaluationState;
 use App\Models\States\RevisionState;
 use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Redirect;
-use App\Enums\Role;
-use App\Models\States\EncoursState;
 
 class ProjectController extends Controller
 {
@@ -124,22 +124,22 @@ class ProjectController extends Controller
     }
 
     public function complete(Project $project)
-{
-    abort_if(
-        ! $project->status instanceof EncoursState
-            || $project->progress < 100
-            || (auth()->id() !== $project->leader_id && ! auth()->user()?->hasRole(Role::ProjectManager->value)),
-        403
-    );
+    {
+        abort_if(
+            ! $project->status instanceof EncoursState
+                || $project->progress < 100
+                || (auth()->id() !== $project->leader_id && ! auth()->user()?->hasRole(Role::ProjectManager->value)),
+            403
+        );
 
-    try {
-        ProjectService::complete($project);
-    } catch (\Exception $e) {
-        return back()->with('error', $e->getMessage());
+        try {
+            ProjectService::complete($project);
+        } catch (\Exception $e) {
+            return back()->with('error', $e->getMessage());
+        }
+
+        return back()->with('status', 'project-completed');
     }
-
-    return back()->with('status', 'project-completed');
-}
 
     public function archive(Project $project)
     {
