@@ -17,6 +17,7 @@ use App\Models\States\RevisionState;
 use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 
 class ProjectController extends Controller
@@ -41,7 +42,7 @@ class ProjectController extends Controller
 
     public function approve(Project $project)
     {
-        abort_if($project->proposer_id === auth()->id() && ! auth()->user()->can('manage everything'), 403);
+        Gate::authorize('reviewOwnProposal', $project);
 
         ProjectService::approve($project);
 
@@ -50,7 +51,8 @@ class ProjectController extends Controller
 
     public function deny(Project $project)
     {
-        abort_if($project->proposer_id === auth()->id() || ! $project->status instanceof EvaluationState, 403);
+        Gate::authorize('reviewOwnProposal', $project);
+        abort_if(! $project->status instanceof EvaluationState, 403);
         ProjectService::deny($project);
 
         return Redirect::back()->with('status', 'project-denied');
@@ -68,6 +70,8 @@ class ProjectController extends Controller
         Project $project,
         RequestMoreInfoAction $action,
     ): RedirectResponse {
+        Gate::authorize('reviewOwnProposal', $project);
+
         $action->execute(
             project: $project,
             fieldComments: $request->validated()['field_comments'],
