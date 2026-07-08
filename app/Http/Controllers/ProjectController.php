@@ -28,7 +28,8 @@ class ProjectController extends Controller
     public function index(FilterProjectsRequest $request)
     {
         $projects = $this->filter->apply(
-            Project::with(['proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions']), $request
+            Project::with(['proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions']),
+            $request
         )->paginate((int) config('projects.per_page', 10))->withQueryString();
 
         $counts = Project::statusCounts();
@@ -115,8 +116,6 @@ class ProjectController extends Controller
 
     public function update(UpdateProjectRequest $request, Project $project, UpdateProjectAction $action)
     {
-        abort_if(! $project->status->isEditable() || auth()->id() !== $project->proposer_id, 403);
-
         $action->execute($project, $request->validated());
 
         return redirect()->route('projects-details', $project)
