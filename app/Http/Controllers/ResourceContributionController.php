@@ -46,45 +46,45 @@ class ResourceContributionController extends Controller
     }
 
     public function store(StoreResourceContributionRequest $request, Project $project): RedirectResponse
-{
-    DB::transaction(function () use ($request, $project): void {
-        // Lock the parent project record to serialize contributions and prevent race conditions
-        $lockedProject = Project::lockForUpdate()->findOrFail($project->id);
-        $lockedProject->load('phases.resources');
+    {
+        DB::transaction(function () use ($request, $project): void {
+            // Lock the parent project record to serialize contributions and prevent race conditions
+            $lockedProject = Project::lockForUpdate()->findOrFail($project->id);
+            $lockedProject->load('phases.resources');
 
-        $phaseId = (int) $request->validated('phase_id');
-        $resourceType = $request->validated('resource_type');
-        $amount = (float) $request->validated('amount');
+            $phaseId = (int) $request->validated('phase_id');
+            $resourceType = $request->validated('resource_type');
+            $amount = (float) $request->validated('amount');
 
-        $phase = $lockedProject->phases->firstWhere('id', $phaseId);
-        $resource = $phase?->resources->firstWhere('resource_type', $resourceType);
+            $phase = $lockedProject->phases->firstWhere('id', $phaseId);
+            $resource = $phase?->resources->firstWhere('resource_type', $resourceType);
 
-        if ($resource) {
-            $foundForResource = (float) ResourceContribution::where('phase_id', $phaseId)
-                ->where('resource_type', $resourceType)
-                ->sum('amount');
-            $remainingForResource = round(((float) $resource->amount_needed * 2) - $foundForResource, 2);
+            if ($resource) {
+                $foundForResource = (float) ResourceContribution::where('phase_id', $phaseId)
+                    ->where('resource_type', $resourceType)
+                    ->sum('amount');
+                $remainingForResource = round(((float) $resource->amount_needed * 2) - $foundForResource, 2);
 
-            if ($amount > $remainingForResource) {
-                throw \Illuminate\Validation\ValidationException::withMessages([
-                    'amount' => sprintf(
-                        'This contribution exceeds what is still needed for this resource type (%.2f remaining).',
-                        $remainingForResource
-                    ),
-                ]);
+                if ($amount > $remainingForResource) {
+                    throw ValidationException::withMessages([
+                        'amount' => sprintf(
+                            'This contribution exceeds what is still needed for this resource type (%.2f remaining).',
+                            $remainingForResource
+                        ),
+                    ]);
+                }
             }
-        }
 
-        $phaseIds = $lockedProject->phases->pluck('id');
+            $phaseIds = $lockedProject->phases->pluck('id');
 
-        $totalFound = ResourceContribution::whereIn('phase_id', $phaseIds)
-            ->sum('amount');
+            $totalFound = ResourceContribution::whereIn('phase_id', $phaseIds)
+                ->sum('amount');
 
-        $totalNeeded = $lockedProject->phases
-            ->sum(fn (ProjectPhase $phase): float => $phase->amount_needed);
+            $totalNeeded = $lockedProject->phases
+                ->sum(fn (ProjectPhase $phase): float => $phase->amount_needed);
 
-        if ($totalNeeded > 0) {
-            $newProgress = (($totalFound + $amount) / $totalNeeded) * 100;
+            if ($totalNeeded > 0) {
+                $newProgress = (($totalFound + $amount) / $totalNeeded) * 100;
 
                 if ($newProgress > 200) {
                     throw ValidationException::withMessages([
