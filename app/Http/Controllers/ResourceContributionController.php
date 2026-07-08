@@ -10,8 +10,9 @@ use App\Models\States\EncoursState;
 use App\Models\States\RecolteState;
 use App\Models\User;
 use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Validation\ValidationException;
+use Illuminate\View\View;
 
 class ResourceContributionController extends Controller
 {
@@ -45,48 +46,48 @@ class ResourceContributionController extends Controller
     }
 
     public function store(StoreResourceContributionRequest $request, Project $project): RedirectResponse
-{
-    DB::transaction(function () use ($request, $project): void {
-        $phaseIds = $project->phases->pluck('id');
+    {
+        DB::transaction(function () use ($request, $project): void {
+            $phaseIds = $project->phases->pluck('id');
 
-        // Lock all contribution rows for every phase of this project —
-        // concurrent requests block here until this transaction commits.
-        $totalFound = ResourceContribution::whereIn('phase_id', $phaseIds)
-            ->lockForUpdate()
-            ->sum('amount');
+            // Lock all contribution rows for every phase of this project —
+            // concurrent requests block here until this transaction commits.
+            $totalFound = ResourceContribution::whereIn('phase_id', $phaseIds)
+                ->lockForUpdate()
+                ->sum('amount');
 
-        $totalNeeded = $project->phases
-            ->load('resources')
-            ->sum(fn (ProjectPhase $phase): float => $phase->amount_needed);
+            $totalNeeded = $project->phases
+                ->load('resources')
+                ->sum(fn (ProjectPhase $phase): float => $phase->amount_needed);
 
-        if ($totalNeeded > 0) {
-            $newProgress = (($totalFound + (float) $request->validated('amount')) / $totalNeeded) * 100;
+            if ($totalNeeded > 0) {
+                $newProgress = (($totalFound + (float) $request->validated('amount')) / $totalNeeded) * 100;
 
-            if ($newProgress > 200) {
-                throw \Illuminate\Validation\ValidationException::withMessages([
-                    'amount' => sprintf(
-                        'This contribution would exceed the 200%% project cap (%.2f remaining).',
-                        ($totalNeeded * 2) - $totalFound
-                    ),
-                ]);
+                if ($newProgress > 200) {
+                    throw ValidationException::withMessages([
+                        'amount' => sprintf(
+                            'This contribution would exceed the 200%% project cap (%.2f remaining).',
+                            ($totalNeeded * 2) - $totalFound
+                        ),
+                    ]);
+                }
             }
-        }
 
-        ResourceContribution::create([
-            'phase_id'      => $request->validated('phase_id'),
-            'user_id'       => auth()->id(),
-            'resource_type' => $request->validated('resource_type'),
-            'description'   => $request->validated('description'),
-            'amount'        => $request->validated('amount'),
-        ]);
-    });
+            ResourceContribution::create([
+                'phase_id' => $request->validated('phase_id'),
+                'user_id' => auth()->id(),
+                'resource_type' => $request->validated('resource_type'),
+                'description' => $request->validated('description'),
+                'amount' => $request->validated('amount'),
+            ]);
+        });
 
-    $redirectRoute = $project->status instanceof EncoursState
-        ? 'en-cours'
-        : 'recolte';
+        $redirectRoute = $project->status instanceof EncoursState
+            ? 'en-cours'
+            : 'recolte';
 
-    return redirect()
-        ->route($redirectRoute)
-        ->with('success', 'Resource contribution added successfully.');
-}
+        return redirect()
+            ->route($redirectRoute)
+            ->with('success', 'Resource contribution added successfully.');
+    }
 }
