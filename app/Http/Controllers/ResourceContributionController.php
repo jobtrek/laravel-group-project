@@ -96,14 +96,14 @@ class ResourceContributionController extends Controller
                 }
             }
 
-        ResourceContribution::create([
-            'phase_id'      => $phaseId,
-            'user_id'       => auth()->id(),
-            'resource_type' => $resourceType,
-            'description'   => $request->validated('description'),
-            'amount'        => $amount,
-        ]);
-    });
+            ResourceContribution::create([
+                'phase_id' => $phaseId,
+                'user_id' => auth()->id(),
+                'resource_type' => $resourceType,
+                'description' => $request->validated('description'),
+                'amount' => $amount,
+            ]);
+        });
 
         $redirectRoute = $project->status instanceof EncoursState
             ? 'en-cours'
