@@ -17,10 +17,10 @@ window.listHelpers = {
 };
 
 Alpine.data('userMultiSelect', (initial = ['']) => ({
-    selected: initial.length ? initial : [''],
+    selected: (initial.length ? initial : ['']).map((value) => ({ id: crypto.randomUUID(), value })),
 
     add() {
-        window.listHelpers.add(this.selected);
+        window.listHelpers.add(this.selected, { id: crypto.randomUUID(), value: '' });
     },
 
     remove(idx) {
