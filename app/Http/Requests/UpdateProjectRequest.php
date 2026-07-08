@@ -10,6 +10,14 @@ class UpdateProjectRequest extends FormRequest
 {
     use HasScoringRules;
 
+    public function authorize(): bool
+    {
+        $project = $this->route('project');
+
+        return $project->status->isEditable()
+            && $this->user()?->id === $project->proposer_id;
+    }
+
     public function rules(): array
     {
         /** @var Project $project */
