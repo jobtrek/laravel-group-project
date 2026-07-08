@@ -1,8 +1,8 @@
 @php
 use App\Enums\Role;
-@endphp;
+@endphp
 <x-app-layout>
-    <div class="bg-[#131c3f]">
+    <div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
             <div class="flex items-center justify-between">
                 <h1 class="text-2xl font-bold text-white">Administration</h1>

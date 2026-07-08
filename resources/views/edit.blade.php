@@ -1,15 +1,14 @@
 <x-app-layout>
-    <x-slot name="header">
-        <div class="flex items-center justify-between">
-            <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-                Modifier le projet —
-                <span class="text-indigo-600">{{ $project->title }}</span>
-            </h2>
+    <div class="items-center flex justify-center gap-10">
+        <h2 class="font-semibold text-xl text-white leading-tight">
+            Modifier le projet —
+            <span class="text-indigo-200">{{ $project->title }}</span>
+        </h2>
+        <div class="flex bg-gray-50 rounded-xl pr-4 pl-3 p-1">
             <x-projects-details.comeBackButton :fallback-url="route('projects-details', $project)"/>
         </div>
-    </x-slot>
-
-    <div class="py-10">
+    </div>
+    <div>
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
             @php

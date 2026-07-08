@@ -1,20 +1,18 @@
 <x-app-layout>
     <div class="min-h-screen">
         <div class="w-full max-w-7xl mx-auto sm:px-6 lg:px-8">
-
-            <x-slot name="header">
                 <div class="flex items-center justify-between">
-                    <h2 class="font-semibold text-base text-gray-800 leading-tight">
+                    <h2 class="font-semibold text-base text-white leading-tight">
                         Demande d'informations —
-                        <span class="text-indigo-600">{{ $project->title }}</span>
+                        <span class="text-indigo-300">{{ $project->title }}</span>
                     </h2>
-                    <a href="{{ route('evaluation') }}"
-                       class="text-sm text-gray-500 hover:text-gray-700 transition">
-                        ← Retour à l'évaluation
-                    </a>
+                    <div class="bg-gray-50 px-2 p-1 rounded-xl">
+                        <a href="{{ route('evaluation') }}"
+                           class="text-sm text-gray-500 hover:text-gray-700 transition">
+                            ← Retour à l'évaluation
+                        </a>
+                    </div>
                 </div>
-            </x-slot>
-
             <div class="py-10">
                 <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
 
