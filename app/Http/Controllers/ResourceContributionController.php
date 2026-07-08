@@ -46,49 +46,70 @@ class ResourceContributionController extends Controller
 
     public function store(StoreResourceContributionRequest $request, Project $project): RedirectResponse
 {
-    {
-        DB::transaction(function () use ($request, $project): void {
-            // Lock the parent project record to serialize contributions and prevent race conditions
-            $lockedProject = Project::lockForUpdate()->find($project->id);
-            $lockedProject->load('phases.resources');
+    DB::transaction(function () use ($request, $project): void {
+        // Lock the parent project record to serialize contributions and prevent race conditions
+        $lockedProject = Project::lockForUpdate()->findOrFail($project->id);
+        $lockedProject->load('phases.resources');
 
-            $phaseIds = $lockedProject->phases->pluck('id');
+        $phaseId = (int) $request->validated('phase_id');
+        $resourceType = $request->validated('resource_type');
+        $amount = (float) $request->validated('amount');
 
-            $totalFound = ResourceContribution::whereIn('phase_id', $phaseIds)
+        $phase = $lockedProject->phases->firstWhere('id', $phaseId);
+        $resource = $phase?->resources->firstWhere('resource_type', $resourceType);
+
+        if ($resource) {
+            $foundForResource = (float) ResourceContribution::where('phase_id', $phaseId)
+                ->where('resource_type', $resourceType)
                 ->sum('amount');
+            $remainingForResource = round(((float) $resource->amount_needed * 2) - $foundForResource, 2);
 
-            $totalNeeded = $lockedProject->phases
-                ->sum(fn (ProjectPhase $phase): float => $phase->amount_needed);
-
-            if ($totalNeeded > 0) {
-                $newProgress = (($totalFound + (float) $request->validated('amount')) / $totalNeeded) * 100;
-
-                if ($newProgress > 200) {
-                    throw \Illuminate\Validation\ValidationException::withMessages([
-                        'amount' => sprintf(
-                            'This contribution would exceed the 200%% project cap (%.2f remaining).',
-                            ($totalNeeded * 2) - $totalFound
-                        ),
-                    ]);
-                }
+            if ($amount > $remainingForResource) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'amount' => sprintf(
+                        'This contribution exceeds what is still needed for this resource type (%.2f remaining).',
+                        $remainingForResource
+                    ),
+                ]);
             }
+        }
 
-            ResourceContribution::create([
-                'phase_id'      => $request->validated('phase_id'),
-                'user_id'       => auth()->id(),
-                'resource_type' => $request->validated('resource_type'),
-                'description'   => $request->validated('description'),
-                'amount'        => $request->validated('amount'),
-            ]);
-        });
+        $phaseIds = $lockedProject->phases->pluck('id');
 
-        $redirectRoute = $project->status instanceof EncoursState
-            ? 'en-cours'
-            : 'recolte';
+        $totalFound = ResourceContribution::whereIn('phase_id', $phaseIds)
+            ->sum('amount');
 
-        return redirect()
-            ->route($redirectRoute)
-            ->with('success', 'Resource contribution added successfully.');
-    }
+        $totalNeeded = $lockedProject->phases
+            ->sum(fn (ProjectPhase $phase): float => $phase->amount_needed);
+
+        if ($totalNeeded > 0) {
+            $newProgress = (($totalFound + $amount) / $totalNeeded) * 100;
+
+            if ($newProgress > 200) {
+                throw \Illuminate\Validation\ValidationException::withMessages([
+                    'amount' => sprintf(
+                        'This contribution would exceed the 200%% project cap (%.2f remaining).',
+                        ($totalNeeded * 2) - $totalFound
+                    ),
+                ]);
+            }
+        }
+
+        ResourceContribution::create([
+            'phase_id'      => $phaseId,
+            'user_id'       => auth()->id(),
+            'resource_type' => $resourceType,
+            'description'   => $request->validated('description'),
+            'amount'        => $amount,
+        ]);
+    });
+
+    $redirectRoute = $project->status instanceof EncoursState
+        ? 'en-cours'
+        : 'recolte';
+
+    return redirect()
+        ->route($redirectRoute)
+        ->with('success', 'Resource contribution added successfully.');
 }
 }
