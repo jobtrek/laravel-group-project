@@ -8,6 +8,11 @@ class EvaluationState extends ProjectState
 
     public function label(): string
     {
-        return 'évaluation';
+        return 'Évaluation';
+    }
+
+    public function color(): string
+    {
+        return 'inline-block rounded-full bg-cyan-100 px-3 py-1 text-xs font-medium text-indigo-700';
     }
 }

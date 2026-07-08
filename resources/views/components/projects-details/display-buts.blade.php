@@ -1,5 +1,5 @@
 @props([
-    'text_but' => 'sadasdas',
+    'text_but' => '—',
 ])
 
 <div class="bg-gray-100 rounded p-1 px-3">
