@@ -3,8 +3,13 @@
 namespace App\Models;
 
 use App\Enums\Role;
+use App\Models\States\ArchiveState;
+use App\Models\States\CompleteState;
 use App\Models\States\EncoursState;
+use App\Models\States\EvaluationState;
 use App\Models\States\ProjectState;
+use App\Models\States\PropositionState;
+use App\Models\States\RecolteState;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -151,6 +156,36 @@ class Project extends Model
                 return $totalNeeded;
             }
         );
+    }
+
+    public function isArchived(): bool
+    {
+        return $this->status instanceof ArchiveState;
+    }
+
+    public function isCompleted(): bool
+    {
+        return $this->status instanceof CompleteState;
+    }
+
+    public function isProposition(): bool
+    {
+        return $this->status instanceof PropositionState;
+    }
+
+    public function isInEvaluation(): bool
+    {
+        return $this->status instanceof EvaluationState;
+    }
+
+    public function isInProgress(): bool
+    {
+        return $this->status instanceof EncoursState;
+    }
+
+    public function isInRecolte(): bool
+    {
+        return $this->status instanceof RecolteState;
     }
 
     public function canComment(?User $user): bool
