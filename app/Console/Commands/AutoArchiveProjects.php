@@ -48,7 +48,7 @@ class AutoArchiveProjects extends Command
 
         foreach ($projects as $project) {
             if ($archived = $this->archive($project)) {
-                $this->notify($archived, collect([$archived->proposer])->filter()->values()->all());
+                $this->notify($archived, array_filter([$archived->proposer]));
                 $archivedCount++;
             }
         }
@@ -90,7 +90,7 @@ class AutoArchiveProjects extends Command
             $locked = Project::whereKey($project->id)->lockForUpdate()->first();
 
             if (! $locked || $locked->status instanceof ArchiveState) {
-                return null; 
+                return null;
             }
 
             $locked->setRelations($project->getRelations());
