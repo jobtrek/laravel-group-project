@@ -4,6 +4,9 @@ use App\Models\Project;
 use App\Models\User;
 use Database\Seeders\RoleAndPermissionSeeder;
 
+uses(RefreshDatabase::class);
+
+
 beforeEach(fn () => $this->seed(RoleAndPermissionSeeder::class));
 
 function validPropositionPayload(array $overrides = []): array
