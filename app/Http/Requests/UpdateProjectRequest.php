@@ -15,7 +15,7 @@ class UpdateProjectRequest extends FormRequest
         $project = $this->route('project');
 
         return $project->status->isEditable()
-            && $this->user()?->id === $project->proposer_id;
+            && ($this->user()?->id === $project->proposer_id || $this->user()?->can('manage everything'));
     }
 
     public function rules(): array

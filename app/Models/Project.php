@@ -185,6 +185,10 @@ class Project extends Model
 
     public function canComment(?User $user): bool
     {
+        if ($user?->can('manage everything')) {
+            return true;
+        }
+
         return $this->status instanceof EncoursState
             && (bool) $user?->hasRole(Role::ChefDeProjet->value)
             && $user->id === $this->leader_id;
