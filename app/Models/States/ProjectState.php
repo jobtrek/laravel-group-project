@@ -9,6 +9,8 @@ abstract class ProjectState extends State
 {
     abstract public function label(): string;
 
+    abstract public function color(): string;
+
     public static function config(): StateConfig
     {
         return parent::config()
