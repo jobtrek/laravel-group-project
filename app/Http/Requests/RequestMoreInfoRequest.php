@@ -10,7 +10,8 @@ class RequestMoreInfoRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return (bool) $this->user()?->hasRole(Role::Direction->value);
+        return (bool) $this->user()?->hasRole(Role::Direction->value)
+            || (bool) $this->user()?->can('manage everything');
     }
 
     /**
