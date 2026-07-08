@@ -15,12 +15,13 @@ window.listHelpers = {
         }
     },
 };
+window.listHelpers.uuid = () => (typeof crypto !== 'undefined' && crypto.randomUUID) ? crypto.randomUUID() : Math.random().toString(36).substring(2, 9);
 
 Alpine.data('userMultiSelect', (initial = ['']) => ({
-    selected: (initial.length ? initial : ['']).map((value) => ({ id: crypto.randomUUID(), value })),
+    selected: (initial.length ? initial : ['']).map((value) => ({ id: window.listHelpers.uuid(), value })),
 
     add() {
-        window.listHelpers.add(this.selected, { id: crypto.randomUUID(), value: '' });
+        window.listHelpers.add(this.selected, { id: window.listHelpers.uuid(), value: '' });
     },
 
     remove(idx) {

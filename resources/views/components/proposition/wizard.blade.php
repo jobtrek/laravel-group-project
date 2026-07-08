@@ -7,7 +7,7 @@
     impact: @js(old('impact', '')),
     confiance: @js(old('confiance', '')),
     effort: @js(old('effort', '')),
-    buts: @js(old('buts', [''])).map((value) => ({ id: crypto.randomUUID(), value })),
+    buts: @js(old('buts', [''])).map((value) => ({ id: window.listHelpers.uuid(), value })),
     phases: @js(old('phases', [
         [
             'titre' => '',
@@ -17,7 +17,13 @@
             'livrables' => [''],
             'ressources_necessaires' => [['resource_type' => '', 'amount_needed' => '']]
         ]
-    ])),
+    ])).map((phase) => ({
+        ...phase,
+        id: window.listHelpers.uuid(),
+        objectifs: phase.objectifs.map((value) => ({ id: window.listHelpers.uuid(), value })),
+        livrables: phase.livrables.map((value) => ({ id: window.listHelpers.uuid(), value })),
+        ressources_necessaires: phase.ressources_necessaires.map((r) => ({ id: window.listHelpers.uuid(), ...r })),
+    })),
     errors: {},
     phaseErrors: [],
 
@@ -27,12 +33,13 @@
     },
     addPhase() {
         this.phases.push({
+            id: window.listHelpers.uuid(),
             titre: '',
             duree: '',
             description: '',
-            objectifs: [''],
-            livrables: [''],
-            ressources_necessaires: [{ resource_type: '', amount_needed: '' }]
+            objectifs: [{ id: window.listHelpers.uuid(), value: '' }],
+            livrables: [{ id: window.listHelpers.uuid(), value: '' }],
+            ressources_necessaires: [{ id: window.listHelpers.uuid(), resource_type: '', amount_needed: '' }]
         });
         this.phaseErrors.push({});
     },
@@ -65,14 +72,14 @@
             if (!phase.titre || !phase.titre.trim()) e.titre = 'Le titre de la phase est requis.';
             if (!phase.duree || !phase.duree.trim()) e.duree = 'La durée est requise.';
             if (!phase.description || !phase.description.trim()) e.description = 'La description est requise.';
-            if (!phase.objectifs.length || phase.objectifs.every(o => !o || !o.trim())) {
+            if (!phase.objectifs.length || phase.objectifs.every(o => !o.value || !o.value.trim())) {
                 e.objectifs = 'Au moins un objectif est requis.';
-            } else if (phase.objectifs.some(o => !o || !o.trim())) {
+            } else if (phase.objectifs.some(o => !o.value || !o.value.trim())) {
                 e.objectifs = 'Veuillez remplir ou supprimer toutes les lignes d\'objectifs vides.';
             }
-            if (!phase.livrables.length || phase.livrables.every(l => !l || !l.trim())) {
+            if (!phase.livrables.length || phase.livrables.every(l => !l.value || !l.value.trim())) {
                 e.livrables = 'Au moins un livrable est requis.';
-            } else if (phase.livrables.some(l => !l || !l.trim())) {
+            } else if (phase.livrables.some(l => !l.value || !l.value.trim())) {
                 e.livrables = 'Veuillez remplir ou supprimer toutes les lignes de livrables vides.';
             }
             if (!phase.ressources_necessaires.length || phase.ressources_necessaires.every(r => !r.resource_type || !r.resource_type.trim())) {

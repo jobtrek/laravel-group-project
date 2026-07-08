@@ -12,5 +12,5 @@
         </div>
     </template>
 </div>
-<button type="button" @click="{{ $items }}.push({ id: crypto.randomUUID(), value: '' })"
+<button type="button" @click="{{ $items }}.push({ id: window.listHelpers.uuid(), value: '' })"
     class="mt-2 text-sm text-indigo-600 hover:underline">{{ $addLabel }}</button>
