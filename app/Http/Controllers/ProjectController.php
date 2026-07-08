@@ -4,12 +4,14 @@ namespace App\Http\Controllers;
 
 use App\Actions\RequestMoreInfoAction;
 use App\Actions\UpdateProjectAction;
+use App\Enums\Role;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Http\Requests\RequestMoreInfoRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
 use App\Models\ProjectPhase;
+use App\Models\States\EncoursState;
 use App\Models\States\EvaluationState;
 use App\Models\States\RevisionState;
 use App\Models\User;
@@ -123,7 +125,13 @@ class ProjectController extends Controller
 
     public function complete(Project $project)
     {
-        abort_if($project->proposer_id === auth()->id() || ! $project->status instanceof EvaluationState, 403);
+        abort_if(
+            ! $project->status instanceof EncoursState
+                || $project->progress < 100
+                || (auth()->id() !== $project->leader_id && ! auth()->user()?->hasRole(Role::ProjectManager->value)),
+            403
+        );
+
         try {
             ProjectService::complete($project);
         } catch (\Exception $e) {

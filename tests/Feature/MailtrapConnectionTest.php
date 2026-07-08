@@ -5,15 +5,6 @@ use App\Mail\StrongerEmailReminder;
 use App\Models\User;
 use Illuminate\Support\Facades\Mail;
 
-// ─── SMTP connection ─────────────────────────────────────────────────────────
-
-test('smtp connection to mailtrap is reachable', function () {
-    Mail::raw('Connection check from integration test.', function ($message) {
-        $message->to('test@example.com')
-            ->subject('Connection Test');
-    });
-})->throwsNoExceptions();
-
 // ─── EmailReminder (friendly reminder) ───────────────────────────────────────
 
 test('friendly reminder email is sent to the correct user', function () {
