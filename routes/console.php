@@ -3,7 +3,6 @@
 use App\Jobs\SendMailProcess;
 use App\Jobs\SendStrongerMailProcess;
 use App\Models\Project;
-use App\Models\States\EncoursState;
 use Illuminate\Foundation\Inspiring;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Schedule;
@@ -18,14 +17,34 @@ Artisan::command('mail:send-reminders', function () {
     $projects = Project::with('leader')
         ->needingProgressReminder()
         ->get()
-        ->filter(fn (Project $project) => $project->last_leader_comment_at === null
-            || $project->last_leader_comment_at->lt(now()->subMonths($reminderAfterMonths)));
+        ->filter(function (Project $project) use ($reminderAfterMonths) {
+            $noRecentComment = $project->last_leader_comment_at === null
+                || $project->last_leader_comment_at->lt(now()->subMonths($reminderAfterMonths));
+
+            if (! $noRecentComment) {
+                return false;
+            }
+
+            // Only send the friendly reminder once per silence period: skip
+            // projects that were already reminded since the leader's last
+            // comment, so this weekly job can't keep refreshing
+            // last_reminder_at and starving the escalation email.
+            if ($project->last_reminder_at === null) {
+                return true;
+            }
+
+            return $project->last_leader_comment_at !== null
+                && $project->last_leader_comment_at->gt($project->last_reminder_at);
+        });
 
     foreach ($projects as $project) {
         if ($project->leader) {
             SendMailProcess::dispatch($project->leader);
             $project->timestamps = false;
-            $project->forceFill(['last_reminder_at' => now()])->saveQuietly();
+            $project->forceFill([
+                'last_reminder_at' => now(),
+                'reminder_escalated_at' => null,
+            ])->saveQuietly();
         }
     }
 
@@ -33,16 +52,21 @@ Artisan::command('mail:send-reminders', function () {
 })->purpose('Queue friendly progress reminder emails to active project leaders');
 
 Artisan::command('mail:send-warnings', function () {
+    $escalationAfterWeeks = (int) config('projects.escalation_after_weeks', 1);
+
     $overdueProjects = Project::with('members')
-        ->whereState('status', EncoursState::class)
+        ->needingProgressReminder()
         ->whereNotNull('last_reminder_at')
-        ->where('last_reminder_at', '<', now()->subWeeks((int) config('projects.escalation_after_weeks', 1)))->whereColumn('updated_at', '<', 'last_reminder_at')
-        ->get();
+        ->whereNull('reminder_escalated_at')
+        ->where('last_reminder_at', '<', now()->subWeeks($escalationAfterWeeks))
+        ->get()
+        ->filter(fn (Project $project) => $project->last_leader_comment_at === null
+            || $project->last_leader_comment_at->lt($project->last_reminder_at));
 
     foreach ($overdueProjects as $project) {
         SendStrongerMailProcess::dispatch($project);
         $project->timestamps = false;
-        $project->forceFill(['last_reminder_at' => now()])->saveQuietly();
+        $project->forceFill(['reminder_escalated_at' => now()])->saveQuietly();
     }
 
     $this->info("Warning emails queued for {$overdueProjects->count()} project(s).");

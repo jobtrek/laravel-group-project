@@ -32,6 +32,7 @@ class Project extends Model
         'archived_at',
         'restored_at',
         'last_reminder_at',
+        'reminder_escalated_at',
         'proposer_id',
         'leader_id',
         'recolte_manager_id',
@@ -45,6 +46,7 @@ class Project extends Model
         'archived_at' => 'datetime',
         'restored_at' => 'datetime',
         'last_reminder_at' => 'datetime',
+        'reminder_escalated_at' => 'datetime',
         'status' => ProjectState::class,
     ];
 
