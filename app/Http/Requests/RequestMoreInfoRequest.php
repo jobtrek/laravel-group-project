@@ -2,7 +2,6 @@
 
 namespace App\Http\Requests;
 
-use App\Enums\Role;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -10,7 +9,8 @@ class RequestMoreInfoRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return (bool) $this->user()?->hasRole(Role::Direction->value);
+        return (bool) $this->user()?->can('review')
+            || (bool) $this->user()?->can('manage everything');
     }
 
     /**
