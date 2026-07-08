@@ -13,7 +13,8 @@ class RevisionRequest extends FormRequest
         $project = $this->route('project');
 
         return $project instanceof Project
-            && ($project->proposer_id === $this->user()?->id || $this->user()?->can('manage everything'));
+            && $this->user()
+            && ($project->proposer_id === $this->user()->id || $this->user()->can('manage everything'));
     }
 
     /** @return array<string, ValidationRule|array<mixed>|string> */

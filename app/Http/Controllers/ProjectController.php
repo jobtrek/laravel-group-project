@@ -41,7 +41,7 @@ class ProjectController extends Controller
 
     public function approve(Project $project)
     {
-        abort_if($project->proposer_id === auth()->id() && ! auth()->user()->can('manage everything'), 403);
+        abort_if($project->proposer_id === auth()->id() && ! auth()->user()?->can('manage everything'), 403);
 
         ProjectService::approve($project);
 
@@ -51,7 +51,7 @@ class ProjectController extends Controller
     public function deny(Project $project)
     {
         abort_if(
-            ($project->proposer_id === auth()->id() && ! auth()->user()->can('manage everything'))
+            ($project->proposer_id === auth()->id() && ! auth()->user()?->can('manage everything'))
                 || ! $project->status instanceof EvaluationState,
             403
         );
@@ -85,7 +85,7 @@ class ProjectController extends Controller
     public function reSubmit(Project $project)
     {
         abort_if(
-            ($project->proposer_id !== auth()->id() && ! auth()->user()->can('manage everything'))
+            ($project->proposer_id !== auth()->id() && ! auth()->user()?->can('manage everything'))
                 || ! $project->status instanceof RevisionState,
             403
         );
@@ -116,7 +116,7 @@ class ProjectController extends Controller
     {
         abort_if(
             ! $project->status->isEditable()
-                || (auth()->id() !== $project->proposer_id && ! auth()->user()->can('manage everything')),
+                || (auth()->id() !== $project->proposer_id && ! auth()->user()?->can('manage everything')),
             403
         );
 
