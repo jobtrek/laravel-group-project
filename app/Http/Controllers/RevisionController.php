@@ -13,7 +13,7 @@ class RevisionController extends Controller
 {
     public function showForm(Project $project): View|RedirectResponse
     {
-        if ($project->proposer_id !== auth()->id()) {
+        if ($project->proposer_id !== auth()->id() && ! auth()->user()?->can('manage everything')) {
             abort(403);
         }
 
@@ -40,7 +40,7 @@ class RevisionController extends Controller
         Project $project,
         SubmitRevisionAction $action,
     ): RedirectResponse {
-        if ($project->proposer_id !== auth()->id()) {
+        if ($project->proposer_id !== auth()->id() && ! auth()->user()?->can('manage everything')) {
             abort(403);
         }
 

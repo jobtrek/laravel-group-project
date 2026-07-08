@@ -41,7 +41,7 @@ class ProjectController extends Controller
 
     public function approve(Project $project)
     {
-        abort_if($project->proposer_id === auth()->id() && ! auth()->user()->can('manage everything'), 403);
+        abort_if($project->proposer_id === auth()->id() && ! auth()->user()?->can('manage everything'), 403);
 
         ProjectService::approve($project);
 
@@ -50,7 +50,11 @@ class ProjectController extends Controller
 
     public function deny(Project $project)
     {
-        abort_if($project->proposer_id === auth()->id() || ! $project->status instanceof EvaluationState, 403);
+        abort_if(
+            ($project->proposer_id === auth()->id() && ! auth()->user()?->can('manage everything'))
+                || ! $project->status instanceof EvaluationState,
+            403
+        );
         ProjectService::deny($project);
 
         return Redirect::back()->with('status', 'project-denied');
@@ -80,7 +84,11 @@ class ProjectController extends Controller
 
     public function reSubmit(Project $project)
     {
-        abort_if($project->proposer_id !== auth()->id() || ! $project->status instanceof RevisionState, 403);
+        abort_if(
+            ($project->proposer_id !== auth()->id() && ! auth()->user()?->can('manage everything'))
+                || ! $project->status instanceof RevisionState,
+            403
+        );
         ProjectService::reSubmit($project);
 
         return Redirect::back()->with('status', 'project-resubmitted');
@@ -106,7 +114,11 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
-        abort_if(! $project->status->isEditable() || auth()->id() !== $project->proposer_id, 403);
+        abort_if(
+            ! $project->status->isEditable()
+                || (auth()->id() !== $project->proposer_id && ! auth()->user()?->can('manage everything')),
+            403
+        );
 
         $project->load(['phases.resources', 'evaluation', 'members']);
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
@@ -127,7 +139,9 @@ class ProjectController extends Controller
         abort_if(
             ! $project->status instanceof EncoursState
                 || $project->progress < 100
-                || (auth()->id() !== $project->leader_id && ! auth()->user()?->hasRole(Role::ProjectManager->value)),
+                || (auth()->id() !== $project->leader_id
+                    && ! auth()->user()?->hasRole(Role::ProjectManager->value)
+                    && ! auth()->user()?->can('manage everything')),
             403
         );
 
