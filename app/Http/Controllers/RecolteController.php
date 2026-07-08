@@ -23,7 +23,6 @@ class RecolteController extends StageProjectController
     {
         return [RecolteState::class];
     }
-    
 
     public function assignTeam(AssignProjectTeamRequest $request, Project $project): RedirectResponse
     {
@@ -49,8 +48,6 @@ class RecolteController extends StageProjectController
                 }
             }
         });
-
-        User::find($leaderId)?->assignRole(Role::ChefDeProjet->value);
 
         return redirect()->back()->with('success', 'Équipe du projet mise à jour avec succès.');
     }
