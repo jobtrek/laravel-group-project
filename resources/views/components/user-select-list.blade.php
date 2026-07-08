@@ -10,12 +10,12 @@
     <div class="space-y-2">
         <template x-for="(item, idx) in selected" :key="item.id">
             <div class="flex gap-2">
-                <select :name="@js($name) + '[' + idx + ']'" x-model="selected[idx]"
+                <select :name="@js($name) + '[' + idx + ']'" x-model="item.value"
                     class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
                     <option value="">{{ $placeholder }}</option>
                     @foreach ($users as $user)
                         <option value="{{ $user->id }}"
-                            :disabled="selected.some((s, i) => i !== idx && String(s) === @js((string) $user->id))">
+                            :disabled="selected.some((s, i) => i !== idx && String(s.value) === @js((string) $user->id))">
                             {{ $user->name }}
                         </option>
                     @endforeach
