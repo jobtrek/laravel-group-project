@@ -54,17 +54,21 @@ use Carbon\Carbon;
                     <form action="{{ route('projects.deny', $project) }}" method="POST" class="relative z-10">
                         @csrf
                         @method('PATCH')
-                        <x-projects.buttons text="Refuser" class="bg-red-700 text-white p-2" type="submit"/>
+                        <x-projects.buttons text="Refuser"
+                                            class="bg-red-700 hover:bg-red-800 text-white text-sm rounded-lg px-3 py-1.5 transition-colors"
+                                            type="submit"/>
                     </form>
-                    <form action="{{ route('projects.direction-review', $project) }}" method="GET"
-                          class="relative z-10">
-                        <x-projects.buttons text="Révision" class="bg-yellow-500 text-white p-2" type="submit"/>
+                    <form action="{{ route('projects.direction-review', $project) }}" method="GET" class="relative z-10">
+                        <x-projects.buttons text="Révision"
+                                            class="bg-yellow-500 hover:bg-yellow-600 text-white text-sm rounded-lg px-3 py-1.5 transition-colors"
+                                            type="submit"/>
                     </form>
-                    <form action="{{ route('projects.approve', $project) }}" method="POST"
-                          class="relative z-10">
+                    <form action="{{ route('projects.approve', $project) }}" method="POST" class="relative z-10">
                         @csrf
                         @method('PATCH')
-                        <x-projects.buttons text="Accepter" class="bg-green-600 text-white p-2" type="submit"/>
+                        <x-projects.buttons text="Accepter"
+                                            class="bg-green-600 hover:bg-green-700 text-white text-sm rounded-lg px-3 py-1.5 transition-colors"
+                                            type="submit"/>
                     </form>
                 @endcan
             @elseif($project->isInProgress())
