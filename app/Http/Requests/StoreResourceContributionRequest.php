@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use App\Models\Project;
+use App\Models\States\EncoursState;
+use App\Models\States\RecolteState;
 use Illuminate\Foundation\Http\FormRequest;
 use Illuminate\Validation\Validator;
 
@@ -10,7 +12,16 @@ class StoreResourceContributionRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true; // any authenticated user is allowed, per requirements
+        /** @var Project $project */
+        $project = $this->route('project');
+
+        abort_if(
+            ! $project->status instanceof RecolteState &&
+            ! $project->status instanceof EncoursState,
+            404
+        );
+
+        return true;
     }
 
     public function rules(): array
@@ -49,8 +60,9 @@ class StoreResourceContributionRequest extends FormRequest
             }
 
             $amount = round((float) $this->input('amount'), 2);
+            $maxAllowed = round((float) $resource->amount_needed * 2, 2);
             $found = (float) $phase->contributions->where('resource_type', $resourceType)->sum('amount');
-            $remaining = round((float) $resource->amount_needed - $found, 2);
+            $remaining = round(((float) $resource->amount_needed * 2) - $found, 2);
 
             if ($amount > $remaining) {
                 $validator->errors()->add(

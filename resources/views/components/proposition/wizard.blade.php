@@ -7,7 +7,7 @@
     impact: @js(old('impact', '')),
     confiance: @js(old('confiance', '')),
     effort: @js(old('effort', '')),
-    buts: @js(old('buts', [''])),
+    buts: @js(old('buts', [''])).map((value) => ({ id: crypto.randomUUID(), value })),
     phases: @js(old('phases', [
         [
             'titre' => '',
@@ -49,9 +49,9 @@
         this.errors = {};
         if (!this.titre || !this.titre.trim()) this.errors.titre = 'Le titre est requis.';
         if (!this.description || !this.description.trim()) this.errors.description = 'La description est requise.';
-        if (!this.buts.length || this.buts.every(b => !b || !b.trim())) {
+        if (!this.buts.length || this.buts.every(b => !b.value || !b.value.trim())) {
             this.errors.buts = 'Au moins un objectif est requis.';
-        } else if (this.buts.some(b => !b || !b.trim())) {
+        } else if (this.buts.some(b => !b.value || !b.value.trim())) {
             this.errors.buts = 'Veuillez remplir ou supprimer toutes les lignes d\'objectifs vides.';
         }
         if (!this.perimetre || !this.perimetre.trim()) this.errors.perimetre = 'Le périmètre est requis.';

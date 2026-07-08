@@ -2,8 +2,11 @@
 
 namespace App\Models;
 
+use App\Enums\Role;
+use App\Models\States\EncoursState;
 use App\Models\States\ProjectState;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -63,16 +66,19 @@ class Project extends Model
         return $this->belongsTo(User::class, 'recolte_manager_id');
     }
 
+    /** @return BelongsToMany<User, $this> */
     public function members(): BelongsToMany
     {
         return $this->belongsToMany(User::class, 'project_members', 'project_id', 'user_id');
     }
 
+    /** @return HasMany<Comment, $this> */
     public function comments(): HasMany
     {
         return $this->hasMany(Comment::class, 'project_id');
     }
 
+    /** @return HasMany<ProjectReview, $this> */
     public function reviews(): HasMany
     {
         return $this->hasMany(ProjectReview::class, 'project_id');
@@ -84,6 +90,7 @@ class Project extends Model
         return $this->hasMany(ProjectPhase::class, 'project_id')->orderBy('order');
     }
 
+    /** @return HasOne<ProjectEvaluation, $this> */
     public function evaluation(): HasOne
     {
         return $this->hasOne(ProjectEvaluation::class, 'project_id');
@@ -110,7 +117,7 @@ class Project extends Model
 
         $progress = round(($totalFound / $totalNeeded) * 100, 2);
 
-        return max(0.0, min($progress, 100.0));
+        return max(0.0, min($progress, 200.0));
     }
 
     public static function statusCounts()
@@ -135,6 +142,7 @@ class Project extends Model
         );
     }
 
+
     protected function budgetGlobal(): Attribute
     {
         return Attribute::make(
@@ -144,5 +152,28 @@ class Project extends Model
                 return $totalNeeded;
             }
         );
+    }
+
+
+    public function canComment(?User $user): bool
+    {
+        return $this->status instanceof EncoursState
+            && (bool) $user?->hasRole(Role::ChefDeProjet->value)
+            && $user->id === $this->leader_id;
+    }
+
+    public function scopeNeedingProgressReminder(Builder $query): Builder
+    {
+        return $query
+            ->whereState('status', EncoursState::class)
+            ->whereNotNull('leader_id')
+            ->addSelect([
+                'last_leader_comment_at' => Comment::select('created_at')
+                    ->whereColumn('comments.project_id', 'projects.id')
+                    ->whereColumn('comments.user_id', 'projects.leader_id')
+                    ->latest('created_at')
+                    ->limit(1),
+            ])
+            ->withCasts(['last_leader_comment_at' => 'datetime']);
     }
 }

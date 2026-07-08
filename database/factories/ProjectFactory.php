@@ -20,6 +20,13 @@ class ProjectFactory extends Factory
 {
     protected $model = Project::class;
 
+    private ?array $cachedUserIds = null;
+
+    private function getUserIds(): array
+    {
+        return $this->cachedUserIds ??= User::pluck('id')->toArray() ?: [User::factory()->create()->id];
+    }
+
     /**
      * Define the model's default state.
      *
@@ -37,7 +44,7 @@ class ProjectFactory extends Factory
             ArchiveState::class,
         ]);
 
-        $userIds = once(fn () => User::pluck('id')->toArray());
+        $userIds = $this->getUserIds();
 
         return [
             'title' => $this->faker->sentence(3),
@@ -49,7 +56,7 @@ class ProjectFactory extends Factory
             'updated_at' => $this->faker->dateTimeBetween('-4 months', '-20 days'),
             'created_at' => $this->faker->dateTimeBetween('-8 months', '-2 days'),
             'proposer_id' => fake()->randomElement($userIds),
-            'leader_id' => fake()->randomElement($userIds),
+            'leader_id' => null,
             'recolte_manager_id' => fake()->randomElement($userIds),
         ];
     }
@@ -63,6 +70,15 @@ class ProjectFactory extends Factory
                 'confiance' => fake()->numberBetween(0, 100),
                 'effort' => fake()->numberBetween(1, 5),
             ]);
+
+            if ($project->status instanceof EncoursState && is_null($project->leader_id)) {
+                $userIds = $this->getUserIds();
+                if (! empty($userIds)) {
+                    $project->timestamps = false;
+                    $project->leader_id = fake()->randomElement($userIds);
+                    $project->save();
+                }
+            }
         });
     }
 

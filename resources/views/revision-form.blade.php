@@ -12,7 +12,7 @@
     </x-slot>
 
     <div class="py-10">
-        <div class="max-w-4xl mx-auto sm:px-6 lg:px-8">
+        <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
 
             @php $old = old('corrections', []); @endphp
 
@@ -64,17 +64,17 @@
 
                     @if ($comments->has('but'))
                         <x-revision.flagged-field label="Objectifs SMART" :comment="$comments['but']->content">
-                            <div x-data="{ items: @js($old['but'] ?? $project->but ?? []) }" class="mt-1 space-y-2"> <template
-                                    x-for="(item, idx) in items" :key="idx">
+                            <div x-data="{ items: (@js($old['but'] ?? $project->but ?? [])).map((value) => ({ id: crypto.randomUUID(), value })) }" class="mt-1 space-y-2"> <template
+                                    x-for="(item, idx) in items" :key="item.id">
                                     <div class="flex gap-2">
-                                        <input type="text" :name="'corrections[but][' + idx + ']'" x-model="items[idx]" required
+                                        <input type="text" :name="'corrections[but][' + idx + ']'" x-model="item.value" required
                                             class="block w-full rounded-md border-gray-300 shadow-sm text-sm
                                                                                            focus:ring-indigo-500 focus:border-indigo-500">
                                         <button type="button" @click="items.splice(idx, 1)" x-show="items.length > 1"
                                             class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
                                     </div>
                                 </template>
-                                <button type="button" @click="items.push('')"
+                                <button type="button" @click="items.push({ id: crypto.randomUUID(), value: '' })"
                                     class="mt-1 text-sm text-indigo-600 hover:underline">
                                     + Ajouter un objectif
                                 </button>
@@ -200,19 +200,19 @@
 
                         @if ($comments->has("phases.{$i}.objectifs"))
                             <x-revision.flagged-field label="Objectifs" :comment="$comments['phases.' . $i . '.objectifs']->content">
-                                <div x-data="{ items: @js($old["phases.{$i}.objectifs"] ?? $phase->objectifs) }"
+                                <div x-data="{ items: (@js($old["phases.{$i}.objectifs"] ?? $phase->objectifs)).map((value) => ({ id: crypto.randomUUID(), value })) }"
                                     class="mt-1 space-y-2">
-                                    <template x-for="(item, idx) in items" :key="idx">
+                                    <template x-for="(item, idx) in items" :key="item.id">
                                         <div class="flex gap-2">
                                             <input type="text" :name="'corrections[phases.{{ $i }}.objectifs][' + idx + ']'"
-                                                x-model="items[idx]" required
+                                                x-model="item.value" required
                                                 class="block w-full rounded-md border-gray-300 shadow-sm text-sm
                                                                                                                    focus:ring-indigo-500 focus:border-indigo-500">
                                             <button type="button" @click="items.splice(idx, 1)" x-show="items.length > 1"
                                                 class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
                                         </div>
                                     </template>
-                                    <button type="button" @click="items.push('')"
+                                    <button type="button" @click="items.push({ id: crypto.randomUUID(), value: '' })"
                                         class="mt-1 text-sm text-indigo-600 hover:underline">
                                         + Ajouter un objectif
                                     </button>
@@ -222,19 +222,19 @@
 
                         @if ($comments->has("phases.{$i}.livrables"))
                             <x-revision.flagged-field label="Livrables" :comment="$comments['phases.' . $i . '.livrables']->content">
-                                <div x-data="{ items: @js($old["phases.{$i}.livrables"] ?? $phase->livrables) }"
+                                <div x-data="{ items: (@js($old["phases.{$i}.livrables"] ?? $phase->livrables)).map((value) => ({ id: crypto.randomUUID(), value })) }"
                                     class="mt-1 space-y-2">
-                                    <template x-for="(item, idx) in items" :key="idx">
+                                    <template x-for="(item, idx) in items" :key="item.id">
                                         <div class="flex gap-2">
                                             <input type="text" :name="'corrections[phases.{{ $i }}.livrables][' + idx + ']'"
-                                                x-model="items[idx]" required
+                                                x-model="item.value" required
                                                 class="block w-full rounded-md border-gray-300 shadow-sm text-sm
                                                                                                                    focus:ring-indigo-500 focus:border-indigo-500">
                                             <button type="button" @click="items.splice(idx, 1)" x-show="items.length > 1"
                                                 class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
                                         </div>
                                     </template>
-                                    <button type="button" @click="items.push('')"
+                                    <button type="button" @click="items.push({ id: crypto.randomUUID(), value: '' })"
                                         class="mt-1 text-sm text-indigo-600 hover:underline">
                                         + Ajouter un livrable
                                     </button>
@@ -251,8 +251,8 @@
                                 $initResources = $old["phases.{$i}.ressources"] ?? $defaultResources;
                             @endphp
                             <x-revision.flagged-field label="Ressources nécessaires" :comment="$comments['phases.' . $i . '.ressources']->content">
-                                <div x-data="{ resources: @js($initResources) }" class="mt-1 space-y-2">
-                                    <template x-for="(res, ri) in resources" :key="ri">
+                                <div x-data="{ resources: (@js($initResources)).map((r) => ({ id: crypto.randomUUID(), ...r })) }" class="mt-1 space-y-2">
+                                    <template x-for="(res, ri) in resources" :key="res.id">
                                         <div class="flex gap-2 items-center">
                                             <input type="text"
                                                 :name="'corrections[phases.{{ $i }}.ressources][' + ri + '][resource_type]'"
@@ -268,7 +268,7 @@
                                                 class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
                                         </div>
                                     </template>
-                                    <button type="button" @click="resources.push({ resource_type: '', amount_needed: '' })"
+                                    <button type="button" @click="resources.push({ id: crypto.randomUUID(), resource_type: '', amount_needed: '' })"
                                         class="mt-1 text-sm text-indigo-600 hover:underline">
                                         + Ajouter une ressource
                                     </button>

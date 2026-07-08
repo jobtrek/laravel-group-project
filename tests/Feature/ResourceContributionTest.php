@@ -5,9 +5,12 @@ use App\Models\Project;
 use App\Models\ProjectPhase;
 use App\Models\ResourceContribution;
 use App\Models\User;
+use Database\Seeders\RoleAndPermissionSeeder;
+
+beforeEach(fn () => $this->seed(RoleAndPermissionSeeder::class));
 
 it('shows only the resource types defined on the project phases', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create()->assignRole('recolte_manager');
     $project = Project::factory()->recolte()->create();
     $phase = ProjectPhase::factory()->create(['project_id' => $project->id]);
     PhaseResource::factory()->create(['phase_id' => $phase->id, 'resource_type' => 'Budget', 'amount_needed' => 1000]);
@@ -21,7 +24,7 @@ it('shows only the resource types defined on the project phases', function () {
 });
 
 it('records a contribution scoped to a specific resource type', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create()->assignRole('recolte_manager');
     $project = Project::factory()->recolte()->create();
     $phase = ProjectPhase::factory()->create(['project_id' => $project->id]);
     PhaseResource::factory()->create(['phase_id' => $phase->id, 'resource_type' => 'Budget', 'amount_needed' => 1000]);
@@ -39,7 +42,7 @@ it('records a contribution scoped to a specific resource type', function () {
 });
 
 it('rejects a resource type that is not defined on the selected phase', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create()->assignRole('recolte_manager');
     $project = Project::factory()->recolte()->create();
     $phase = ProjectPhase::factory()->create(['project_id' => $project->id]);
     PhaseResource::factory()->create(['phase_id' => $phase->id, 'resource_type' => 'Budget', 'amount_needed' => 1000]);
@@ -55,7 +58,7 @@ it('rejects a resource type that is not defined on the selected phase', function
 });
 
 it('rejects a contribution that exceeds what is still needed for that specific resource type', function () {
-    $user = User::factory()->create();
+    $user = User::factory()->create()->assignRole('recolte_manager');
     $project = Project::factory()->recolte()->create();
     $phase = ProjectPhase::factory()->create(['project_id' => $project->id]);
     PhaseResource::factory()->create(['phase_id' => $phase->id, 'resource_type' => 'Budget', 'amount_needed' => 100]);
@@ -77,4 +80,18 @@ it('rejects a contribution that exceeds what is still needed for that specific r
     ]);
 
     $response->assertSessionHasErrors('amount');
+});
+
+it('rejects a contribution on an archived project', function () {
+    $user = User::factory()->create()->assignRole('recolte_manager');
+    $project = Project::factory()->archive()->create();
+
+    $response = $this->actingAs($user)->post(route('projects.resources.store', $project), [
+        'phase_id' => 1,
+        'resource_type' => 'Budget',
+        'amount' => 100,
+    ]);
+
+    $response->assertNotFound();
+    expect(ResourceContribution::count())->toBe(0);
 });

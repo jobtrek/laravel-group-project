@@ -2,6 +2,7 @@
 
 namespace App\Http\Requests;
 
+use App\Models\Project;
 use Illuminate\Contracts\Validation\ValidationRule;
 use Illuminate\Foundation\Http\FormRequest;
 
@@ -9,7 +10,9 @@ class RevisionRequest extends FormRequest
 {
     public function authorize(): bool
     {
-        return true;
+        $project = $this->route('project');
+
+        return $project instanceof Project && $project->proposer_id === $this->user()?->id;
     }
 
     /** @return array<string, ValidationRule|array<mixed>|string> */

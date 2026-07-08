@@ -6,7 +6,7 @@
     <div class="flex items-start justify-between gap-6">
 
         <div class="flex-1 min-w-0">
-            <p class="text-xs font-semibold text-gray-400 uppercase tracking-widest mb-1">
+            <p class="text-sm font-semibold text-gray-400 uppercase tracking-widest mb-1">
                 {{ $label }}
             </p>
             {{ $slot }}
@@ -16,15 +16,15 @@
             <input
                 type="checkbox"
                 class="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500 cursor-pointer"
-                @change="fields['{{ $fieldKey }}'].checked = $event.target.checked"
-                :checked="fields['{{ $fieldKey }}'].checked"
+                @change="fields[@js($fieldKey)].checked = $event.target.checked"
+                :checked="fields[@js($fieldKey)].checked"
             >
-            <span class="text-xs text-gray-500 group-hover:text-gray-700 transition">Annoter</span>
+            <span class="text-sm text-gray-500 group-hover:text-gray-700 transition">Annoter</span>
         </label>
     </div>
 
-    <div x-show="fields['{{ $fieldKey }}'].checked" x-cloak class="mt-4">
-        <label class="block text-xs text-gray-500 mb-1">Votre commentaire pour le proposeur :</label>
+    <div x-show="fields[@js($fieldKey)].checked" x-cloak class="mt-4">
+        <label class="block text-sm text-gray-500 mb-1">Votre commentaire pour le proposeur :</label>
 
         <textarea
             name="field_comments[{{ $fieldKey }}]"
@@ -33,8 +33,8 @@
             class="w-full rounded-md border-gray-300 shadow-sm text-sm
                    focus:ring-indigo-500 focus:border-indigo-500
                    placeholder-gray-400 resize-none"
-            :disabled="!fields['{{ $fieldKey }}'].checked"
-            x-model="fields['{{ $fieldKey }}'].value"
+            :disabled="!fields[@js($fieldKey)].checked"
+            x-model="fields[@js($fieldKey)].value"
         ></textarea>
     </div>
 </div>

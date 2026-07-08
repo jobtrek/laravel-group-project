@@ -1,7 +1,5 @@
 <?php
 
-declare(strict_types=1);
-
 namespace App\Actions;
 
 use App\Models\PhaseResource;
@@ -58,10 +56,6 @@ class UpdateProjectAction
                 $phase->update($attributes);
             } else {
                 $phase = $project->phases()->create($attributes);
-            }
-
-            if (! $phase) {
-                continue;
             }
 
             $keptIds[] = $phase->id;
