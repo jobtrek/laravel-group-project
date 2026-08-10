@@ -42,7 +42,7 @@ The states are currently being updated reference it to the 'docs/Source_of_truth
 
 ### Key business rules
 
-- **80% threshold**: `SUM(amount_found) / SUM(amount_needed) >= 0.8` across all `PhaseResource` rows triggers `CollectingState → ReadyState`
+- **Récolte → En cours is a manual launch**, not an automatic threshold transition: the chef de projet launches the project once `leader_id` is set (`ProjectService::moveToEncours()`). `SUM(amount_found) / SUM(amount_needed)` is a UI progress-bar figure only — no state transition is tied to it.
 - **Age-based colour coding**: orange at +1 month, red at +2 months, auto-archived at +3 months (Récolte exception: auto-archived at 12 months)
 - **En cours email escalation**: `EmailReminder` at 1 month no comment → `StrongerEmailReminder` (CC all follow-up role) 1 week later — both dispatched as queued jobs; `last_reminder_at` tracks state
 - Direction members cannot approve their own proposals
