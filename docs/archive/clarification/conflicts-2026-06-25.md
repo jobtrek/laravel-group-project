@@ -19,7 +19,9 @@
 
 ---
 
-## Conflict B: "Project Manager" vs. "Chef de projet" — same role or two?
+## Conflict B: "Project Manager" vs. "Chef de projet" — same role or two? — ✅ RESOLVED
+
+**Resolution (2026-07-08):** Confirmed against `app/Enums/Role.php` and `database/seeders/RoleAndPermissionSeeder.php` — these are two distinct, real Spatie roles (`chef_de_projet` and `project_manager`), each seeded separately with its own permission set. Not an alias. See `docs/Source_of_truth.md` Roles table.
 
 - **densified-summary.md Roles table** now has **two separate rows**:
   - `Chef de projet` — "Comment + update all En cours projects; not the proposer"

@@ -1,15 +1,17 @@
 <x-app-layout>
-    <div class="flex items-center justify-between">
-        <h2 class="font-semibold text-xl text-gray-800 leading-tight">
-            Corrections requises —
-            <span class="text-indigo-600">{{ $project->title }}</span>
-        </h2>
-        <a href="{{ route('propositions') }}" class="text-sm text-gray-500 hover:text-gray-700 transition">
-            ← Retour aux propositions
-        </a>
-    </div>
     <div class="py-10">
         <div class="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between mb-6">
+                <h2 class="font-semibold text-xl text-white leading-tight">
+                    Corrections requises —
+                    <span class="text-indigo-300">{{ $project->title }}</span>
+                </h2>
+                <div class="bg-gray-50 p-1 px-2 rounded-xl">
+                    <a href="{{ route('propositions') }}" class="text-sm text-gray-500 hover:text-gray-700 transition">
+                        ← Retour aux propositions
+                    </a>
+                </div>
+            </div>
 
             @php $old = old('corrections', []); @endphp
 
@@ -276,10 +278,7 @@
                 @endforeach
 
                 <div class="flex justify-end mt-8">
-                    <button type="submit" class="px-8 py-3 bg-indigo-600 text-white font-semibold rounded-lg
-                               shadow-lg hover:bg-indigo-700 active:bg-indigo-800
-                               focus:outline-none focus:ring-2 focus:ring-indigo-500
-                               focus:ring-offset-2 transition-colors">
+                    <button type="submit" class="px-8 py-3 bg-blue-600 text-white font-semibold rounded-lg hover:bg-blue-500 transition">
                         Soumettre les corrections
                     </button>
                 </div>

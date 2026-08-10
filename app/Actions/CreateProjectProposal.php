@@ -14,15 +14,16 @@ class CreateProjectProposal
     public function execute(array $data, int $proposerId): Project
     {
         return DB::transaction(function () use ($data, $proposerId) {
-            $project = Project::create([
+            $project = new Project([
                 'title' => $data['titre'],
                 'description' => $data['description'],
                 'but' => $data['buts'],
                 'perimetre' => $data['perimetre'] ?? null,
-                'status' => PropositionState::getMorphClass(),
-                'current_stage' => PropositionState::getMorphClass(),
                 'proposer_id' => $proposerId,
             ]);
+            $project->status = PropositionState::getMorphClass();
+            $project->current_stage = PropositionState::getMorphClass();
+            $project->save();
 
             $project->evaluation()->create([
                 'portee' => $data['portee'],

@@ -1,7 +1,7 @@
 # Densified Summary — Project Tracking App
 
-*Last updated 2026-06-25. Authoritative source — use this doc to resolve conflicts in other files.*
-*Remaining unresolved items are marked ⚠️ and reference `clarification/conflicts-2026-06-25.md`.*
+*Last updated 2026-07-08. Authoritative source — use this doc to resolve conflicts in other files.*
+*Remaining unresolved items are marked ⚠️ and reference `docs/archive/clarification/conflicts-2026-06-25.md`.*
 
 ---
 
@@ -19,7 +19,7 @@
 
 ```
 Proposition  →  Evaluation  →  Récolte  →  En cours
- (anyone)        (decide)       (≥80%)      (track)
+ (anyone)        (decide)      (launch)     (track)
      |               |              |            |
      +---------------+--------------+------------+→ Archivé (per stage)
                 "le frigo" = refused-only archive
@@ -37,7 +37,7 @@ Proposition  →  Evaluation  →  Récolte  →  En cours
 
 **Transitions:**
 - `PropositionState` → `EvaluationState` (submitted for review)
-- `RévisionState` → `PropositionState` (proposer resubmits after editing)
+- `RevisionState` → `PropositionState` (proposer resubmits after editing)
 
 ### Age-based colour coding
 
@@ -53,12 +53,13 @@ Proposition  →  Evaluation  →  Récolte  →  En cours
 |-------|-------|
 | `titre` | Project title |
 | `porteur` | Person proposing (auto-filled from logged-in user) |
-| `membres` | All people involved (multi-select) |
 | `description` | Problem + solution, max 3 paragraphs |
 | `buts` | SMART goals, repeatable list |
-| `perimetre` | What the project does and does not do — optional for small projects |
+| `perimetre` | What the project does and does not do — **required** |
 | **Phases** (≥1 required) | `titre`, `duree`, `description`, `objectifs`, `livrables`, `ressources_necessaires` |
 | **Impact evaluation** (required) | `portee` (0–50), `impact` (1–5), `confiance` (0–100%), `effort` (1–5) |
+
+> Note: there is no `membres` field on the proposition form. Project membership is added later, during Récolte.
 
 ### Impact evaluation scales
 
@@ -104,15 +105,15 @@ Proposition  →  Evaluation  →  Récolte  →  En cours
 
 | Outcome | Next state | Notes |
 |---------|-----------|-------|
-| Approve | `RécolteState` | Project moves directly to Récolte |
-| Refuse | `ArchivéState` ("le frigo") | Mandatory comment required; full form data preserved |
-| Request revision | `RévisionState` | Proposer edits the **existing** form (not a new one) and resubmits |
+| Approve | `RecolteState` | Project moves directly to Récolte |
+| Refuse | `ArchiveState` ("le frigo") | Mandatory comment required; full form data preserved |
+| Request revision | `RevisionState` | Proposer edits the **existing** form (not a new one) and resubmits |
 ---
 
 ## Module 3 — Récolte
 
 
-**State:** `RécolteState`
+**State:** `RecolteState`
 
 ### Age-based colour coding
 
@@ -125,14 +126,14 @@ Proposition  →  Evaluation  →  Récolte  →  En cours
 - Managed by the **récolte manager** — a different person than the porteur.
 - **All people in Récolte can add/update resources — except the porteur.**
 - Resource tracking per `Phase_Resource` row: `amount_needed` and `amount_found`.
-- **Percentage** = `SUM(amount_found) / SUM(amount_needed)` across all phases.
+- **Percentage** = `SUM(amount_found) / SUM(amount_needed)` across all phases. This is a **UI progress-bar figure only** — there is no automated state transition tied to it (confirmed against code: no 80% threshold exists anywhere in `app/`).
 - List is sortable/filterable by % resources found.
 - Budget % entry is **manual** (no payment system integration).
 
-| Threshold | Action |
+| Trigger | Action |
 |-----------|--------|
-| ≥ 80% resources found | Project turns **green** → moves to `EncoursState` |
-| 12 months elapsed | Auto-archive → `ArchivéState` |
+| Chef de projet launches the project (requires `leader_id` set) | Moves to `EncoursState` — **manual action**, not automatic |
+| 12 months elapsed | Auto-archive → `ArchiveState` |
 
 ### Chef de projet assignment
 
@@ -157,7 +158,7 @@ The Chef de projet is assigned when the project is validated by Direction in the
 - Comments by **chef de projet** primarily; collaborateurs may also comment.
 - Comments **cannot be edited or deleted** after posting.
 - Any comment **resets the inactivity clock**.
-- Chef de projet marks project **Completed** (`ComplétéState`) — final mandatory comment required; project moves from En cours dashboard to **Archivé dashboard**.
+- Chef de projet marks project **Completed** (`CompleteState`) — final mandatory comment required; project moves from En cours dashboard to **Archivé dashboard**.
 
 ### Inactivity escalation
 
@@ -165,7 +166,7 @@ The Chef de projet is assigned when the project is validated by Direction in the
 |-------|--------|
 | 1 month no comment | Email #1 → chef de projet; `last_reminder_at` set |
 | +1 week, still no comment | Email #2 (stronger) — CC'd to all users with follow-up role |
-| 3 months no comment | Auto-archive → `ArchivedState` |
+| 3 months no comment | Auto-archive → `ArchiveState` |
 
 ---
 
@@ -185,10 +186,10 @@ Exception — Récolte: auto-archive at **12 months** (not 3).
 
 | Archive | Stage | Auto-archive trigger |
 |---------|-------|---------------------|
-| Proposition archive | Proposition | 3 months in `PropositionState` / `RévisionState` |
+| Proposition archive | Proposition | 3 months in `PropositionState` / `RevisionState` |
 | Le frigo | Direction | Manual refusal; full form fields preserved |
-| Récolte archive | Récolte | 12 months in `RécolteState` |
-| En cours archive | En cours | 3 months no comment, or manual completion (`ComplétéState`) |
+| Récolte archive | Récolte | 12 months in `RecolteState` |
+| En cours archive | En cours | 3 months no comment, or manual completion (`CompleteState`) |
 
 - **Everyone** can see le frigo and all stage archives.
 - Archive retention: **1-year hard limit** — not restored within 1 year → permanently deleted.
@@ -204,14 +205,14 @@ Exception — Récolte: auto-archive at **12 months** (not 3).
 
 | Role | Key permissions |
 |------|----------------|
-| **Collaborateur** | Propose projects; edit own proposals | he can see all projects
-| **Direction** | Approve / refuse / suspend proposals; comment in Direction module; see all | | he can also archive projects | and evaluate projects
+| **Collaborateur** | Propose projects; edit own proposals; see all projects |
+| **Direction** | Approve / refuse / request revision on proposals; comment in Evaluation module; see all; archive projects |
 | **Récolte Manager** | Add/update resources on Récolte projects; see all |
-| **Project manager** | he can't evaluate, | but he can archive project. |. 
+| **Project Manager** | Distinct role from Chef de projet (`App\Enums\Role::ProjectManager`, seeded separately in `RoleAndPermissionSeeder`); can archive projects and send projects to Direction; cannot evaluate proposals |
 | **Chef de projet** | Comment on all En cours projects; launch projects from Récolte; mark complete; see all |
 | **Admin** | Full access; only role that can assign/change roles |
 
-> Note: `densified-summary.md` previously listed "Project Manager" as a separate role. ⚠️ This may be an alias for "Chef de projet" — see `clarification/conflicts-2026-06-25.md` Conflict B.
+> "Project Manager" and "Chef de projet" are two distinct, real roles in code — not aliases of each other — each with its own permission set. Confirmed against `app/Enums/Role.php` and `database/seeders/RoleAndPermissionSeeder.php`.
 
 ---
 
@@ -219,36 +220,38 @@ Exception — Récolte: auto-archive at **12 months** (not 3).
 
 **Codebase location:** `app/Models/States/` (source of truth for class names)
 
-| Class file | State name | Stage |
-|-----------|-----------|-------|
-| `PropositionState.php` | `proposition` | Proposition |
-| `EvaluationState.php` | `evaluation` | Evaluation (Direction review) |
-| `RévisionState.php` | `révision` | Revision (sent back to proposer) |
-| `RécolteState.php` | `récolte` | Récolte |
-| `EncoursState.php` | `en_cours` | En cours |
-| `ComplétéState.php` | `complété` | Terminal (moves to Archivé dashboard) |
-| `ArchivéState.php` | `archivé` | All archives (le frigo + stage archives) |
+Class names are **unaccented ASCII**; accents only appear in the stored `$name` value and the human-readable `label()`, never in the class identifier.
+
+| Class file | State name (stored value) | Label | Stage |
+|-----------|-----------|-------|-------|
+| `PropositionState.php` | `proposition` | Proposition | Proposition |
+| `EvaluationState.php` | `évaluation` | Évaluation | Evaluation (Direction review) |
+| `RevisionState.php` | `révision` | Révision | Revision (sent back to proposer) |
+| `RecolteState.php` | `récolte` | Récolte | Récolte |
+| `EncoursState.php` | `en cours` | En cours | En cours |
+| `CompleteState.php` | `complété` | Complété | Terminal (moves to Archivé dashboard) |
+| `ArchiveState.php` | `archivé` | Archivé | All archives (le frigo + stage archives) |
 
 > **No `DraftState`** — default is `PropositionState`. Proposals are submitted immediately on creation.
-> **No `ReadyState`** — at ≥80% resources, project moves directly from `RécolteState` to `EncoursState`.
-> **No `SuspendedState`** — the correct class is `RévisionState`. Update any doc or code that references `SuspendedState`.
+> **No `ReadyState`** — moving from `RecolteState` to `EncoursState` is a manual launch action (chef de projet, with `leader_id` set), not an automatic 80%-resources gate.
+> **No `SuspendedState`** — the correct class is `RevisionState`. Update any doc or code that references `SuspendedState`.
 
 ### Registered transitions (from codebase)
 
 | From | To | Actor |
 |------|----|-------|
 | `PropositionState` | `EvaluationState` | Proposer (submits for review) |
-| `EvaluationState` | `RécolteState` | Direction (approve) |
-| `EvaluationState` | `ArchivéState` | Direction (refuse — le frigo) |
-| `EvaluationState` | `RévisionState` | Direction (request revision) |
-| `RévisionState` | `PropositionState` | Proposer (resubmits after editing) |
-| `PropositionState` | `ArchivéState` | System (3 months inactive) |
-| `RévisionState` | `ArchivéState` | System (3 months inactive) |
-| `RécolteState` | `EncoursState` | System / Récolte Manager (≥80% resources) |
-| `RécolteState` | `ArchivéState` | System (12 months elapsed) |
-| `EncoursState` | `ComplétéState` | Chef de projet (moves to Archivé dashboard) |
-| `EncoursState` | `ArchivéState` | System (3 months no comment) |
-| `ArchivéState` | `PropositionState` | Direction / Admin (restore) |
+| `EvaluationState` | `RecolteState` | Direction (approve) |
+| `EvaluationState` | `ArchiveState` | Direction (refuse — le frigo) |
+| `EvaluationState` | `RevisionState` | Direction (request revision) |
+| `RevisionState` | `PropositionState` | Proposer (resubmits after editing) |
+| `PropositionState` | `ArchiveState` | System (3 months inactive) |
+| `RevisionState` | `ArchiveState` | System (3 months inactive) |
+| `RecolteState` | `EncoursState` | Chef de projet — manual launch, requires `leader_id` set (not an automatic 80% gate) |
+| `RecolteState` | `ArchiveState` | System (12 months elapsed) |
+| `EncoursState` | `CompleteState` | Chef de projet (moves to Archivé dashboard) |
+| `EncoursState` | `ArchiveState` | System (3 months no comment) |
+| `ArchiveState` | `PropositionState` | Direction / Admin (restore) |
 
 ---
 
