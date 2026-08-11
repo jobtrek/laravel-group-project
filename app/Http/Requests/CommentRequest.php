@@ -13,7 +13,7 @@ class CommentRequest extends FormRequest
         $project = $this->route('project');
 
         return $project instanceof Project
-            && $project->canComment($this->user());
+            && $this->user()?->can('comment', $project);
     }
 
     /**

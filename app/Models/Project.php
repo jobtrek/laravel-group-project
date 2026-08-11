@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\Role;
 use App\Models\States\ArchiveState;
 use App\Models\States\CompleteState;
 use App\Models\States\EncoursState;
@@ -189,13 +188,7 @@ class Project extends Model
             return false;
         }
 
-        if ($user->can('manage everything')) {
-            return true;
-        }
-
-        return $this->status instanceof EncoursState
-            && $user->hasRole(Role::ChefDeProjet->value)
-            && $user->id === $this->leader_id;
+        return $user->can('comment', $this);
     }
 
     public function scopeNeedingProgressReminder(Builder $query): Builder
