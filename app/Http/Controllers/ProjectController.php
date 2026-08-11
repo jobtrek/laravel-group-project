@@ -46,7 +46,7 @@ class ProjectController extends Controller
 
         ProjectService::approve($project);
 
-        return Redirect::back()->with('status', "Le projet a été validé");
+        return Redirect::back()->with('status', 'Le projet a été validé');
     }
 
     public function deny(Project $project)

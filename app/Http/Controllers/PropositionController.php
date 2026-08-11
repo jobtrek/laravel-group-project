@@ -41,6 +41,6 @@ class PropositionController extends StageProjectController
     {
         $action->execute($request->validated(), auth()->id());
 
-        return redirect()->route('projects')->with('success', "Le projet a été proposé");
+        return redirect()->route('projects')->with('success', 'Le projet a été proposé');
     }
 }
