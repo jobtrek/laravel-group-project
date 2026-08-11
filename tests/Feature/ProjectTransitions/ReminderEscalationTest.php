@@ -1,11 +1,15 @@
 <?php
 
+use App\Enums\Role;
 use App\Jobs\SendMailProcess;
 use App\Jobs\SendStrongerMailProcess;
+use App\Mail\StrongerEmailReminder;
 use App\Models\Project;
 use App\Models\User;
+use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Bus;
+use Illuminate\Support\Facades\Mail;
 
 it('sends the friendly reminder once and only escalates after a week without activity', function () {
     Bus::fake();
@@ -41,4 +45,32 @@ it('sends the friendly reminder once and only escalates after a week without act
 
     Artisan::call('mail:send-warnings');
     Bus::assertDispatched(SendStrongerMailProcess::class);
+});
+
+it('CCs only users with the project manager role on the stronger reminder', function () {
+    Mail::fake();
+    $this->seed(RoleAndPermissionSeeder::class);
+
+    $leader = User::factory()->create();
+    $member = User::factory()->create();
+    $recolteManager = User::factory()->create();
+    $projectManager = User::factory()->create();
+    $projectManager->assignRole(Role::ProjectManager->value);
+
+    $project = Project::factory()->encours()->create([
+        'leader_id' => $leader->id,
+        'recolte_manager_id' => $recolteManager->id,
+    ]);
+    $project->members()->attach($member);
+
+    (new SendStrongerMailProcess($project))->handle();
+
+    Mail::assertSent(StrongerEmailReminder::class, function ($mail) use ($leader, $projectManager, $member, $recolteManager) {
+        $cc = collect($mail->cc)->pluck('address');
+
+        return $mail->hasTo($leader->email)
+            && $cc->contains($projectManager->email)
+            && ! $cc->contains($member->email)
+            && ! $cc->contains($recolteManager->email);
+    });
 });
