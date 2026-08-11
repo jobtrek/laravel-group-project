@@ -31,4 +31,19 @@ class PhaseResource extends Model
     {
         return $this->belongsTo(ProjectPhase::class);
     }
+
+    /**
+     * Shape this resource into the array form shared by the project edit
+     * and revision-correction forms.
+     *
+     * @return array{id: int|null, resource_type: string|null, amount_needed: string}
+     */
+    public function toFormArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'resource_type' => $this->resource_type,
+            'amount_needed' => (string) $this->amount_needed,
+        ];
+    }
 }

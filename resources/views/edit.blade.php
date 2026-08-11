@@ -15,19 +15,7 @@
                 $butData = old('but', $project->but ?? []);
                 $butData = count($butData) ? array_values($butData) : [''];
 
-                $phasesData = old('phases', $project->phases->map(fn ($phase) => [
-                    'id' => $phase->id,
-                    'titre' => $phase->name,
-                    'duree' => $phase->duration,
-                    'description' => $phase->description,
-                    'objectifs' => $phase->objectifs ?: [''],
-                    'livrables' => $phase->livrables ?: [''],
-                    'ressources' => $phase->resources->map(fn ($resource) => [
-                        'id' => $resource->id,
-                        'resource_type' => $resource->resource_type,
-                        'amount_needed' => (string) $resource->amount_needed,
-                    ])->all(),
-                ])->all());
+                $phasesData = old('phases', $project->phases->map(fn ($phase) => $phase->toFormArray())->all());
 
                 if (! count($phasesData)) {
                     $phasesData = [[
@@ -57,7 +45,7 @@
                     perimetre: @js(old('perimetre', $project->perimetre)),
                     but: @js($butData),
                     membres: @js(old('membres', $project->members->pluck('id')->map(fn ($id) => (string) $id)->all())),
-                    phases: @js($phasesData),
+                    ...window.phaseRepeaterFactory(@js($phasesData), { withIds: true, minResources: 0 }),
                     portee: @js(old('portee', $project->evaluation->portee)),
                     impact: @js(old('impact', $project->evaluation->impact)),
                     confiance: @js(old('confiance', $project->evaluation->confiance)),
@@ -68,25 +56,6 @@
 
                     addMembre() { this.membres.push(''); },
                     removeMembre(i) { this.membres.splice(i, 1); },
-
-                    addPhase() {
-                        this.phases.push({
-                            id: null, titre: '', duree: '', description: '',
-                            objectifs: [''], livrables: [''], ressources: [],
-                        });
-                    },
-                    removePhase(i) { this.phases.splice(i, 1); },
-
-                    addObjectif(p) { this.phases[p].objectifs.push(''); },
-                    removeObjectif(p, i) { this.phases[p].objectifs.splice(i, 1); },
-
-                    addLivrable(p) { this.phases[p].livrables.push(''); },
-                    removeLivrable(p, i) { this.phases[p].livrables.splice(i, 1); },
-
-                    addResource(p) {
-                        this.phases[p].ressources.push({ id: null, resource_type: '', amount_needed: '' });
-                    },
-                    removeResource(p, i) { this.phases[p].ressources.splice(i, 1); },
                 }"
             >
                 @csrf

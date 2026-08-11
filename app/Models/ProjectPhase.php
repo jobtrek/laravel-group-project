@@ -104,4 +104,23 @@ class ProjectPhase extends Model
 
         return number_format($found, 2).' / '.number_format((float) $resource->amount_needed, 2).' CHF';
     }
+
+    /**
+     * Shape this phase (and its resources) into the nested array form
+     * shared by the project edit and revision-correction forms.
+     *
+     * @return array{id: int|null, titre: string|null, duree: string|null, description: string|null, objectifs: array<int, string>, livrables: array<int, string>, ressources: array<int, array{id: int|null, resource_type: string|null, amount_needed: string}>}
+     */
+    public function toFormArray(): array
+    {
+        return [
+            'id' => $this->id,
+            'titre' => $this->name,
+            'duree' => $this->duration,
+            'description' => $this->description,
+            'objectifs' => $this->objectifs ?: [''],
+            'livrables' => $this->livrables ?: [''],
+            'ressources' => $this->resources->map(fn (PhaseResource $resource) => $resource->toFormArray())->all(),
+        ];
+    }
 }

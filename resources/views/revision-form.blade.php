@@ -63,20 +63,9 @@
 
                     @if ($comments->has('but'))
                         <x-revision.flagged-field label="Objectifs SMART" :comment="$comments['but']->content">
-                            <div x-data="{ items: (@js($old['but'] ?? $project->but ?? [])).map((value) => ({ id: crypto.randomUUID(), value })) }" class="mt-1 space-y-2"> <template
-                                    x-for="(item, idx) in items" :key="item.id">
-                                    <div class="flex gap-2">
-                                        <input type="text" :name="'corrections[but][' + idx + ']'" x-model="item.value" required
-                                            class="block w-full rounded-md border-gray-300 shadow-sm text-sm
-                                                                                           focus:ring-indigo-500 focus:border-indigo-500">
-                                        <button type="button" @click="items.splice(idx, 1)" x-show="items.length > 1"
-                                            class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
-                                    </div>
-                                </template>
-                                <button type="button" @click="items.push({ id: crypto.randomUUID(), value: '' })"
-                                    class="mt-1 text-sm text-indigo-600 hover:underline">
-                                    + Ajouter un objectif
-                                </button>
+                            <div x-data="{ items: window.listHelpers.toIdList(@js($old['but'] ?? $project->but ?? [])) }" class="mt-1">
+                                <x-proposition.repeatable-list items="items" name-expr="'corrections[but][' + idx + ']'"
+                                    add-label="+ Ajouter un objectif" :required="true" />
                             </div>
                         </x-revision.flagged-field>
                     @endif
@@ -199,58 +188,31 @@
 
                         @if ($comments->has("phases.{$i}.objectifs"))
                             <x-revision.flagged-field label="Objectifs" :comment="$comments['phases.' . $i . '.objectifs']->content">
-                                <div x-data="{ items: (@js($old["phases.{$i}.objectifs"] ?? $phase->objectifs)).map((value) => ({ id: crypto.randomUUID(), value })) }"
-                                    class="mt-1 space-y-2">
-                                    <template x-for="(item, idx) in items" :key="item.id">
-                                        <div class="flex gap-2">
-                                            <input type="text" :name="'corrections[phases.{{ $i }}.objectifs][' + idx + ']'"
-                                                x-model="item.value" required
-                                                class="block w-full rounded-md border-gray-300 shadow-sm text-sm
-                                                                                                                   focus:ring-indigo-500 focus:border-indigo-500">
-                                            <button type="button" @click="items.splice(idx, 1)" x-show="items.length > 1"
-                                                class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
-                                        </div>
-                                    </template>
-                                    <button type="button" @click="items.push({ id: crypto.randomUUID(), value: '' })"
-                                        class="mt-1 text-sm text-indigo-600 hover:underline">
-                                        + Ajouter un objectif
-                                    </button>
+                                <div x-data="{ items: window.listHelpers.toIdList(@js($old["phases.{$i}.objectifs"] ?? $phase->objectifs)) }" class="mt-1">
+                                    <x-proposition.repeatable-list items="items"
+                                        name-expr="'corrections[phases.{{ $i }}.objectifs][' + idx + ']'"
+                                        add-label="+ Ajouter un objectif" :required="true" />
                                 </div>
                             </x-revision.flagged-field>
                         @endif
 
                         @if ($comments->has("phases.{$i}.livrables"))
                             <x-revision.flagged-field label="Livrables" :comment="$comments['phases.' . $i . '.livrables']->content">
-                                <div x-data="{ items: (@js($old["phases.{$i}.livrables"] ?? $phase->livrables)).map((value) => ({ id: crypto.randomUUID(), value })) }"
-                                    class="mt-1 space-y-2">
-                                    <template x-for="(item, idx) in items" :key="item.id">
-                                        <div class="flex gap-2">
-                                            <input type="text" :name="'corrections[phases.{{ $i }}.livrables][' + idx + ']'"
-                                                x-model="item.value" required
-                                                class="block w-full rounded-md border-gray-300 shadow-sm text-sm
-                                                                                                                   focus:ring-indigo-500 focus:border-indigo-500">
-                                            <button type="button" @click="items.splice(idx, 1)" x-show="items.length > 1"
-                                                class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
-                                        </div>
-                                    </template>
-                                    <button type="button" @click="items.push({ id: crypto.randomUUID(), value: '' })"
-                                        class="mt-1 text-sm text-indigo-600 hover:underline">
-                                        + Ajouter un livrable
-                                    </button>
+                                <div x-data="{ items: window.listHelpers.toIdList(@js($old["phases.{$i}.livrables"] ?? $phase->livrables)) }" class="mt-1">
+                                    <x-proposition.repeatable-list items="items"
+                                        name-expr="'corrections[phases.{{ $i }}.livrables][' + idx + ']'"
+                                        add-label="+ Ajouter un livrable" :required="true" />
                                 </div>
                             </x-revision.flagged-field>
                         @endif
 
                         @if ($comments->has("phases.{$i}.ressources"))
                             @php
-                                $defaultResources = $phase->resources->map(fn($r) => [
-                                    'resource_type' => $r->resource_type,
-                                    'amount_needed' => $r->amount_needed,
-                                ])->values()->toArray();
+                                $defaultResources = $phase->resources->map(fn ($r) => $r->toFormArray())->values()->toArray();
                                 $initResources = $old["phases.{$i}.ressources"] ?? $defaultResources;
                             @endphp
                             <x-revision.flagged-field label="Ressources nécessaires" :comment="$comments['phases.' . $i . '.ressources']->content">
-                                <div x-data="{ resources: (@js($initResources)).map((r) => ({ id: crypto.randomUUID(), ...r })) }" class="mt-1 space-y-2">
+                                <div x-data="{ resources: window.listHelpers.toIdRows(@js($initResources), { resource_type: '', amount_needed: '' }) }" class="mt-1 space-y-2">
                                     <template x-for="(res, ri) in resources" :key="res.id">
                                         <div class="flex gap-2 items-center">
                                             <input type="text"
