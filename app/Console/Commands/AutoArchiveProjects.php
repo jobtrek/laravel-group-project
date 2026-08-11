@@ -2,6 +2,8 @@
 
 namespace App\Console\Commands;
 
+use App\Enums\Role;
+use App\Mail\ProjectArchivedMail;
 use App\Mail\ProjectsPermanentlyDeletedMail;
 use App\Models\Project;
 use App\Models\States\ArchiveState;
@@ -11,10 +13,10 @@ use App\Models\States\PropositionState;
 use App\Models\States\RecolteState;
 use App\Models\States\RevisionState;
 use App\Models\User;
-use App\Enums\Role;
-use Illuminate\Support\Facades\Log;
+use App\Service\ProjectService;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\Mail;
 
 class AutoArchiveProjects extends Command
@@ -191,13 +193,53 @@ class AutoArchiveProjects extends Command
         $admins = User::role(Role::Admin->value)->get();
 
         foreach ($admins as $admin) {
-            // Using ->queue() instead of ->send() to prevent the script from hanging during SMTP delays
             Mail::to($admin->email)->queue(new ProjectsPermanentlyDeletedMail($admin, $deletedProjects));
         }
     }
 
-    // private function archive(Project $project) { ... }
-    // private function notify(Project $project, array $recipients) { ... }
-    // private function recolteRecipients(Project $project): array { ... }
-    // private function leaderAndMembers(Project $project): array { ... }
+    private function archive(Project $project): ?Project
+    {
+        return DB::transaction(function () use ($project): ?Project {
+            $locked = Project::whereKey($project->id)->lockForUpdate()->first();
+
+            if (! $locked || $locked->status instanceof ArchiveState) {
+                return null; // Already archived by a concurrent run — skip silently.
+            }
+
+            $locked->setRelations($project->getRelations());
+            ProjectService::archive($locked);
+
+            return $locked;
+        });
+    }
+
+    /** @return array<int, User> */
+    private function recolteRecipients(Project $project): array
+    {
+        return collect([$project->proposer, $project->recolteManager, $project->leader])
+            ->merge($project->members)
+            ->filter()
+            ->unique('email')
+            ->values()
+            ->all();
+    }
+
+    /** @return array<int, User> */
+    private function leaderAndMembers(Project $project): array
+    {
+        return collect([$project->leader])
+            ->merge($project->members)
+            ->filter()
+            ->unique('email')
+            ->values()
+            ->all();
+    }
+
+    /** @param array<int, User> $recipients */
+    private function notify(Project $project, array $recipients): void
+    {
+        foreach ($recipients as $user) {
+            Mail::to($user->email)->queue(new ProjectArchivedMail($user, $project));
+        }
+    }
 }
