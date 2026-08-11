@@ -3,12 +3,7 @@
     use App\Models\States\EncoursState;
     use App\Models\States\EvaluationState;
 
-    function canModify($project)
-    {
-        return (auth()->user()->can('edit project') && auth()->id() === $project->leader_id) ||
-            auth()->id() === $project->proposer_id ||
-            auth()->user()->can('manage everything');
-    }
+
 @endphp
 
 <x-app-layout>
