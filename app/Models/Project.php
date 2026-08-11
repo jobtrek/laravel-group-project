@@ -193,6 +193,10 @@ class Project extends Model
             return true;
         }
 
+        if ($this->status instanceof EvaluationState) {
+            return $user->hasRole(Role::Direction->value);
+        }
+
         return $this->status instanceof EncoursState
             && $user->hasRole(Role::ChefDeProjet->value)
             && $user->id === $this->leader_id;
