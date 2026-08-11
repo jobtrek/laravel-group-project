@@ -5,6 +5,7 @@ namespace App\Console\Commands;
 use App\Mail\ProjectArchivedMail;
 use App\Models\Project;
 use App\Models\States\ArchiveState;
+use App\Models\States\CompleteState;
 use App\Models\States\EvaluationState;
 use App\Models\States\PropositionState;
 use App\Models\States\RecolteState;
@@ -19,14 +20,18 @@ class AutoArchiveProjects extends Command
 {
     protected $signature = 'projects:auto-archive';
 
-    protected $description = 'Archive inactive projects. Threshold depends on the project\'s current stage.';
+    protected $description = 'Archive inactive projects, and permanently delete projects past their retention window.';
 
     public function handle(): int
     {
-        $archived = $this->archiveStalePropositionsAndEvaluations()
-            + $this->archiveStaleRecolte();
+        $archivedCount = $this->archiveStalePropositionsAndEvaluations()
+            + $this->archiveStaleRecolte()
+            + $this->archiveStaleEncours();
 
-        $this->info("Archived {$archived} project(s).");
+        $deletedCount = $this->deleteStaleCompletedProjects()
+            + $this->deleteStaleArchivedProjects();
+
+        $this->info("Archived {$archivedCount} project(s), permanently deleted {$deletedCount} project(s).");
 
         return self::SUCCESS;
     }
@@ -84,6 +89,84 @@ class AutoArchiveProjects extends Command
         return $archivedCount;
     }
 
+    private function archiveStaleEncours(): int
+    {
+        $staleAfterMonths = (int) config('projects.stale_after_months', 3);
+
+        $projects = Project::with(['leader', 'members'])
+            ->needingProgressReminder()
+            ->get();
+
+        $archivedCount = 0;
+
+        foreach ($projects as $project) {
+            $lastActivityAt = $project->last_leader_comment_at ?? $project->updated_at;
+
+            if (! $lastActivityAt->lt(now()->subMonths($staleAfterMonths))) {
+                continue;
+            }
+
+            if ($archived = $this->archive($project)) {
+                $this->notify($archived, $this->leaderAndMembers($archived));
+                $archivedCount++;
+            }
+        }
+
+        return $archivedCount;
+    }
+
+    private function deleteStaleCompletedProjects(): int
+    {
+        $completedRetentionMonths = (int) config('projects.completed_retention_months', 12);
+
+        $projects = Project::whereState('status', CompleteState::class)
+            ->where('updated_at', '<', now()->subMonths($completedRetentionMonths))
+            ->get();
+
+        $deletedCount = 0;
+
+        foreach ($projects as $project) {
+            if ($this->deleteIfStillEligible($project, CompleteState::class)) {
+                $deletedCount++;
+            }
+        }
+
+        return $deletedCount;
+    }
+
+    private function deleteStaleArchivedProjects(): int
+    {
+        $archiveRetentionMonths = (int) config('projects.archive_retention_months', 12);
+
+        $projects = Project::whereState('status', ArchiveState::class)
+            ->whereNotNull('archived_at')
+            ->where('archived_at', '<', now()->subMonths($archiveRetentionMonths))
+            ->get();
+
+        $deletedCount = 0;
+
+        foreach ($projects as $project) {
+            if ($this->deleteIfStillEligible($project, ArchiveState::class)) {
+                $deletedCount++;
+            }
+        }
+
+        return $deletedCount;
+    }
+
+    private function deleteIfStillEligible(Project $project, string $expectedStateClass): bool
+    {
+        return DB::transaction(function () use ($project, $expectedStateClass): bool {
+            $locked = Project::whereKey($project->id)->lockForUpdate()->first();
+
+            if (! $locked || ! $locked->status instanceof $expectedStateClass) {
+                return false; // Restored, or state changed by another process — don't delete.
+            }
+
+            return (bool) $locked->delete();
+        });
+    }
+
     private function archive(Project $project): ?Project
     {
         return DB::transaction(function () use ($project): ?Project {
@@ -104,6 +187,17 @@ class AutoArchiveProjects extends Command
     private function recolteRecipients(Project $project): array
     {
         return collect([$project->proposer, $project->recolteManager, $project->leader])
+            ->merge($project->members)
+            ->filter()
+            ->unique('email')
+            ->values()
+            ->all();
+    }
+
+    /** @return array<int, User> */
+    private function leaderAndMembers(Project $project): array
+    {
+        return collect([$project->leader])
             ->merge($project->members)
             ->filter()
             ->unique('email')
