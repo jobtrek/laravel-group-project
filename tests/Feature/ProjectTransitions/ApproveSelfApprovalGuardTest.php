@@ -90,6 +90,19 @@ it('allows a direction user to deny a project they did not propose', function ()
     expect($project->fresh()->status)->toBeInstanceOf(ArchiveState::class);
 });
 
+it('allows an admin with manage everything permission to deny their own project', function () {
+
+    $admin = User::factory()->create();
+    $admin->givePermissionTo(['deny', 'manage everything']);
+
+    $project = Project::factory()->evaluation()->create(['proposer_id' => $admin->id]);
+
+    $response = $this->actingAs($admin)->patch(route('projects.deny', $project));
+
+    $response->assertRedirect();
+    expect($project->fresh()->status)->toBeInstanceOf(ArchiveState::class);
+});
+
 it('forbids a direction user from requesting more info on their own project', function () {
 
     $direction = User::factory()->create();
