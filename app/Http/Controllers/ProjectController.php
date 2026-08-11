@@ -11,6 +11,8 @@ use App\Http\Requests\RequestMoreInfoRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
 use App\Models\ProjectPhase;
+use App\Models\States\ArchiveState;
+use App\Models\States\CompleteState;
 use App\Models\States\EncoursState;
 use App\Models\States\EvaluationState;
 use App\Models\States\RevisionState;
@@ -29,7 +31,8 @@ class ProjectController extends Controller
     public function index(FilterProjectsRequest $request)
     {
         $projects = $this->filter->apply(
-            Project::with(['proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions']),
+            Project::with(['proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions'])
+                ->whereNotState('status', [ArchiveState::class, CompleteState::class]),
             $request
         )->paginate((int) config('projects.per_page', 10))->withQueryString();
 
