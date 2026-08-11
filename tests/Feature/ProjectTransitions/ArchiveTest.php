@@ -10,6 +10,7 @@ use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
+use Database\Seeders\RoleAndPermissionSeeder;
 
 it('archives a project, snapshotting its prior stage and setting archived_at', function () {
     $project = Project::factory()->proposition()->create();
@@ -60,6 +61,7 @@ it('keeps AutoArchiveProjects archiving stale En cours projects with no recent l
 
 it('permanently deletes Completed projects past their retention window and notifies admins', function () {
     Mail::fake();
+    $this->seed(RoleAndPermissionSeeder::class);
     $admin = User::factory()->create();
     $admin->assignRole(Role::Admin->value);
 
@@ -75,6 +77,7 @@ it('permanently deletes Completed projects past their retention window and notif
 
 it('permanently deletes Archived projects past their retention window and notifies admins', function () {
     Mail::fake();
+    $this->seed(RoleAndPermissionSeeder::class);
     $admin = User::factory()->create();
     $admin->assignRole(Role::Admin->value);
 
