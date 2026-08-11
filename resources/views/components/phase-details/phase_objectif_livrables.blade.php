@@ -21,7 +21,7 @@
             <p class="text-sm font-semibold {{ $completed ? 'text-green-800' : 'text-gray-800' }}">{{ $objectifs_text }}</p>
         @endif
     </div>
-    @if($project && (string) $project->status === 'en cours')
+    @if($project && $project->status instanceof \App\Models\States\EncoursState)
         @can('edit project', $project)
             <form method="POST" action="{{ route('phase_details.items.toggle', [$project, $phase, $itemType, $itemIndex]) }}">
                 @csrf
