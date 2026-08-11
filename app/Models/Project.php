@@ -2,7 +2,6 @@
 
 namespace App\Models;
 
-use App\Enums\Role;
 use App\Models\States\ArchiveState;
 use App\Models\States\CompleteState;
 use App\Models\States\EncoursState;

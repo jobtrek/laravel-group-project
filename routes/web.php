@@ -71,7 +71,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::controller(ResourceContributionController::class)->prefix('/projects/{project}/resources')
-        ->middleware('can:add resources')->group(function () {
+        ->middleware('can:add resources')
+        ->group(function () {
             Route::get('/create', 'create')->name('projects.resources.create');
             Route::post('/', 'store')->name('projects.resources.store');
         });
