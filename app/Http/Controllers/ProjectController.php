@@ -42,7 +42,7 @@ class ProjectController extends Controller
 
     public function approve(Project $project)
     {
-        Gate::authorize('reviewOwnProposal', $project);
+        Gate::authorize('review', $project);
 
         ProjectService::approve($project);
 
@@ -51,7 +51,7 @@ class ProjectController extends Controller
 
     public function deny(Project $project)
     {
-        Gate::authorize('reviewOwnProposal', $project);
+        Gate::authorize('review', $project);
         abort_if(! $project->status instanceof EvaluationState, 403);
         ProjectService::deny($project);
 
@@ -70,7 +70,7 @@ class ProjectController extends Controller
         Project $project,
         RequestMoreInfoAction $action,
     ): RedirectResponse {
-        Gate::authorize('reviewOwnProposal', $project);
+        Gate::authorize('review', $project);
 
         $action->execute(
             project: $project,
