@@ -18,7 +18,7 @@ use Carbon\Carbon;
 <div class="relative border border-white/25 bg-gray-50 text-sm font-medium hover:border-blue-500 transition-colors rounded-2xl p-3 sm:p-5 flex flex-col gap-3">
 
     <a href="{{ route('projects-details', $project) }}"
-       class="absolute inset-0 z-0 text-gray-7000"
+       class="absolute inset-0 z-0 text-gray-700"
        aria-label="Voir le projet {{ $title }}">
     </a>
 
