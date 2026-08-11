@@ -43,7 +43,7 @@ Route::patch(
     ->name('phase_details.items.toggle')
     ->scopeBindings();
 
-Route::middleware('auth')->group(function () {
+Route::middleware(['auth', 'verified'])->group(function () {
     Route::get('/create', fn () => view('create'))->name('create');
 
     Route::post('/propositions', [PropositionController::class, 'store'])->name('proposition.store');
