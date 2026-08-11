@@ -7,6 +7,7 @@ namespace App\Http\Controllers;
 use App\Http\Requests\ToggleItemCompletionRequest;
 use App\Models\Project;
 use App\Models\ProjectPhase;
+use App\Models\States\EncoursState;
 use Illuminate\Http\RedirectResponse;
 
 class PhaseItemCompletionController extends Controller
@@ -27,7 +28,7 @@ class PhaseItemCompletionController extends Controller
         };
 
         abort_if($itemIndex < 0 || $itemIndex >= count($items), 404);
-        abort_if((string) $project->status !== 'en cours', 403);
+        abort_if(! ($project->status instanceof EncoursState), 403);
 
         $completed = $request->boolean('completed');
 
