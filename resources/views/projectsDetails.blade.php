@@ -119,7 +119,7 @@
                                 @endforelse
                             </div>
 
-                            @if ($project->canComment(auth()->user()))
+                            @can('comment', $project)
                                 <form action="{{ route('projects.comments.store', $project) }}" method="POST"
                                       class="mt-3 flex flex-col gap-2">
                                     @csrf
@@ -131,7 +131,7 @@
                                         Commenter
                                     </button>
                                 </form>
-                            @endif
+                            @endcan
                         </div>
                     @endif
 

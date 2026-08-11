@@ -189,17 +189,7 @@ class Project extends Model
             return false;
         }
 
-        if ($user->can('manage everything')) {
-            return true;
-        }
-
-        if ($this->status instanceof EvaluationState) {
-            return $user->hasRole(Role::Direction->value);
-        }
-
-        return $this->status instanceof EncoursState
-            && $user->hasRole(Role::ChefDeProjet->value)
-            && $user->id === $this->leader_id;
+        return $user->can('comment', $this);
     }
 
     public function scopeNeedingProgressReminder(Builder $query): Builder

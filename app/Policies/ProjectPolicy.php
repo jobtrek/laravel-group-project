@@ -5,7 +5,6 @@ namespace App\Policies;
 use App\Enums\Role;
 use App\Models\Project;
 use App\Models\States\EncoursState;
-use App\Models\States\EvaluationState;
 use App\Models\User;
 
 class ProjectPolicy
@@ -33,15 +32,8 @@ class ProjectPolicy
             return true;
         }
 
-        if ($project->status instanceof EvaluationState) {
-            return $user->hasRole(Role::Direction->value);
-        }
-
-        if ($project->status instanceof EncoursState) {
-            return $user->hasRole(Role::ChefDeProjet->value)
-                && $user->id === $project->leader_id;
-        }
-
-        return false;
+        return $project->status instanceof EncoursState
+            && $user->hasRole(Role::ChefDeProjet->value)
+            && $user->id === $project->leader_id;
     }
 }
