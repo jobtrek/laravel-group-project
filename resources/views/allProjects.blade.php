@@ -34,17 +34,15 @@
                     </div>
                     <div class="flex flex-col gap-3.5">
                         @foreach($projects as $project)
-                            @if($project && !$project->isArchived() && !$project->isCompleted())
-                                <x-projects.displayProjects
-                                        :project="$project"
-                                        :status="$project->status"
-                                        :title="$project->title"
-                                        :chef="$project->leader?->name ?? $project->proposer?->name"
-                                        :progress="$project->progress"
-                                        :importance="$project->importance"
-                                        :creation-date="$project->created_at?->locale('fr')?->translatedFormat('d M Y') ?? '—'"
-                                        :updated_at="$project->updated_at"/>
-                            @endif
+                            <x-projects.displayProjects
+                                    :project="$project"
+                                    :status="$project->status"
+                                    :title="$project->title"
+                                    :chef="$project->leader?->name ?? $project->proposer?->name"
+                                    :progress="$project->progress"
+                                    :importance="$project->importance"
+                                    :creation-date="$project->created_at?->locale('fr')?->translatedFormat('d M Y') ?? '—'"
+                                    :updated_at="$project->updated_at"/>
                         @endforeach
                     </div>
 
