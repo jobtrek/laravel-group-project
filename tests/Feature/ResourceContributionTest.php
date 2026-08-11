@@ -82,6 +82,22 @@ it('rejects a contribution that exceeds what is still needed for that specific r
     $response->assertSessionHasErrors('amount');
 });
 
+it('rejects a contribution amount with more than two decimals', function () {
+    $user = User::factory()->create()->assignRole('recolte_manager');
+    $project = Project::factory()->recolte()->create();
+    $phase = ProjectPhase::factory()->create(['project_id' => $project->id]);
+    PhaseResource::factory()->create(['phase_id' => $phase->id, 'resource_type' => 'Budget', 'amount_needed' => 100]);
+
+    $response = $this->actingAs($user)->post(route('projects.resources.store', $project), [
+        'phase_id' => $phase->id,
+        'resource_type' => 'Budget',
+        'amount' => 10.015,
+    ]);
+
+    $response->assertSessionHasErrors('amount');
+    expect(ResourceContribution::count())->toBe(0);
+});
+
 it('rejects a contribution on an archived project', function () {
     $user = User::factory()->create()->assignRole('recolte_manager');
     $project = Project::factory()->archive()->create();
