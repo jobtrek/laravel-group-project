@@ -95,3 +95,32 @@ it('rejects a contribution on an archived project', function () {
     $response->assertNotFound();
     expect(ResourceContribution::count())->toBe(0);
 });
+
+it('rejects a contribution that would push the project past its 200% aggregate cap', function () {
+    $user = User::factory()->create()->assignRole('recolte_manager');
+    $project = Project::factory()->recolte()->create();
+    $phase = ProjectPhase::factory()->create(['project_id' => $project->id]);
+    PhaseResource::factory()->create(['phase_id' => $phase->id, 'resource_type' => 'Budget', 'amount_needed' => 1000]);
+    PhaseResource::factory()->create(['phase_id' => $phase->id, 'resource_type' => 'Volunteers', 'amount_needed' => 1000]);
+
+    $this->actingAs($user)->post(route('projects.resources.store', $project), [
+        'phase_id' => $phase->id,
+        'resource_type' => 'Budget',
+        'amount' => 2000,
+    ])->assertRedirect(route('recolte'));
+
+    $this->actingAs($user)->post(route('projects.resources.store', $project), [
+        'phase_id' => $phase->id,
+        'resource_type' => 'Volunteers',
+        'amount' => 2000,
+    ])->assertRedirect(route('recolte'));
+
+    $response = $this->actingAs($user)->post(route('projects.resources.store', $project), [
+        'phase_id' => $phase->id,
+        'resource_type' => 'Budget',
+        'amount' => 0.01,
+    ]);
+
+    $response->assertSessionHasErrors('amount');
+    expect(ResourceContribution::count())->toBe(2);
+});

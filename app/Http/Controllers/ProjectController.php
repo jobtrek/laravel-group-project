@@ -46,10 +46,11 @@ class ProjectController extends Controller
     public function approve(Project $project)
     {
         Gate::authorize('review', $project);
+        abort_if(! $project->status instanceof EvaluationState, 403);
 
         ProjectService::approve($project);
 
-        return Redirect::back()->with('status', 'Le projet a été validé');
+        return Redirect::back()->with('status', 'project-approved');
     }
 
     public function deny(Project $project)

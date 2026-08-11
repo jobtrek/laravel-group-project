@@ -27,7 +27,7 @@ class PhaseItemCompletionController extends Controller
         };
 
         abort_if($itemIndex < 0 || $itemIndex >= count($items), 404);
-        abort_if((string) $project->status !== 'en cours', 403);
+        abort_if(! $project->isInProgress(), 403);
 
         $completed = $request->boolean('completed');
 

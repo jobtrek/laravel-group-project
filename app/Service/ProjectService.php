@@ -12,20 +12,11 @@ use App\Models\States\EvaluationState;
 use App\Models\States\PropositionState;
 use App\Models\States\RecolteState;
 use App\Models\States\RevisionState;
-use App\Models\User;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 
 class ProjectService
 {
-    public static function getAllProjectsWithUsers(): array
-    {
-        $projects = Project::select('id', 'title', 'description')->with('evaluation')->get();
-        $users = User::select('id', 'name')->get();
-
-        return compact('projects', 'users');
-    }
-
     public static function review(Project $project): void
     {
         $project->status->transitionTo(EvaluationState::class);

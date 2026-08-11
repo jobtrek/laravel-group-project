@@ -46,16 +46,4 @@ enum Stage: string
             default => null,
         };
     }
-
-    public function statuses(): array
-    {
-        return match ($this) {
-            self::Propositions => ['proposition', 'révision'],
-            self::Evaluation => ['évaluation'],
-            self::Recolte => ['récolte'],
-            self::EnCours => ['en cours'],
-            self::Complete => ['complété'],
-            self::Archive => ['archivé'],
-        };
-    }
 }

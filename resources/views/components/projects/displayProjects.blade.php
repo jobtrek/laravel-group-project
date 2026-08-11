@@ -9,11 +9,6 @@
     'updatedAt' => null
 ])
 
-<?php
-
-$bgColor = '';
-use Carbon\Carbon;
-
 ?>
 <div class="relative border border-white/25 bg-gray-50 text-sm font-medium hover:border-blue-500 transition-colors rounded-2xl p-3 sm:p-5 flex flex-col gap-3">
 

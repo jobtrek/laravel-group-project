@@ -35,7 +35,6 @@ class Project extends Model
         'proposer_id',
         'leader_id',
         'recolte_manager_id',
-        'ressources_totales',
     ];
 
     protected $casts = [

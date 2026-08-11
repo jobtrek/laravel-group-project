@@ -3,6 +3,7 @@
 use App\Models\Project;
 use App\Models\States\ArchiveState;
 use App\Models\States\EvaluationState;
+use App\Models\States\PropositionState;
 use App\Models\States\RecolteState;
 use App\Models\States\RevisionState;
 use App\Models\User;
@@ -48,6 +49,20 @@ it('allows a direction user to approve a project they did not propose', function
 
     $response->assertRedirect();
     expect($project->fresh()->status)->toBeInstanceOf(RecolteState::class);
+});
+
+it('forbids approving a project that is not in Evaluation', function () {
+
+    $direction = User::factory()->create();
+    $direction->givePermissionTo('approve');
+
+    $proposer = User::factory()->create();
+    $project = Project::factory()->proposition()->create(['proposer_id' => $proposer->id]);
+
+    $response = $this->actingAs($direction)->patch(route('projects.approve', $project));
+
+    $response->assertForbidden();
+    expect($project->fresh()->status)->toBeInstanceOf(PropositionState::class);
 });
 
 it('allows an admin with manage everything permission to approve their own project', function () {

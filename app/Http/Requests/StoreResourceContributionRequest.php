@@ -3,6 +3,8 @@
 namespace App\Http\Requests;
 
 use App\Models\Project;
+use App\Models\ProjectPhase;
+use App\Models\ResourceContribution;
 use App\Models\States\EncoursState;
 use App\Models\States\RecolteState;
 use Illuminate\Foundation\Http\FormRequest;
@@ -60,7 +62,6 @@ class StoreResourceContributionRequest extends FormRequest
             }
 
             $amount = round((float) $this->input('amount'), 2);
-            $maxAllowed = round((float) $resource->amount_needed * 2, 2);
             $found = (float) $phase->contributions->where('resource_type', $resourceType)->sum('amount');
             $remaining = round(((float) $resource->amount_needed * 2) - $found, 2);
 
@@ -68,6 +69,24 @@ class StoreResourceContributionRequest extends FormRequest
                 $validator->errors()->add(
                     'amount',
                     sprintf('This contribution exceeds what is still needed for this resource type (%.2f remaining).', $remaining)
+                );
+
+                return;
+            }
+
+            $phases = $project->phases()->with('resources')->get();
+            $totalNeeded = $phases->sum(fn (ProjectPhase $phase): float => (float) $phase->resources->sum('amount_needed'));
+
+            if ($totalNeeded <= 0) {
+                return;
+            }
+
+            $totalFound = (float) ResourceContribution::whereIn('phase_id', $phases->pluck('id'))->sum('amount');
+
+            if ((($totalFound + $amount) / $totalNeeded) * 100 > 200) {
+                $validator->errors()->add(
+                    'amount',
+                    sprintf('This contribution would exceed the 200%% project cap (%.2f remaining).', ($totalNeeded * 2) - $totalFound)
                 );
             }
         });

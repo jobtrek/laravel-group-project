@@ -37,7 +37,7 @@ After making changes, always run `composer test` and `php artisan pint` before c
 - **Roles** (stored as `role` on `users`): `proposer`, `project_lead`, `direction`, `recolte_manager`
 - **Lifecycle statuses** on `projects.status`: `proposition`, `direction`, `recolte`, `en_cours`, `archived`, `frigo`
 - Permissions are **role + status scoped** — a proposer only sees their own projects except in `en_cours` (visible to all)
-- The **80 % funding rule** (`found_amount / target_amount >= 0.8`) gates the `recolte → en_cours` transition
+- **Récolte → En cours is a manual launch** by the chef de projet once `leader_id` is assigned (`ProjectService::moveToEncours()`); there is **no automatic 80 % funding gate** — `found_amount / target_amount` is a UI progress figure only (see `docs/Source_of_truth.md`)
 - **Age-based colour coding** is per-stage: orange at +1 month, red at +2 months, auto-archived at +3 months (Récolte auto-archives at 12 months)
 - **Email escalation** for `en_cours`: reminder at 1 month stale, escalation (CC all follow-up roles) 1 week later — implement via queued jobs
 
