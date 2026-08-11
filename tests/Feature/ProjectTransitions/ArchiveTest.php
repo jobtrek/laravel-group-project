@@ -8,9 +8,9 @@ use App\Models\States\ArchiveState;
 use App\Models\States\PropositionState;
 use App\Models\User;
 use App\Service\ProjectService;
+use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Support\Facades\Artisan;
 use Illuminate\Support\Facades\Mail;
-use Database\Seeders\RoleAndPermissionSeeder;
 
 it('archives a project, snapshotting its prior stage and setting archived_at', function () {
     $project = Project::factory()->proposition()->create();
