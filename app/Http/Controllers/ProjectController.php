@@ -49,7 +49,7 @@ class ProjectController extends Controller
 
         ProjectService::approve($project);
 
-        return Redirect::back()->with('status', 'project-approved');
+        return Redirect::back()->with('status', 'Le projet a été validé');
     }
 
     public function deny(Project $project)
@@ -58,14 +58,14 @@ class ProjectController extends Controller
         abort_if(! $project->status instanceof EvaluationState, 403);
         ProjectService::deny($project);
 
-        return Redirect::back()->with('status', 'project-denied');
+        return Redirect::back()->with('status', 'Projet refusé et archivé avec succès');
     }
 
     public function sendToDirection(Project $project)
     {
         ProjectService::review($project);
 
-        return Redirect::back()->with('status', 'project-sent-to-direction');
+        return Redirect::back()->with('status', 'Projet soumis pour évaluation');
     }
 
     public function requestMoreInfo(

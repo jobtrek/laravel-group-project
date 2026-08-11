@@ -60,6 +60,6 @@ class RecolteController extends StageProjectController
             return redirect()->back()->with('error', 'Project cannot be moved to Active state. It must be in Recolte state with a project chief assigned.');
         }
 
-        return redirect()->route('en-cours')->with('success', 'Project moved to Active state successfully.');
+        return redirect()->route('en-cours')->with('success', 'Projets mis en activité avec succès');
     }
 }
