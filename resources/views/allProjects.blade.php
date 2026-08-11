@@ -34,7 +34,7 @@
                     </div>
                     <div class="flex flex-col gap-3.5">
                         @foreach($projects as $project)
-                            @if($project && $project->status !== 'archivé' && $project->status !== 'complété')
+                            @if($project && !$project->isArchived() && !$project->isCompleted())
                                 <x-projects.displayProjects
                                         :project="$project"
                                         :status="$project->status"

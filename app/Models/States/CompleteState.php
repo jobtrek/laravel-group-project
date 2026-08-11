@@ -8,6 +8,11 @@ class CompleteState extends ProjectState
 
     public function label(): string
     {
-        return 'complété';
+        return 'Complété';
+    }
+
+    public function color(): string
+    {
+        return 'inline-block rounded-full bg-green-100 px-3 py-1 text-xs font-medium text-green-700';
     }
 }
