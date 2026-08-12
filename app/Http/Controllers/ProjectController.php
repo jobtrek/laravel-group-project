@@ -4,7 +4,6 @@ namespace App\Http\Controllers;
 
 use App\Actions\RequestMoreInfoAction;
 use App\Actions\UpdateProjectAction;
-use App\Enums\Role;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Http\Requests\RequestMoreInfoRequest;
@@ -13,9 +12,7 @@ use App\Models\Project;
 use App\Models\ProjectPhase;
 use App\Models\States\ArchiveState;
 use App\Models\States\CompleteState;
-use App\Models\States\EncoursState;
 use App\Models\States\EvaluationState;
-use App\Models\States\RevisionState;
 use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Http\RedirectResponse;
@@ -87,11 +84,8 @@ class ProjectController extends Controller
 
     public function reSubmit(Project $project)
     {
-        abort_if(
-            ($project->proposer_id !== auth()->id() && ! auth()->user()?->can('manage everything'))
-                || ! $project->status instanceof RevisionState,
-            403
-        );
+        Gate::authorize('resubmit', $project);
+
         ProjectService::reSubmit($project);
 
         return Redirect::back()->with('status', 'project-resubmitted');
@@ -117,11 +111,7 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
-        abort_if(
-            ! $project->status->isEditable()
-                || (auth()->id() !== $project->proposer_id && ! auth()->user()?->can('manage everything')),
-            403
-        );
+        Gate::authorize('update', $project);
 
         $project->load(['phases.resources', 'evaluation', 'members']);
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
@@ -139,14 +129,7 @@ class ProjectController extends Controller
 
     public function complete(Project $project)
     {
-        abort_if(
-            ! $project->status instanceof EncoursState
-                || $project->progress < 100
-                || (auth()->id() !== $project->leader_id
-                    && ! auth()->user()?->hasRole(Role::ProjectManager->value)
-                    && ! auth()->user()?->can('manage everything')),
-            403
-        );
+        Gate::authorize('complete', $project);
 
         try {
             ProjectService::complete($project);

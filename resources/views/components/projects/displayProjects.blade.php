@@ -72,14 +72,14 @@ use Carbon\Carbon;
                     </form>
                 @endcan
             @elseif($project->isInProgress())
-               @if($project->progress >= 100 && auth()->user()?->can('complete project') && (auth()->id() === $project->leader_id || auth()->user()?->hasRole(\App\Enums\Role::ProjectManager->value)))
+               @can('complete', $project)
                     <form action="{{ route('projects.complete', $project) }}" method="POST" class="relative z-10">
                         @csrf
                         @method('PATCH')
                         <x-projects.buttons text="Marquer comme complété" class="bg-green-600 text-white p-2"
                                             type="submit"/>
                     </form>
-                @endif
+                @endcan
             @endif
         </div>
     </div>
