@@ -16,10 +16,11 @@ it('archives a project, snapshotting its prior stage and setting archived_at', f
     $project = Project::factory()->proposition()->create();
 
     ProjectService::archive($project);
+    $archivedProject = $project->fresh();
 
-    expect($project->status)->toBeInstanceOf(ArchiveState::class)
-        ->and($project->current_stage)->toBe(PropositionState::getMorphClass())
-        ->and($project->archived_at)->not->toBeNull();
+    expect($archivedProject->status)->toBeInstanceOf(ArchiveState::class)
+        ->and($archivedProject->current_stage)->toBe(PropositionState::getMorphClass())
+        ->and($archivedProject->archived_at)->not->toBeNull();
 });
 
 it('keeps AutoArchiveProjects firing its own ProjectArchivedMail through the shared archive transition', function () {
