@@ -64,7 +64,6 @@ class RoleAndPermissionSeeder extends Seeder
             'edit project',
             'launch project',
             'complete project',
-            'restore',
         ]);
         $recolteManager->givePermissionTo([
             'add resources',
@@ -74,6 +73,7 @@ class RoleAndPermissionSeeder extends Seeder
         $projectManager->givePermissionTo([
             'archive projects',
             'send to direction',
+            'restore'
         ]);
     }
 }
