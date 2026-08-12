@@ -18,9 +18,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
+use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Spatie\ModelStates\HasStates;
 
+/**
+ * @property Carbon|null $last_leader_comment_at Only present when the query used scopeNeedingProgressReminder().
+ */
 class Project extends Model
 {
     use HasFactory;
