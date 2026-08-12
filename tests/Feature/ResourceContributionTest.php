@@ -72,11 +72,12 @@ it('rejects a contribution that exceeds what is still needed for that specific r
     ]);
 
     // Even though the phase overall still needs plenty (Bénévoles untouched),
-    // Budget itself only has 20 remaining, so this must be rejected.
+    // Budget itself is already at 80 out of a 200% cap of 200 (amount_needed 100),
+    // leaving only 120 remaining, so this must be rejected.
     $response = $this->actingAs($user)->post(route('projects.resources.store', $project), [
         'phase_id' => $phase->id,
         'resource_type' => 'Budget',
-        'amount' => 50,
+        'amount' => 150,
     ]);
 
     $response->assertSessionHasErrors('amount');

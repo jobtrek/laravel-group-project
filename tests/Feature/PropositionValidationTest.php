@@ -37,7 +37,7 @@ it('accepts a proposition submitted directly with valid data', function () {
 
     $response = $this->actingAs($user)->post(route('proposition.store'), validPropositionPayload());
 
-    $response->assertRedirect(route('dashboard'));
+    $response->assertRedirect(route('projects'));
     expect(Project::count())->toBe(1);
 });
 
