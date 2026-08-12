@@ -74,6 +74,7 @@ class RoleAndPermissionSeeder extends Seeder
         $projectManager->givePermissionTo([
             'archive projects',
             'send to direction',
+            'restore'
         ]);
     }
 }
