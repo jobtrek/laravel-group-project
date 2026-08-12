@@ -9,6 +9,7 @@ use App\Models\States\EvaluationState;
 use App\Models\States\ProjectState;
 use App\Models\States\PropositionState;
 use App\Models\States\RecolteState;
+use App\Support\ResourceCap;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -116,7 +117,7 @@ class Project extends Model
 
         $progress = round(($totalFound / $totalNeeded) * 100, 2);
 
-        return max(0.0, min($progress, 200.0));
+        return ResourceCap::capProgress($progress);
     }
 
     public static function statusCounts()

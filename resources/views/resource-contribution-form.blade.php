@@ -138,6 +138,7 @@
                         selectedPhaseId: @json(old('phase_id', $project->phases->first()?->id)),
                         selectedResourceType: @js(old('resource_type', '')),
                         amount: @json((float) old('amount', 0)),
+                        capPercent: @json($capPercent),
 
                         get selectedPhase() {
                             return this.phases.find(p => p.id === Number(this.selectedPhaseId)) ?? null;
@@ -158,7 +159,7 @@
                         get contributionPercent() {
                             if (!this.selectedResource || this.selectedResource.needed <= 0) return 0;
                             return Math.min(
-                                200,
+                                this.capPercent,
                                 Math.round((Number(this.amount || 0) / this.selectedResource.needed) * 10000) / 100
                             );
                         },
@@ -166,7 +167,7 @@
                             if (!this.selectedResource || this.selectedResource.needed <= 0) return 0;
                             const total = this.selectedResource.found + Number(this.amount || 0);
                             return Math.min(
-                                200,
+                                this.capPercent,
                                 Math.round((total / this.selectedResource.needed) * 10000) / 100
                             );
                         }

@@ -18,6 +18,8 @@ return [
         'red_after_months' => env('PROJECTS_STALENESS_RED_MONTHS', 3),
     ],
 
+    'resource_overfunding_multiplier' => env('PROJECTS_RESOURCE_OVERFUNDING_MULTIPLIER', 2),
+
     'scoring' => [
         'portee' => ['min' => 0, 'max' => 50],
         'impact' => ['min' => 1, 'max' => 5],
