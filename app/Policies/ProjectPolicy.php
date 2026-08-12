@@ -2,7 +2,9 @@
 
 namespace App\Policies;
 
+use App\Enums\Role;
 use App\Models\Project;
+use App\Models\States\EncoursState;
 use App\Models\User;
 
 class ProjectPolicy
@@ -22,5 +24,16 @@ class ProjectPolicy
     public function review(User $user, Project $project): bool
     {
         return $project->proposer_id !== $user->id;
+    }
+
+    public function comment(User $user, Project $project): bool
+    {
+        if ($user->can('manage everything')) {
+            return true;
+        }
+
+        return $project->status instanceof EncoursState
+            && $user->hasRole(Role::ChefDeProjet->value)
+            && $user->id === $project->leader_id;
     }
 }

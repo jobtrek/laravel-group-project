@@ -15,9 +15,9 @@ use App\Http\Controllers\RevisionController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => view('auth.login'))->middleware('guest');
+Route::get('/', fn() => view('auth.login'))->middleware('guest');
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', fn () => redirect()->route('projects'))->name('dashboard');
+    Route::get('/dashboard', fn() => redirect()->route('projects'))->name('dashboard');
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
     Route::get('/propositions', [PropositionController::class, 'index'])->name('propositions');
     Route::get('/evaluation', [ReviewController::class, 'index'])->name('evaluation');
@@ -44,7 +44,7 @@ Route::patch(
     ->scopeBindings();
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/create', fn () => view('create'))->name('create');
+    Route::get('/create', fn() => view('create'))->name('create');
 
     Route::post('/propositions', [PropositionController::class, 'store'])->name('proposition.store');
 
@@ -63,6 +63,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/edit', 'edit')->name('projects.edit');
         Route::patch('/', 'update')->name('projects.update');
         Route::post('/comments', [CommentController::class, 'store'])
+            ->middleware('can:comment,project')
             ->name('projects.comments.store');
         Route::patch('/complete', 'complete')->middleware('can:complete project')->name('projects.complete');
         Route::patch('/archive', 'archive')->middleware('role:admin')->name('projects.archive');
@@ -70,8 +71,8 @@ Route::middleware(['auth', 'verified'])->group(function () {
     });
 
     Route::controller(ResourceContributionController::class)->prefix('/projects/{project}/resources')
-        ->middleware('can:add resources')->
-        group(function () {
+        ->middleware('can:add resources')
+        ->group(function () {
             Route::get('/create', 'create')->name('projects.resources.create');
             Route::post('/', 'store')->name('projects.resources.store');
         });
@@ -91,4 +92,4 @@ Route::get('administration', function () {
     return view('administration', compact('users'));
 })->middleware('can:manage everything')->name('administration');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';

@@ -54,7 +54,7 @@ class ResourceContributionController extends Controller
 
             $phaseId = (int) $request->validated('phase_id');
             $resourceType = $request->validated('resource_type');
-            $amount = (float) $request->validated('amount');
+            $amount = round((float) $request->validated('amount'), 2);
 
             $phase = $lockedProject->phases->firstWhere('id', $phaseId);
             $resource = $phase?->resources->firstWhere('resource_type', $resourceType);
