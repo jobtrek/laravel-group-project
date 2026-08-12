@@ -18,7 +18,7 @@ use App\Service\ProjectService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
-
+use Spatie\ModelStates\Exceptions\CouldNotPerformTransition;
 class ProjectController extends Controller
 {
     public function __construct(
@@ -42,7 +42,7 @@ class ProjectController extends Controller
 
     public function approve(Project $project)
     {
-        Gate::authorize('review', $project);
+        Gate::authorize('reviewOwn', $project);
 
         ProjectService::approve($project);
 
@@ -51,7 +51,7 @@ class ProjectController extends Controller
 
     public function deny(Project $project)
     {
-        Gate::authorize('review', $project);
+        Gate::authorize('reviewOwn', $project);
         abort_if(! $project->status instanceof EvaluationState, 403);
         ProjectService::deny($project);
 
@@ -70,7 +70,7 @@ class ProjectController extends Controller
         Project $project,
         RequestMoreInfoAction $action,
     ): RedirectResponse {
-        Gate::authorize('review', $project);
+        Gate::authorize('reviewOwn', $project);
 
         $action->execute(
             project: $project,
@@ -133,7 +133,7 @@ class ProjectController extends Controller
 
         try {
             ProjectService::complete($project);
-        } catch (\Exception $e) {
+        } catch (CouldNotPerformTransition $e) {
             return back()->with('error', $e->getMessage());
         }
 
