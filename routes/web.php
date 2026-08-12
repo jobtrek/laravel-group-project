@@ -67,6 +67,7 @@ Route::middleware(['auth', 'verified'])->group(function () {
             ->name('projects.comments.store');
         Route::patch('/complete', 'complete')->middleware('can:complete project')->name('projects.complete');
         Route::patch('/archive', 'archive')->middleware('role:admin')->name('projects.archive');
+        Route::patch('/restore', 'restore')->middleware('can:restore')->name('projects.restore');
         Route::patch('/send-to-direction', 'sendToDirection')->middleware('can:send to direction')->name('projects.send-to-direction');
     });
 
