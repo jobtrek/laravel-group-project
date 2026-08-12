@@ -43,16 +43,7 @@
                     <x-projects.filter-bar :users="$users ?? []" :my-proposals="$myProposals ?? []"/>
                 </div>
                 @foreach($projects as $project)
-                    <x-projects.displayProjects
-                            :project="$project"
-                            :status="$project->status"
-                            :title="$project->title"
-                            :chef="$project->leader?->name ?? $project->proposer?->name"
-                            :progress="$project->progress"
-                            :importance="$project->importance"
-                            :creation-date="$project->created_at?->locale('fr')?->translatedFormat('d M Y') ?? '—'"
-                            :updated_at="$project->updated_at"
-                    />
+                    <x-projects.displayProjects :project="$project"/>
                 @endforeach
                 {{ $projects->links() }}
             </section>
