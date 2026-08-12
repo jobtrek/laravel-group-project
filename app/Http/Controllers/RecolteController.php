@@ -26,7 +26,7 @@ class RecolteController extends StageProjectController
 
     public function assignTeam(AssignProjectTeamRequest $request, Project $project): RedirectResponse
     {
-        abort_if(! $project->status instanceof RecolteState, 404);
+        abort_if(! $project->isInRecolte(), 404);
 
         $members = array_filter($request->validated('membres', []));
         $leaderId = $request->validated('leader_id');
