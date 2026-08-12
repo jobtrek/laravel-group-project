@@ -19,19 +19,38 @@ class SendProgressReminders extends Command
         $projects = Project::with('leader')
             ->needingProgressReminder()
             ->get()
-            ->filter(fn (Project $project) => $project->last_leader_comment_at === null
-                || $project->last_leader_comment_at->lt(now()->subMonths($reminderAfterMonths)));
+            ->filter(fn (Project $project) => $this->isDueForReminder($project, $reminderAfterMonths));
 
         foreach ($projects as $project) {
             if ($project->leader) {
                 SendMailProcess::dispatch($project->leader);
                 $project->timestamps = false;
-                $project->forceFill(['last_reminder_at' => now()])->saveQuietly();
+                $project->forceFill([
+                    'last_reminder_at' => now(),
+                    'escalated_at' => null,
+                ])->saveQuietly();
             }
         }
 
         $this->info("Friendly reminders queued for {$projects->count()} project(s).");
 
         return self::SUCCESS;
+    }
+
+    /**
+     * One friendly reminder per silence period. Re-stamping last_reminder_at on
+     * every weekly run kept the escalation clock a few days old forever, so the
+     * stronger reminder never fired.
+     */
+    private function isDueForReminder(Project $project, int $reminderAfterMonths): bool
+    {
+        $lastComment = $project->last_leader_comment_at;
+
+        if ($lastComment !== null && $lastComment->gte(now()->subMonths($reminderAfterMonths))) {
+            return false;
+        }
+
+        return $project->last_reminder_at === null
+            || ($lastComment !== null && $lastComment->gt($project->last_reminder_at));
     }
 }
