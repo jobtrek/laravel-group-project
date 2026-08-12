@@ -15,9 +15,9 @@ use App\Http\Controllers\RevisionController;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
-Route::get('/', fn () => view('auth.login'))->middleware('guest');
+Route::get('/', fn() => view('auth.login'))->middleware('guest');
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/dashboard', fn () => redirect()->route('projects'))->name('dashboard');
+    Route::get('/dashboard', fn() => redirect()->route('projects'))->name('dashboard');
     Route::get('/projects', [ProjectController::class, 'index'])->name('projects');
     Route::get('/propositions', [PropositionController::class, 'index'])->name('propositions');
     Route::get('/evaluation', [ReviewController::class, 'index'])->name('evaluation');
@@ -44,7 +44,7 @@ Route::patch(
     ->scopeBindings();
 
 Route::middleware(['auth', 'verified'])->group(function () {
-    Route::get('/create', fn () => view('create'))->name('create');
+    Route::get('/create', fn() => view('create'))->name('create');
 
     Route::post('/propositions', [PropositionController::class, 'store'])->name('proposition.store');
 
@@ -90,6 +90,6 @@ Route::get('administration', function () {
     $users = User::with('roles')->orderBy('name')->get();
 
     return view('administration', compact('users'));
-})->middleware('can:manage everything')->name('administration');
+})->middleware(['auth', 'verified', 'can:manage everything'])->name('administration');
 
-require __DIR__.'/auth.php';
+require __DIR__ . '/auth.php';
