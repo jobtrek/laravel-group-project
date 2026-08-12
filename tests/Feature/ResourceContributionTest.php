@@ -98,6 +98,30 @@ it('rejects a contribution amount with more than two decimals', function () {
     expect(ResourceContribution::count())->toBe(0);
 });
 
+it('caps a contribution at the configured over-funding multiplier', function () {
+    config(['projects.resource_overfunding_multiplier' => 1.5]);
+
+    $user = User::factory()->create()->assignRole('recolte_manager');
+    $project = Project::factory()->recolte()->create();
+    $phase = ProjectPhase::factory()->create(['project_id' => $project->id]);
+    PhaseResource::factory()->create(['phase_id' => $phase->id, 'resource_type' => 'Budget', 'amount_needed' => 100]);
+
+    // 150 is exactly the cap, 150.01 is over it.
+    $this->actingAs($user)->post(route('projects.resources.store', $project), [
+        'phase_id' => $phase->id,
+        'resource_type' => 'Budget',
+        'amount' => 150,
+    ])->assertRedirect(route('recolte'));
+
+    $this->actingAs($user)->post(route('projects.resources.store', $project), [
+        'phase_id' => $phase->id,
+        'resource_type' => 'Budget',
+        'amount' => 0.01,
+    ])->assertSessionHasErrors('amount');
+
+    expect(ResourceContribution::sum('amount'))->toEqual('150.00');
+});
+
 it('rejects a contribution on an archived project', function () {
     $user = User::factory()->create()->assignRole('recolte_manager');
     $project = Project::factory()->archive()->create();

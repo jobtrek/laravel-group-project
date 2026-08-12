@@ -9,6 +9,7 @@ use App\Models\States\EvaluationState;
 use App\Models\States\ProjectState;
 use App\Models\States\PropositionState;
 use App\Models\States\RecolteState;
+use App\Support\ResourceCap;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -116,7 +117,7 @@ class Project extends Model
 
         $progress = round(($totalFound / $totalNeeded) * 100, 2);
 
-        return max(0.0, min($progress, 200.0));
+        return ResourceCap::capProgress($progress);
     }
 
     public static function statusCounts()
@@ -189,6 +190,25 @@ class Project extends Model
         }
 
         return $user->can('comment', $this);
+    }
+
+    /**
+     * @return array{bg: string, text: string, dot: string}|null
+     */
+    public function stalenessBadge(): ?array
+    {
+        if (! $this->updated_at) {
+            return null;
+        }
+
+        $stalenessColors = config('projects.staleness_colors') ?? [];
+
+        return match (true) {
+            $this->updated_at->lessThan(now()->subMonths($stalenessColors['red_after_months'] ?? 3)) => ['bg' => 'bg-red-50', 'text' => 'text-red-700', 'dot' => 'bg-red-500'],
+            $this->updated_at->lessThan(now()->subMonths($stalenessColors['orange_after_months'] ?? 2)) => ['bg' => 'bg-orange-50', 'text' => 'text-orange-700', 'dot' => 'bg-orange-500'],
+            $this->updated_at->lessThan(now()->subMonths($stalenessColors['warning_after_months'] ?? 1)) => ['bg' => 'bg-yellow-50', 'text' => 'text-yellow-700', 'dot' => 'bg-yellow-500'],
+            default => ['bg' => 'bg-green-50', 'text' => 'text-green-700', 'dot' => 'bg-green-500'],
+        };
     }
 
     public function scopeNeedingProgressReminder(Builder $query): Builder
