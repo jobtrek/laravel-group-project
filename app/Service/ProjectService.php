@@ -89,4 +89,13 @@ class ProjectService
             $project->status->transitionTo(ArchiveState::class);
         });
     }
+
+    public static function restore(Project $project): void
+    {
+        DB::transaction(function () use ($project): void {
+            $project->restored_at = now();
+            $project->save();
+            $project->status->transitionTo(PropositionState::class);
+        });
+    }
 }

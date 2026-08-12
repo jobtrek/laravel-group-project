@@ -76,6 +76,15 @@
                                             type="submit"/>
                     </form>
                 @endcan
+            @elseif($project->isArchived())
+                @can('restore')
+                    <form action="{{ route('projects.restore', $project) }}" method="POST" class="relative z-10">
+                        @csrf
+                        @method('PATCH')
+                        <x-projects.buttons text="Restaurer" class="bg-blue-700 text-white p-2"
+                                            type="submit"/>
+                    </form>
+                @endcan
             @endif
         </div>
     </div>
