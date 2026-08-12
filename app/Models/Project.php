@@ -11,7 +11,6 @@ use App\Models\States\ProjectState;
 use App\Models\States\PropositionState;
 use App\Models\States\RecolteState;
 use App\Support\ResourceCap;
-use Illuminate\Support\Collection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -22,6 +21,7 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Spatie\ModelStates\HasStates;
 
 /**
