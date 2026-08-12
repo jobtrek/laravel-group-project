@@ -12,7 +12,6 @@ use App\Models\Project;
 use App\Models\ProjectPhase;
 use App\Models\States\ArchiveState;
 use App\Models\States\CompleteState;
-use App\Models\States\EvaluationState;
 use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Http\RedirectResponse;
@@ -53,7 +52,7 @@ class ProjectController extends Controller
     public function deny(Project $project)
     {
         Gate::authorize('reviewOwn', $project);
-        abort_if(! $project->status instanceof EvaluationState, 403);
+        abort_if(! $project->isInEvaluation(), 403);
         ProjectService::deny($project);
 
         return Redirect::back()->with('status', 'Projet refusé et archivé avec succès');
@@ -150,7 +149,7 @@ class ProjectController extends Controller
 
     public function restore(Project $project)
     {
-        abort_if(! $project->status instanceof ArchiveState, 403);
+        abort_if(! $project->isArchived(), 403);
 
         ProjectService::restore($project);
 
