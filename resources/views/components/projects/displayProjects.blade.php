@@ -23,7 +23,12 @@ use Carbon\Carbon;
     </a>
 
     <div class="relative z-10 pointer-events-none flex flex-col items-start gap-2 py-2">
-        <x-project_status :status="$status"/>
+    
+        <div class="flex flex-row justify-between w-full">
+            <x-project_status :status="$status"/>
+            <x-conditional-button :leader_id="$project->leader_id"/>
+        </div>
+    
         <h3 class="text-base font-medium leading-snug text-gray-700">Importance : {{ $importance }}</h3>
     </div>
 
