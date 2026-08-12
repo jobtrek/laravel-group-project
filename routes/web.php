@@ -90,6 +90,6 @@ Route::get('administration', function () {
     $users = User::with('roles')->orderBy('name')->get();
 
     return view('administration', compact('users'));
-})->middleware('can:manage everything')->name('administration');
+})->middleware(['auth', 'verified', 'can:manage everything'])->name('administration');
 
 require __DIR__.'/auth.php';
