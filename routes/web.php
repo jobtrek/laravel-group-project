@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\addMemberController;
 use App\Http\Controllers\ArchiveController;
 use App\Http\Controllers\CommentController;
 use App\Http\Controllers\CompleteController;
@@ -92,9 +93,6 @@ Route::get('administration', function () {
     return view('administration', compact('users'));
 })->middleware('can:manage everything')->name('administration');
 
-Route::get('/add-members', function(){
-    $users = User::with('roles')->get();
-    return view('addMembersToProject', compact('users'));
-})->name('members.attach');
+Route::get('/add-members/{project}', [addMemberController::class, 'render'])->name('members.attach');
 
 require __DIR__.'/auth.php';
