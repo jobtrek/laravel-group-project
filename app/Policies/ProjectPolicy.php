@@ -22,7 +22,7 @@ class ProjectPolicy
      * Users with the "manage everything" permission bypass this check via
      * the global Gate::before hook in AppServiceProvider.
      */
-    public function review(User $user, Project $project): bool
+    public function reviewOwn(User $user, Project $project): bool
     {
         return $project->proposer_id !== $user->id;
     }
