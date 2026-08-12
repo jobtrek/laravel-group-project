@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Enums\Stage;
 use App\Models\States\ArchiveState;
 use App\Models\States\CompleteState;
 use App\Models\States\EncoursState;
@@ -12,6 +13,7 @@ use App\Models\States\RecolteState;
 use App\Support\ResourceCap;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -20,7 +22,6 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Carbon;
-use Illuminate\Support\Facades\DB;
 use Spatie\ModelStates\HasStates;
 
 /**
@@ -124,13 +125,21 @@ class Project extends Model
         return ResourceCap::capProgress($progress);
     }
 
-    public static function statusCounts()
+    // refactor this into an eloquent way.
+
+    public static function statusCounts(): Collection
     {
-        return DB::table('projects')
-            ->select('status')
-            ->selectRaw('count(*) as total')
+        $raw = static::query()
             ->groupBy('status')
+            ->selectRaw('status,count(*) as total')
             ->pluck('total', 'status');
+
+        return collect(Stage::cases())->mapWithKeys(
+            fn (Stage $stage) => [
+                $stage->value => collect($stage->statuses())->sum(fn (string $status) => $raw->get($status, 0)),
+            ]
+        );
+
     }
 
     /** @return HasManyThrough<ResourceContribution, ProjectPhase, $this> */

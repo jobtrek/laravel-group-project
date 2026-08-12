@@ -1,3 +1,7 @@
+@php
+use App\Enums\Stage;
+@endphp
+
 <x-app-layout>
     <div x-data="{ showFilter: false }">
         <div class="min-h-screen mt-9 p-4">
@@ -5,15 +9,15 @@
                 <div class="text-gray-900">
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-4">
                         <x-projects.countProjects text="Propositions"
-                                                  :projets="$counts->get('proposition', 0) + $counts->get('révision', 0)"
+                                                  :projets="$counts->get('proposition', 0) + $counts->get(Stage::Propositions, 0)"
                                                   route="propositions"/>
-                        <x-projects.countProjects text="Evaluation" :projets="$counts->get('évaluation', 0)"
+                        <x-projects.countProjects text="Evaluation" :projets="$counts->get(Stage::Evaluation, 0)"
                                                   route="evaluation"/>
-                        <x-projects.countProjects text="Récolte" :projets="$counts->get('récolte', 0)"
+                        <x-projects.countProjects text="Récolte" :projets="$counts->get(Stage::Recolte, 0)"
                                                   route="recolte"/>
-                        <x-projects.countProjects text="En cours" :projets="$counts->get('en cours', 0)"
+                        <x-projects.countProjects text="En cours" :projets="$counts->get(Stage::EnCours, 0)"
                                                   route="en-cours"/>
-                        <x-projects.countProjects text="Complété" :projets="$counts->get('complété', 0)"
+                        <x-projects.countProjects text="Complété" :projets="$counts->get(Stage::Complete, 0)"
                                                   route="complete"/>
                         <x-projects.countProjects text="Frigo"
                                                   :projets="$counts->get('archivé', 0)"
