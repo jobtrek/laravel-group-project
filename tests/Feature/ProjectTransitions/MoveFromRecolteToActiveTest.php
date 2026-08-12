@@ -1,6 +1,9 @@
 <?php
 
+use App\Models\PhaseResource;
 use App\Models\Project;
+use App\Models\ProjectPhase;
+use App\Models\ResourceContribution;
 use App\Models\States\EncoursState;
 use App\Models\States\RecolteState;
 use App\Models\User;
@@ -22,6 +25,14 @@ it('refuses to transition when no chef de projet has been saved', function () {
 it('transitions to Encours once a chef de projet has already been saved', function () {
     $user = User::factory()->create()->assignRole('chef_de_projet');
     $project = Project::factory()->recolte()->create(['leader_id' => $user->id]);
+    $phase = ProjectPhase::factory()->create(['project_id' => $project->id]);
+    PhaseResource::factory()->create(['phase_id' => $phase->id, 'amount_needed' => 100]);
+    ResourceContribution::create([
+        'phase_id' => $phase->id,
+        'user_id' => $user->id,
+        'resource_type' => 'Budget',
+        'amount' => 80,
+    ]);
 
     $response = $this->actingAs($user)->patch(route('projects.recolte.activate', $project));
 

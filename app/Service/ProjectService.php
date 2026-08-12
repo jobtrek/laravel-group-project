@@ -79,6 +79,10 @@ class ProjectService
             return false;
         }
 
+        if ($project->progress < 80.0) {
+            return false;
+        }
+
         $project->status->transitionTo(EncoursState::class);
 
         return true;

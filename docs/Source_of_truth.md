@@ -126,13 +126,13 @@ Proposition  →  Evaluation  →  Récolte  →  En cours
 - Managed by the **récolte manager** — a different person than the porteur.
 - **All people in Récolte can add/update resources — except the porteur.**
 - Resource tracking per `Phase_Resource` row: `amount_needed` and `amount_found`.
-- **Percentage** = `SUM(amount_found) / SUM(amount_needed)` across all phases. This is a **UI progress-bar figure only** — there is no automated state transition tied to it (confirmed against code: no 80% threshold exists anywhere in `app/`).
+- **Percentage** = `SUM(amount_found) / SUM(amount_needed)` across all phases.
 - List is sortable/filterable by % resources found.
 - Budget % entry is **manual** (no payment system integration).
 
 | Trigger | Action |
 |-----------|--------|
-| Chef de projet launches the project (requires `leader_id` set) | Moves to `EncoursState` — **manual action**, not automatic |
+| Chef de projet launches the project (requires `leader_id` set and at least 80% resources found) | Moves to `EncoursState` — **manual action with service-level gate** |
 | 12 months elapsed | Auto-archive → `ArchiveState` |
 
 ### Chef de projet assignment
@@ -233,7 +233,7 @@ Class names are **unaccented ASCII**; accents only appear in the stored `$name` 
 | `ArchiveState.php` | `archivé` | Archivé | All archives (le frigo + stage archives) |
 
 > **No `DraftState`** — default is `PropositionState`. Proposals are submitted immediately on creation.
-> **No `ReadyState`** — moving from `RecolteState` to `EncoursState` is a manual launch action (chef de projet, with `leader_id` set), not an automatic 80%-resources gate.
+> **No `ReadyState`** — moving from `RecolteState` to `EncoursState` remains a manual launch action. The 80% threshold is enforced in `ProjectService::moveToEncours()` (service-level gate), not as an automatic transition.
 > **No `SuspendedState`** — the correct class is `RevisionState`. Update any doc or code that references `SuspendedState`.
 
 ### Registered transitions (from codebase)
@@ -247,7 +247,7 @@ Class names are **unaccented ASCII**; accents only appear in the stored `$name` 
 | `RevisionState` | `PropositionState` | Proposer (resubmits after editing) |
 | `PropositionState` | `ArchiveState` | System (3 months inactive) |
 | `RevisionState` | `ArchiveState` | System (3 months inactive) |
-| `RecolteState` | `EncoursState` | Chef de projet — manual launch, requires `leader_id` set (not an automatic 80% gate) |
+| `RecolteState` | `EncoursState` | Chef de projet — manual launch, requires `leader_id` and `SUM(amount_found) / SUM(amount_needed) >= 0.8` (service-level gate) |
 | `RecolteState` | `ArchiveState` | System (12 months elapsed) |
 | `EncoursState` | `CompleteState` | Chef de projet (moves to Archivé dashboard) |
 | `EncoursState` | `ArchiveState` | System (3 months no comment) |

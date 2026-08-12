@@ -57,7 +57,7 @@ class RecolteController extends StageProjectController
         abort_if($project->leader_id !== auth()->id() && ! auth()->user()?->can('manage everything'), 403);
 
         if (! ProjectService::moveToEncours($project)) {
-            return redirect()->back()->with('error', 'Project cannot be moved to Active state. It must be in Recolte state with a project chief assigned.');
+            return redirect()->back()->with('error', 'Project cannot be moved to Active state. It must be in Recolte state, have a project chief assigned, and reach at least 80% resources.');
         }
 
         return redirect()->route('en-cours')->with('success', 'Projets mis en activité avec succès');
