@@ -19,6 +19,7 @@ use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
 use Spatie\ModelStates\Exceptions\CouldNotPerformTransition;
+
 class ProjectController extends Controller
 {
     public function __construct(
@@ -145,5 +146,14 @@ class ProjectController extends Controller
         ProjectService::archive($project);
 
         return back()->with('status', 'project-archived');
+    }
+
+    public function restore(Project $project)
+    {
+        abort_if(! $project->status instanceof ArchiveState, 403);
+
+        ProjectService::restore($project);
+
+        return back()->with('status', 'projet restauré');
     }
 }
