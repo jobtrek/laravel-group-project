@@ -9,18 +9,18 @@ use App\Enums\Stage;
                 <div class="text-gray-900">
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-4">
                         <x-projects.countProjects text="Propositions"
-                                                  :projets="$counts->get(Stage::Propositions, 0)"
+                                                  :projets="$counts->get(Stage::Propositions->value, 0)"
                                                   route="propositions"/>
-                        <x-projects.countProjects text="Evaluation" :projets="$counts->get(Stage::Evaluation, 0)"
+                        <x-projects.countProjects text="Evaluation" :projets="$counts->get(Stage::Evaluation->value, 0)"
                                                   route="evaluation"/>
-                        <x-projects.countProjects text="Récolte" :projets="$counts->get(Stage::Recolte, 0)"
+                        <x-projects.countProjects text="Récolte" :projets="$counts->get(Stage::Recolte->value, 0)"
                                                   route="recolte"/>
-                        <x-projects.countProjects text="En cours" :projets="$counts->get(Stage::EnCours, 0)"
+                        <x-projects.countProjects text="En cours" :projets="$counts->get(Stage::EnCours->value, 0)"
                                                   route="en-cours"/>
-                        <x-projects.countProjects text="Complété" :projets="$counts->get(Stage::Complete, 0)"
+                        <x-projects.countProjects text="Complété" :projets="$counts->get(Stage::Complete->value, 0)"
                                                   route="complete"/>
                         <x-projects.countProjects text="Frigo"
-                                                  :projets="$counts->get(Stage::Archive, 0)"
+                                                  :projets="$counts->get(Stage::Archive->value, 0)"
                                                   route="frigo"/>
                     </div>
                     <div class="flex flex-wrap gap-2 justify-between mb-2">
