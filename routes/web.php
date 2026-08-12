@@ -12,6 +12,7 @@ use App\Http\Controllers\RecolteController;
 use App\Http\Controllers\ResourceContributionController;
 use App\Http\Controllers\ReviewController;
 use App\Http\Controllers\RevisionController;
+use App\Models\ProjectMember;
 use App\Models\User;
 use Illuminate\Support\Facades\Route;
 
@@ -92,7 +93,8 @@ Route::get('administration', function () {
 })->middleware('can:manage everything')->name('administration');
 
 Route::get('/add-members', function(){
-    return view('addMembersToProject');
+    $users = User::with('roles')->get();
+    return view('addMembersToProject', compact('users'));
 })->name('members.attach');
 
 require __DIR__.'/auth.php';

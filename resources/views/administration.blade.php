@@ -2,15 +2,13 @@
     use App\Enums\Role;
 @endphp
 <x-app-layout>
-    <div>
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
-            <div class="flex items-center justify-between">
-                <h1 class="text-2xl font-bold text-white">Administration</h1>
-                <a href="{{ route('register') }}"
-                    class="rounded-lg border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors">
-                    Créer un utilisateur
-                </a>
-            </div>
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+        <div class="flex items-center justify-between">
+            <h1 class="text-2xl font-bold text-white">Administration</h1>
+            <a href="{{ route('register') }}"
+                class="rounded-lg border border-white/25 bg-white/10 px-4 py-2 text-sm font-medium text-white hover:bg-white/20 transition-colors">
+                Créer un utilisateur
+            </a>
         </div>
     </div>
     <div class="max-w-7xl mx-auto py-10 px-4 sm:px-6 lg:px-8">
@@ -21,7 +19,18 @@
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach ($users as $user)
-                    <x-user-card :name="$user->name" :roles="$user->roles" :email="$user->email" />
+                    <x-user-card :name="$user->name" :email="$user->email">
+                        @if ($user->roles->isNotEmpty())
+                            <div class="flex flex-wrap gap-1.5 mt-3">
+                                @foreach ($user->roles as $role)
+                                    <span
+                                        class="text-xs px-2 py-0.5 rounded-full bg-gray-100 text-gray-600 font-medium">
+                                        {{ Role::tryFrom($role->name)->label() ?? $role->name }}
+                                    </span>
+                                @endforeach
+                            </div>
+                        @endif
+                    </x-user-card>
                 @endforeach
             </div>
         </div>
