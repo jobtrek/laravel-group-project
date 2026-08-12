@@ -64,7 +64,7 @@ class RoleAndPermissionSeeder extends Seeder
             'edit project',
             'launch project',
             'complete project',
-            'restore'
+            'restore',
         ]);
         $recolteManager->givePermissionTo([
             'add resources',
