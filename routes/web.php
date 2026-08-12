@@ -91,4 +91,8 @@ Route::get('administration', function () {
     return view('administration', compact('users'));
 })->middleware('can:manage everything')->name('administration');
 
+Route::get('/add-members', function(){
+    return view('addMembersToProject');
+})->name('members.attach');
+
 require __DIR__.'/auth.php';
