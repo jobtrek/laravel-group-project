@@ -2,10 +2,8 @@
     'leader_id' => null
     ])
 
-<div>
     @if(filled($leader_id))
-    <p>Ajouter un membre</p>
+   <a href="#" class="mt-1 text-sm text-indigo-600 hover:underline">+ Ajouter un membre</a>
     @else
-    <p>Pas de chef de projet ! </p>
+    <a href="#" class="mt-1 text-sm text-red-600 hover:underline">Pas de chef de projet</a>
     @endif
-</div>
