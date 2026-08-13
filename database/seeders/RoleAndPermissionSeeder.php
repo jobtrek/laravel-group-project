@@ -75,6 +75,7 @@ class RoleAndPermissionSeeder extends Seeder
             'archive projects',
             'send to direction',
             'restore',
+            'create project',
         ]);
     }
 }

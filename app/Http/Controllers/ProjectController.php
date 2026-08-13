@@ -43,6 +43,7 @@ class ProjectController extends Controller
     public function approve(Project $project)
     {
         Gate::authorize('reviewOwn', $project);
+        abort_if(! $project->isInEvaluation(), 403);
 
         ProjectService::approve($project);
 
@@ -60,6 +61,8 @@ class ProjectController extends Controller
 
     public function sendToDirection(Project $project)
     {
+        abort_if(! $project->isProposition(), 403);
+
         ProjectService::review($project);
 
         return Redirect::back()->with('status', 'Projet soumis pour évaluation');

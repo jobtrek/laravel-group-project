@@ -1,9 +1,17 @@
+@php
+    $isRecolte = $project->status instanceof \App\Models\States\RecolteState;
+@endphp
 <x-app-layout>
     <div class="min-h-screen">
         <div class="w-full max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="bg-white rounded-xl shadow-xl mx-auto py-8 px-4 sm:px-6 md:px-10" x-data="{
                 initialChiefId: @js((string) $project->leader_id),
-                chiefId: @js(old('leader_id', (string) $project->leader_id))
+                chiefId: @js(old('leader_id', (string) $project->leader_id)),
+                section: @js(
+                    $errors->assignTeam->any() ? 'team' : ($errors->default->any() ? 'resource' : (
+                        $isRecolte ? ((string) $project->leader_id !== '' ? 'resource' : 'team') : 'resource'
+                    ))
+                )
             }">
                 <h2 class="text-2xl font-bold text-gray-900 mb-6">{{ $project->title }}</h2>
                 @if (session('success'))
@@ -13,12 +21,29 @@
                     <div class="mb-4 p-3 bg-red-50 text-red-700 rounded">{{ session('error') }}</div>
                 @endif
 
-                @if ($project->status instanceof \App\Models\States\RecolteState)
+                @if ($isRecolte)
+                    <div class="mb-8 flex flex-wrap gap-3">
+                        <x-projects.buttons text="Équipe du projet" type="button" @click="section = 'team'"
+                            x-bind:class="section === 'team' ? 'bg-blue-700 text-white' : 'bg-white text-gray-700'" />
+
+                        <x-projects.buttons text="Ajouter une ressource" type="button"
+                            @click="if (initialChiefId) section = 'resource'"
+                            x-bind:disabled="!initialChiefId"
+                            x-bind:class="(section === 'resource' ? 'bg-blue-700 text-white' : 'bg-white text-gray-700') + (!initialChiefId ? ' opacity-50 cursor-not-allowed' : '')" />
+                    </div>
+
+                    <template x-if="!initialChiefId">
+                        <p class="mb-8 p-4 bg-amber-50 text-amber-700 rounded text-sm">
+                            Assignez d'abord un chef de projet pour pouvoir ajouter des ressources.
+                        </p>
+                    </template>
+                @endif
+
+                <div x-show="section === 'team'" x-cloak>
                     <div class="mb-10 pb-8 border-b border-gray-200">
                         <h3 class="text-lg font-semibold mb-4">Équipe du projet</h3>
 
                         @if ($errors->assignTeam->any())
-
                             <div class="mb-4 p-3 bg-red-50 text-red-700 rounded">
                                 <ul>
                                     @foreach ($errors->assignTeam->all() as $error)
@@ -51,70 +76,76 @@
                             <x-projects.buttons text="Enregistrer" type="submit" class="bg-blue-700 text-white p-2" />
                         </form>
                     </div>
-                @endif
+                </div>
 
-                <h3 class="text-lg font-semibold mb-4">Ajouter une ressource</h3>
+                <div x-show="section === 'resource'" x-cloak>
+                    <template x-if="initialChiefId">
+                        <div>
+                            <h3 class="text-lg font-semibold mb-4">Ajouter une ressource</h3>
 
-                @if ($errors->default->any())
-                    <div class="mb-4 p-3 bg-red-50 text-red-700 rounded">
-                        <ul>
-                            @foreach ($errors->default->all() as $error)
-                                <li>{{ $error }}</li>
-                            @endforeach
-                        </ul>
-                    </div>
-                @endif
+                            @if ($errors->default->any())
+                                <div class="mb-4 p-3 bg-red-50 text-red-700 rounded">
+                                    <ul>
+                                        @foreach ($errors->default->all() as $error)
+                                            <li>{{ $error }}</li>
+                                        @endforeach
+                                    </ul>
+                                </div>
+                            @endif
 
-                <form method="POST" action="{{ route('projects.resources.store', $project) }}" class="flex flex-col gap-4"
-                      x-data="resourceForm()">
-                    @csrf
+                            <form method="POST" action="{{ route('projects.resources.store', $project) }}" class="flex flex-col gap-4"
+                                  x-data="resourceForm()">
+                                @csrf
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Phase</label>
-                        <select name="phase_id" x-model="selectedPhaseId" @change="selectedResourceType = ''"
-                                class="mt-1 block w-full rounded-md border-gray-300">
-                            @foreach ($project->phases as $phase)
-                                <option value="{{ $phase->id }}">{{ $phase->name }}</option>
-                            @endforeach
-                        </select>
-                        <p class="text-xs text-gray-500 mt-1">
-                            Restant à trouver pour la phase : <span x-text="phaseRemaining.toFixed(2)"></span>
-                        </p>
-                    </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Phase</label>
+                                    <select name="phase_id" x-model="selectedPhaseId" @change="selectedResourceType = ''"
+                                            class="mt-1 block w-full rounded-md border-gray-300">
+                                        @foreach ($project->phases as $phase)
+                                            <option value="{{ $phase->id }}">{{ $phase->name }}</option>
+                                        @endforeach
+                                    </select>
+                                    <p class="text-xs text-gray-500 mt-1">
+                                        Restant à trouver pour la phase : <span x-text="phaseRemaining.toFixed(2)"></span>
+                                    </p>
+                                </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Type de ressource</label>
-                        <select name="resource_type" x-model="selectedResourceType"
-                                class="mt-1 block w-full rounded-md border-gray-300">
-                            <option value="" selected disabled hidden>Sélectionner un type de ressource…</option>
-                            <template x-for="resource in selectedPhase?.resources ?? []" :key="resource.resource_type">
-                                <option :value="resource.resource_type" x-text="resource.resource_type"></option>
-                            </template>
-                        </select>
-                        <p class="text-xs text-gray-500 mt-1">
-                            Restant à trouver pour ce type : <span x-text="remaining.toFixed(2)"></span>
-                        </p>
-                    </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Type de ressource</label>
+                                    <select name="resource_type" x-model="selectedResourceType"
+                                            class="mt-1 block w-full rounded-md border-gray-300">
+                                        <option value="" selected disabled hidden>Sélectionner un type de ressource…</option>
+                                        <template x-for="resource in selectedPhase?.resources ?? []" :key="resource.resource_type">
+                                            <option :value="resource.resource_type" x-text="resource.resource_type"></option>
+                                        </template>
+                                    </select>
+                                    <p class="text-xs text-gray-500 mt-1">
+                                        Restant à trouver pour ce type : <span x-text="remaining.toFixed(2)"></span>
+                                    </p>
+                                </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Description</label>
-                        <textarea name="description"
-                                  class="mt-1 block w-full rounded-md border-gray-300">{{ old('description') }}</textarea>
-                    </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Description</label>
+                                    <textarea name="description"
+                                              class="mt-1 block w-full rounded-md border-gray-300">{{ old('description') }}</textarea>
+                                </div>
 
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Montant</label>
-                        <input type="number" step="0.01" min="0.01" name="amount" x-model="amount"
-                               class="mt-1 block w-full rounded-md border-gray-300">
-                        <p class="text-xs text-gray-500 mt-1">
-                            Cette contribution représente <span x-text="contributionPercent"></span>% du besoin de ce type de
-                            ressource.
-                            Total projeté après ajout : <span x-text="projectedTotalPercent"></span>%
-                        </p>
-                    </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700">Montant</label>
+                                    <input type="number" step="0.01" min="0.01" name="amount" x-model="amount"
+                                           class="mt-1 block w-full rounded-md border-gray-300">
+                                    <p class="text-xs text-gray-500 mt-1">
+                                        Cette contribution représente <span x-text="contributionPercent"></span>% du besoin de ce type de
+                                        ressource.
+                                        Total projeté après ajout : <span x-text="projectedTotalPercent"></span>%
+                                    </p>
+                                </div>
 
-                    <x-projects.buttons text="Enregistrer" type="submit" class="bg-blue-700 text-white p-2" />
-                </form>
+                                <x-projects.buttons text="Enregistrer" type="submit" class="bg-blue-700 text-white p-2" />
+                            </form>
+                        </div>
+                    </template>
+                </div>
 
                 @if ($project->status instanceof \App\Models\States\RecolteState
                     && auth()->user()?->can('launch project')
@@ -122,8 +153,8 @@
                     <form method="POST" action="{{ route('projects.recolte.activate', $project) }}" class="mt-8">
                         @csrf
                         @method('PATCH')
-                        <button type="submit" :disabled="!chiefId"
-                                :class="chiefId ? 'bg-green-700 hover:bg-green-800' : 'bg-gray-300 cursor-not-allowed'"
+                        <button type="submit" :disabled="!initialChiefId"
+                                :class="initialChiefId ? 'bg-green-700 hover:bg-green-800' : 'bg-gray-300 cursor-not-allowed'"
                                 class="text-white p-2 rounded-md">
                             Démarrer le projet (passer en cours)
                         </button>
