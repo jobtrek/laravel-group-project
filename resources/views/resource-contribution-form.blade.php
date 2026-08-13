@@ -9,7 +9,7 @@
                 chiefId: @js(old('leader_id', (string) $project->leader_id)),
                 section: @js(
                     $errors->assignTeam->any() ? 'team' : ($errors->default->any() ? 'resource' : (
-                        $isRecolte ? ((string) $project->leader_id !== '' ? null : 'team') : 'resource'
+                        $isRecolte ? ((string) $project->leader_id !== '' ? 'resource' : 'team') : 'resource'
                     ))
                 )
             }">
