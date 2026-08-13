@@ -9,12 +9,16 @@ return [
 
     'stale_after_months' => env('PROJECTS_STALE_AFTER_MONTHS', 3),
     'recolte_archive_after_months' => env('PROJECTS_RECOLTE_ARCHIVE_AFTER_MONTHS', 12),
+    'completed_retention_months' => env('PROJECTS_COMPLETED_RETENTION_MONTHS', 12),
+    'archive_retention_months' => env('PROJECTS_ARCHIVE_RETENTION_MONTHS', 12),
 
     'staleness_colors' => [
         'warning_after_months' => env('PROJECTS_STALENESS_WARNING_MONTHS', 1),
         'orange_after_months' => env('PROJECTS_STALENESS_ORANGE_MONTHS', 2),
         'red_after_months' => env('PROJECTS_STALENESS_RED_MONTHS', 3),
     ],
+
+    'resource_overfunding_multiplier' => env('PROJECTS_RESOURCE_OVERFUNDING_MULTIPLIER', 2),
 
     'scoring' => [
         'portee' => ['min' => 0, 'max' => 50],

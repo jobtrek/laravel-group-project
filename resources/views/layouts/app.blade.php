@@ -29,6 +29,7 @@
 
             <!-- Page Content -->
             <main>
+                <x-flash-message />
                 {{ $slot }}
             </main>
         </div>

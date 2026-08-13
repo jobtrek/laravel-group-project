@@ -30,7 +30,7 @@ class StoreResourceContributionRequest extends FormRequest
             'phase_id' => ['required', 'integer', 'exists:project_phases,id'],
             'resource_type' => ['required', 'string', 'max:100'],
             'description' => ['nullable', 'string'],
-            'amount' => ['required', 'numeric', 'min:0.01'],
+            'amount' => ['required', 'numeric', 'decimal:0,2', 'min:0.01'],
         ];
     }
 
@@ -60,9 +60,7 @@ class StoreResourceContributionRequest extends FormRequest
             }
 
             $amount = round((float) $this->input('amount'), 2);
-            $maxAllowed = round((float) $resource->amount_needed * 2, 2);
-            $found = (float) $phase->contributions->where('resource_type', $resourceType)->sum('amount');
-            $remaining = round(((float) $resource->amount_needed * 2) - $found, 2);
+            $remaining = $phase->remainingFor($resource);
 
             if ($amount > $remaining) {
                 $validator->errors()->add(

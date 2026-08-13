@@ -2,8 +2,10 @@
 
 namespace App\Jobs;
 
+use App\Enums\Role;
 use App\Mail\StrongerEmailReminder;
 use App\Models\Project;
+use App\Models\User;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Foundation\Queue\Queueable;
 use Illuminate\Support\Facades\Mail;
@@ -30,10 +32,7 @@ class SendStrongerMailProcess implements ShouldQueue
             return;
         }
 
-        $ccEmails = $this->project->members->pluck('email');
-        if ($this->project->recolteManager) {
-            $ccEmails->push($this->project->recolteManager->email);
-        }
+        $ccEmails = User::role(Role::ProjectManager->value)->pluck('email');
 
         Mail::to($leader->email)
             ->cc($ccEmails->all())

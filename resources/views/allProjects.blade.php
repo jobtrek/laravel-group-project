@@ -1,3 +1,7 @@
+@php
+use App\Enums\Stage;
+@endphp
+
 <x-app-layout>
     <div x-data="{ showFilter: false }">
         <div class="min-h-screen mt-9 p-4">
@@ -5,18 +9,18 @@
                 <div class="text-gray-900">
                     <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-3 mb-4">
                         <x-projects.countProjects text="Propositions"
-                                                  :projets="$counts->get('proposition', 0) + $counts->get('révision', 0)"
+                                                  :projets="$counts->get(Stage::Propositions->value, 0)"
                                                   route="propositions"/>
-                        <x-projects.countProjects text="Evaluation" :projets="$counts->get('évaluation', 0)"
+                        <x-projects.countProjects text="Evaluation" :projets="$counts->get(Stage::Evaluation->value, 0)"
                                                   route="evaluation"/>
-                        <x-projects.countProjects text="Récolte" :projets="$counts->get('récolte', 0)"
+                        <x-projects.countProjects text="Récolte" :projets="$counts->get(Stage::Recolte->value, 0)"
                                                   route="recolte"/>
-                        <x-projects.countProjects text="En cours" :projets="$counts->get('en cours', 0)"
+                        <x-projects.countProjects text="En cours" :projets="$counts->get(Stage::EnCours->value, 0)"
                                                   route="en-cours"/>
-                        <x-projects.countProjects text="Complété" :projets="$counts->get('complété', 0)"
+                        <x-projects.countProjects text="Complété" :projets="$counts->get(Stage::Complete->value, 0)"
                                                   route="complete"/>
                         <x-projects.countProjects text="Frigo"
-                                                  :projets="$counts->get('archivé', 0)"
+                                                  :projets="$counts->get(Stage::Archive->value, 0)"
                                                   route="frigo"/>
                     </div>
                     <div class="flex flex-wrap gap-2 justify-between mb-2">
@@ -34,17 +38,7 @@
                     </div>
                     <div class="flex flex-col gap-3.5">
                         @foreach($projects as $project)
-                            @if($project && !$project->isArchived() && !$project->isCompleted())
-                                <x-projects.displayProjects
-                                        :project="$project"
-                                        :status="$project->status"
-                                        :title="$project->title"
-                                        :chef="$project->leader?->name ?? $project->proposer?->name"
-                                        :progress="$project->progress"
-                                        :importance="$project->importance"
-                                        :creation-date="$project->created_at?->locale('fr')?->translatedFormat('d M Y') ?? '—'"
-                                        :updated_at="$project->updated_at"/>
-                            @endif
+                            <x-projects.displayProjects :project="$project"/>
                         @endforeach
                     </div>
 

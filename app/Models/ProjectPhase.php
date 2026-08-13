@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Support\ResourceCap;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -64,7 +65,22 @@ class ProjectPhase extends Model
 
         $progress = round(($this->amount_found / $this->amount_needed) * 100, 2);
 
-        return max(0.0, min($progress, 200.0));
+        return ResourceCap::capProgress($progress);
+    }
+
+    /**
+     * How much may still be contributed towards $resource before hitting the cap.
+     *
+     * Pass $found explicitly when the caller holds a lock and must not read the
+     * (possibly stale) loaded `contributions` relation.
+     */
+    public function remainingFor(PhaseResource $resource, ?float $found = null): float
+    {
+        $found ??= (float) $this->contributions
+            ->where('resource_type', $resource->resource_type)
+            ->sum('amount');
+
+        return ResourceCap::remaining((float) $resource->amount_needed, $found);
     }
 
     /** @return HasMany<PhaseItemCompletion, $this> */

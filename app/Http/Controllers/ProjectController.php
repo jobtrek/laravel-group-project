@@ -4,21 +4,20 @@ namespace App\Http\Controllers;
 
 use App\Actions\RequestMoreInfoAction;
 use App\Actions\UpdateProjectAction;
-use App\Enums\Role;
 use App\Filters\ProjectFilter;
 use App\Http\Requests\FilterProjectsRequest;
 use App\Http\Requests\RequestMoreInfoRequest;
 use App\Http\Requests\UpdateProjectRequest;
 use App\Models\Project;
 use App\Models\ProjectPhase;
-use App\Models\States\EncoursState;
-use App\Models\States\EvaluationState;
-use App\Models\States\RevisionState;
+use App\Models\States\ArchiveState;
+use App\Models\States\CompleteState;
 use App\Models\User;
 use App\Service\ProjectService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\Facades\Redirect;
+use Spatie\ModelStates\Exceptions\CouldNotPerformTransition;
 
 class ProjectController extends Controller
 {
@@ -29,7 +28,8 @@ class ProjectController extends Controller
     public function index(FilterProjectsRequest $request)
     {
         $projects = $this->filter->apply(
-            Project::with(['proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions']),
+            Project::with(['proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions'])
+                ->whereNotState('status', [ArchiveState::class, CompleteState::class]),
             $request
         )->paginate((int) config('projects.per_page', 10))->withQueryString();
 
@@ -42,27 +42,27 @@ class ProjectController extends Controller
 
     public function approve(Project $project)
     {
-        Gate::authorize('review', $project);
+        Gate::authorize('reviewOwn', $project);
 
         ProjectService::approve($project);
 
-        return Redirect::back()->with('status', 'project-approved');
+        return Redirect::back()->with('status', 'Le projet a été validé');
     }
 
     public function deny(Project $project)
     {
-        Gate::authorize('review', $project);
-        abort_if(! $project->status instanceof EvaluationState, 403);
+        Gate::authorize('reviewOwn', $project);
+        abort_if(! $project->isInEvaluation(), 403);
         ProjectService::deny($project);
 
-        return Redirect::back()->with('status', 'project-denied');
+        return Redirect::back()->with('status', 'Projet refusé et archivé avec succès');
     }
 
     public function sendToDirection(Project $project)
     {
         ProjectService::review($project);
 
-        return Redirect::back()->with('status', 'project-sent-to-direction');
+        return Redirect::back()->with('status', 'Projet soumis pour évaluation');
     }
 
     public function requestMoreInfo(
@@ -70,7 +70,7 @@ class ProjectController extends Controller
         Project $project,
         RequestMoreInfoAction $action,
     ): RedirectResponse {
-        Gate::authorize('review', $project);
+        Gate::authorize('reviewOwn', $project);
 
         $action->execute(
             project: $project,
@@ -84,11 +84,8 @@ class ProjectController extends Controller
 
     public function reSubmit(Project $project)
     {
-        abort_if(
-            ($project->proposer_id !== auth()->id() && ! auth()->user()?->can('manage everything'))
-                || ! $project->status instanceof RevisionState,
-            403
-        );
+        Gate::authorize('resubmit', $project);
+
         ProjectService::reSubmit($project);
 
         return Redirect::back()->with('status', 'project-resubmitted');
@@ -114,11 +111,7 @@ class ProjectController extends Controller
 
     public function edit(Project $project)
     {
-        abort_if(
-            ! $project->status->isEditable()
-                || (auth()->id() !== $project->proposer_id && ! auth()->user()?->can('manage everything')),
-            403
-        );
+        Gate::authorize('update', $project);
 
         $project->load(['phases.resources', 'evaluation', 'members']);
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
@@ -136,18 +129,11 @@ class ProjectController extends Controller
 
     public function complete(Project $project)
     {
-        abort_if(
-            ! $project->status instanceof EncoursState
-                || $project->progress < 100
-                || (auth()->id() !== $project->leader_id
-                    && ! auth()->user()?->hasRole(Role::ProjectManager->value)
-                    && ! auth()->user()?->can('manage everything')),
-            403
-        );
+        Gate::authorize('complete', $project);
 
         try {
             ProjectService::complete($project);
-        } catch (\Exception $e) {
+        } catch (CouldNotPerformTransition $e) {
             return back()->with('error', $e->getMessage());
         }
 
@@ -159,5 +145,14 @@ class ProjectController extends Controller
         ProjectService::archive($project);
 
         return back()->with('status', 'project-archived');
+    }
+
+    public function restore(Project $project)
+    {
+        abort_if(! $project->isArchived(), 403);
+
+        ProjectService::restore($project);
+
+        return back()->with('status', 'projet restauré');
     }
 }

@@ -29,13 +29,11 @@ class ProjectService
     public static function review(Project $project): void
     {
         $project->status->transitionTo(EvaluationState::class);
-        $project->save();
     }
 
     public static function approve(Project $project): void
     {
         $project->status->transitionTo(RecolteState::class);
-        $project->save();
 
         if ($proposer = $project->proposer) {
             Mail::to($proposer->email)->queue(new ApprovedEmail($proposer->name));
@@ -45,7 +43,6 @@ class ProjectService
     public static function deny(Project $project): void
     {
         $project->status->transitionTo(ArchiveState::class);
-        $project->save();
 
         if ($proposer = $project->proposer) {
             Mail::to($proposer->email)->queue(new DeniedEmail($proposer->name));
@@ -60,13 +57,11 @@ class ProjectService
     public static function reSubmit(Project $project): void
     {
         $project->status->transitionTo(PropositionState::class);
-        $project->save();
     }
 
     public static function complete(Project $project): void
     {
         $project->status->transitionTo(CompleteState::class);
-        $project->save();
     }
 
     public static function moveToEncours(Project $project): bool
@@ -89,7 +84,18 @@ class ProjectService
         DB::transaction(function () use ($project): void {
             $project->current_stage = $project->getRawOriginal('status');
             $project->archived_at = now();
+            // Persist snapshot metadata before status transition so this does not rely on transitionTo() side effects.
+            $project->save();
             $project->status->transitionTo(ArchiveState::class);
+        });
+    }
+
+    public static function restore(Project $project): void
+    {
+        DB::transaction(function () use ($project): void {
+            $project->restored_at = now();
+            $project->save();
+            $project->status->transitionTo(PropositionState::class);
         });
     }
 }

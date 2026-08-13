@@ -9,6 +9,7 @@ use App\Models\ResourceContribution;
 use App\Models\States\EncoursState;
 use App\Models\States\RecolteState;
 use App\Models\User;
+use App\Support\ResourceCap;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
@@ -42,7 +43,9 @@ class ResourceContributionController extends Controller
 
         $users = User::query()->select('id', 'name')->orderBy('name')->get();
 
-        return view('resource-contribution-form', compact('project', 'phasesData', 'users'));
+        $capPercent = ResourceCap::percent();
+
+        return view('resource-contribution-form', compact('project', 'phasesData', 'users', 'capPercent'));
     }
 
     public function store(StoreResourceContributionRequest $request, Project $project): RedirectResponse
@@ -54,16 +57,16 @@ class ResourceContributionController extends Controller
 
             $phaseId = (int) $request->validated('phase_id');
             $resourceType = $request->validated('resource_type');
-            $amount = (float) $request->validated('amount');
+            $amount = round((float) $request->validated('amount'), 2);
 
             $phase = $lockedProject->phases->firstWhere('id', $phaseId);
             $resource = $phase?->resources->firstWhere('resource_type', $resourceType);
 
-            if ($resource) {
+            if ($phase !== null && $resource !== null) {
                 $foundForResource = (float) ResourceContribution::where('phase_id', $phaseId)
                     ->where('resource_type', $resourceType)
                     ->sum('amount');
-                $remainingForResource = round(((float) $resource->amount_needed * 2) - $foundForResource, 2);
+                $remainingForResource = $phase->remainingFor($resource, $foundForResource);
 
                 if ($amount > $remainingForResource) {
                     throw ValidationException::withMessages([
@@ -86,11 +89,12 @@ class ResourceContributionController extends Controller
             if ($totalNeeded > 0) {
                 $newProgress = (($totalFound + $amount) / $totalNeeded) * 100;
 
-                if ($newProgress > 200) {
+                if ($newProgress > ResourceCap::percent()) {
                     throw ValidationException::withMessages([
                         'amount' => sprintf(
-                            'This contribution would exceed the 200%% project cap (%.2f remaining).',
-                            ($totalNeeded * 2) - $totalFound
+                            'This contribution would exceed the %s%% project cap (%.2f remaining).',
+                            ResourceCap::percent(),
+                            ResourceCap::remaining($totalNeeded, (float) $totalFound)
                         ),
                     ]);
                 }

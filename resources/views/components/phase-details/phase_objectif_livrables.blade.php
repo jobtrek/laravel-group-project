@@ -9,10 +9,9 @@
 ])
 
 <div
-    class="rounded-lg border p-3 flex justify-between transition-colors {{ $completed ? 'bg-green-50 border-green-400' : 'border-gray-200' }}"
-        x-data="{ checked: false }"
-        class="rounded-lg border p-3 flex justify-between items-start gap-2 transition-colors"
-        :class="checked ? 'bg-green-50 border-green-400' : 'border-gray-200'"
+    x-data="{ checked: @js($completed) }"
+    class="rounded-lg border p-3 flex justify-between items-start gap-2 transition-colors {{ $completed ? 'bg-green-50 border-green-400' : 'border-gray-200' }}"
+    :class="checked ? 'bg-green-50 border-green-400' : 'border-gray-200'"
 >
     <div class="flex flex-col gap-4">
         @if($livrables_text)
@@ -21,7 +20,7 @@
             <p class="text-sm font-semibold {{ $completed ? 'text-green-800' : 'text-gray-800' }}">{{ $objectifs_text }}</p>
         @endif
     </div>
-    @if($project && (string) $project->status === 'en cours')
+    @if($project && $project->status instanceof \App\Models\States\EncoursState)
         @can('edit project', $project)
             <form method="POST" action="{{ route('phase_details.items.toggle', [$project, $phase, $itemType, $itemIndex]) }}">
                 @csrf

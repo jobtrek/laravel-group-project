@@ -1,24 +1,20 @@
 @props([
     'project' => null,
-    'status' => '',
-    'title' => '',
-    'chef' => '',
-    'importance' => 0,
-    'progress' => 0,
-    'creationDate' => '',
-    'updatedAt' => null
 ])
 
-<?php
-
-$bgColor = '';
-use Carbon\Carbon;
-
-?>
+@php
+    $status = $project->status;
+    $title = $project->title;
+    $chef = $project->leader?->name ?? $project->proposer?->name;
+    $importance = $project->importance;
+    $progress = $project->progress;
+    $creationDate = $project->created_at?->locale('fr')?->translatedFormat('d M Y') ?? '—';
+    $updatedAt = $project->updated_at;
+@endphp
 <div class="relative border border-white/25 bg-gray-50 text-sm font-medium hover:border-blue-500 transition-colors rounded-2xl p-3 sm:p-5 flex flex-col gap-3">
 
     <a href="{{ route('projects-details', $project) }}"
-       class="absolute inset-0 z-0 text-gray-7000"
+       class="absolute inset-0 z-0 text-gray-700"
        aria-label="Voir le projet {{ $title }}">
     </a>
 
@@ -72,14 +68,23 @@ use Carbon\Carbon;
                     </form>
                 @endcan
             @elseif($project->isInProgress())
-               @if($project->progress >= 100 && auth()->user()?->can('complete project') && (auth()->id() === $project->leader_id || auth()->user()?->hasRole(\App\Enums\Role::ProjectManager->value)))
+               @can('complete', $project)
                     <form action="{{ route('projects.complete', $project) }}" method="POST" class="relative z-10">
                         @csrf
                         @method('PATCH')
                         <x-projects.buttons text="Marquer comme complété" class="bg-green-600 text-white p-2"
                                             type="submit"/>
                     </form>
-                @endif
+                @endcan
+            @elseif($project->isArchived())
+                @can('restore')
+                    <form action="{{ route('projects.restore', $project) }}" method="POST" class="relative z-10">
+                        @csrf
+                        @method('PATCH')
+                        <x-projects.buttons text="Restaurer" class="bg-blue-700 text-white p-2"
+                                            type="submit"/>
+                    </form>
+                @endcan
             @endif
         </div>
     </div>
@@ -116,18 +121,10 @@ use Carbon\Carbon;
             </svg>
             {{ $creationDate }}
         </span>
-        @if($updatedAt instanceof Carbon)
-                <?php
-                $stalenessColors = config('projects.staleness_colors') ?? [];
-[$bgColor, $textColor, $dotColor] = match (true) {
-    $updatedAt->lessThan(now()->subMonths($stalenessColors['red_after_months'] ?? 3)) => ['bg-red-50', 'text-red-700', 'bg-red-500'],
-    $updatedAt->lessThan(now()->subMonths($stalenessColors['orange_after_months'] ?? 2)) => ['bg-orange-50', 'text-orange-700', 'bg-orange-500'],
-    $updatedAt->lessThan(now()->subMonths($stalenessColors['warning_after_months'] ?? 1)) => ['bg-yellow-50', 'text-yellow-700', 'bg-yellow-500'],
-    default => ['bg-green-50', 'text-green-700', 'bg-green-500'],
-};
-?>
-            <span class="inline-flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded-full {{ $bgColor }} {{ $textColor }} ring-1 ring-inset ring-black/5">
-        <span class="w-1.5 h-1.5 rounded-full {{ $dotColor }}"></span>
+        @php $staleness = $project->stalenessBadge(); @endphp
+        @if($staleness)
+            <span class="inline-flex items-center gap-1.5 text-xs font-medium px-2 py-1 rounded-full {{ $staleness['bg'] }} {{ $staleness['text'] }} ring-1 ring-inset ring-black/5">
+        <span class="w-1.5 h-1.5 rounded-full {{ $staleness['dot'] }}"></span>
         <span class="italic">Mis à jour {{ $updatedAt->locale('fr')->diffForHumans() }}</span>
         </span>
         @endif

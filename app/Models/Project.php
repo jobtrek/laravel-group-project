@@ -2,7 +2,7 @@
 
 namespace App\Models;
 
-use App\Enums\Role;
+use App\Enums\Stage;
 use App\Models\States\ArchiveState;
 use App\Models\States\CompleteState;
 use App\Models\States\EncoursState;
@@ -10,6 +10,7 @@ use App\Models\States\EvaluationState;
 use App\Models\States\ProjectState;
 use App\Models\States\PropositionState;
 use App\Models\States\RecolteState;
+use App\Support\ResourceCap;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Casts\Attribute;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -19,9 +20,13 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\HasManyThrough;
 use Illuminate\Database\Eloquent\Relations\HasOne;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Carbon;
+use Illuminate\Support\Collection;
 use Spatie\ModelStates\HasStates;
 
+/**
+ * @property Carbon|null $last_leader_comment_at Only present when the query used scopeNeedingProgressReminder().
+ */
 class Project extends Model
 {
     use HasFactory;
@@ -117,16 +122,24 @@ class Project extends Model
 
         $progress = round(($totalFound / $totalNeeded) * 100, 2);
 
-        return max(0.0, min($progress, 200.0));
+        return ResourceCap::capProgress($progress);
     }
 
-    public static function statusCounts()
+    // refactor this into an eloquent way.
+
+    public static function statusCounts(): Collection
     {
-        return DB::table('projects')
-            ->select('status')
-            ->selectRaw('count(*) as total')
+        $raw = static::query()
             ->groupBy('status')
+            ->selectRaw('status,count(*) as total')
             ->pluck('total', 'status');
+
+        return collect(Stage::cases())->mapWithKeys(
+            fn (Stage $stage) => [
+                $stage->value => collect($stage->statuses())->sum(fn (string $status) => $raw->get($status, 0)),
+            ]
+        );
+
     }
 
     /** @return HasManyThrough<ResourceContribution, ProjectPhase, $this> */
@@ -189,13 +202,26 @@ class Project extends Model
             return false;
         }
 
-        if ($user->can('manage everything')) {
-            return true;
+        return $user->can('comment', $this);
+    }
+
+    /**
+     * @return array{bg: string, text: string, dot: string}|null
+     */
+    public function stalenessBadge(): ?array
+    {
+        if (! $this->updated_at) {
+            return null;
         }
 
-        return $this->status instanceof EncoursState
-            && $user->hasRole(Role::ChefDeProjet->value)
-            && $user->id === $this->leader_id;
+        $stalenessColors = config('projects.staleness_colors') ?? [];
+
+        return match (true) {
+            $this->updated_at->lessThan(now()->subMonths($stalenessColors['red_after_months'] ?? 3)) => ['bg' => 'bg-red-50', 'text' => 'text-red-700', 'dot' => 'bg-red-500'],
+            $this->updated_at->lessThan(now()->subMonths($stalenessColors['orange_after_months'] ?? 2)) => ['bg' => 'bg-orange-50', 'text' => 'text-orange-700', 'dot' => 'bg-orange-500'],
+            $this->updated_at->lessThan(now()->subMonths($stalenessColors['warning_after_months'] ?? 1)) => ['bg' => 'bg-yellow-50', 'text' => 'text-yellow-700', 'dot' => 'bg-yellow-500'],
+            default => ['bg' => 'bg-green-50', 'text' => 'text-green-700', 'dot' => 'bg-green-500'],
+        };
     }
 
     public function scopeNeedingProgressReminder(Builder $query): Builder

@@ -63,15 +63,17 @@ Route::middleware(['auth', 'verified'])->group(function () {
         Route::get('/edit', 'edit')->name('projects.edit');
         Route::patch('/', 'update')->name('projects.update');
         Route::post('/comments', [CommentController::class, 'store'])
+            ->middleware('can:comment,project')
             ->name('projects.comments.store');
         Route::patch('/complete', 'complete')->middleware('can:complete project')->name('projects.complete');
         Route::patch('/archive', 'archive')->middleware('role:admin')->name('projects.archive');
+        Route::patch('/restore', 'restore')->middleware('can:restore')->name('projects.restore');
         Route::patch('/send-to-direction', 'sendToDirection')->middleware('can:send to direction')->name('projects.send-to-direction');
     });
 
     Route::controller(ResourceContributionController::class)->prefix('/projects/{project}/resources')
-        ->middleware('can:add resources')->
-        group(function () {
+        ->middleware('can:add resources')
+        ->group(function () {
             Route::get('/create', 'create')->name('projects.resources.create');
             Route::post('/', 'store')->name('projects.resources.store');
         });
@@ -89,6 +91,6 @@ Route::get('administration', function () {
     $users = User::with('roles')->orderBy('name')->get();
 
     return view('administration', compact('users'));
-})->middleware('can:manage everything')->name('administration');
+})->middleware(['auth', 'verified', 'can:manage everything'])->name('administration');
 
 require __DIR__.'/auth.php';

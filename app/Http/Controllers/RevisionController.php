@@ -7,15 +7,14 @@ use App\Http\Requests\RevisionRequest;
 use App\Models\Project;
 use App\Models\States\RevisionState;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Support\Facades\Gate;
 use Illuminate\View\View;
 
 class RevisionController extends Controller
 {
     public function showForm(Project $project): View|RedirectResponse
     {
-        if ($project->proposer_id !== auth()->id() && ! auth()->user()?->can('manage everything')) {
-            abort(403);
-        }
+        Gate::authorize('submitRevision', $project);
 
         if (! $project->status instanceof RevisionState) {
             return redirect()->route('propositions');
@@ -40,9 +39,7 @@ class RevisionController extends Controller
         Project $project,
         SubmitRevisionAction $action,
     ): RedirectResponse {
-        if ($project->proposer_id !== auth()->id() && ! auth()->user()?->can('manage everything')) {
-            abort(403);
-        }
+        Gate::authorize('submitRevision', $project);
 
         if (! $project->status instanceof RevisionState) {
             return redirect()->route('propositions');

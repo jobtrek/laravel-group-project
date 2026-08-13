@@ -26,7 +26,7 @@ class RecolteController extends StageProjectController
 
     public function assignTeam(AssignProjectTeamRequest $request, Project $project): RedirectResponse
     {
-        abort_if(! $project->status instanceof RecolteState, 404);
+        abort_if(! $project->isInRecolte(), 404);
 
         $members = array_filter($request->validated('membres', []));
         $leaderId = $request->validated('leader_id');
@@ -60,6 +60,6 @@ class RecolteController extends StageProjectController
             return redirect()->back()->with('error', 'Project cannot be moved to Active state. It must be in Recolte state with a project chief assigned.');
         }
 
-        return redirect()->route('en-cours')->with('success', 'Project moved to Active state successfully.');
+        return redirect()->route('en-cours')->with('success', 'Projets mis en activité avec succès');
     }
 }

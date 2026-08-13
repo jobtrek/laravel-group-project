@@ -1,32 +1,28 @@
 <?php
 
+use App\Enums\Role;
 use App\Models\Project;
 use App\Models\States\ArchiveState;
 use App\Models\States\EvaluationState;
 use App\Models\States\RecolteState;
 use App\Models\States\RevisionState;
 use App\Models\User;
+use Database\Seeders\RoleAndPermissionSeeder;
 use Illuminate\Foundation\Testing\RefreshDatabase;
 use Illuminate\Support\Facades\Mail;
-use Spatie\Permission\Models\Permission;
-use Spatie\Permission\Models\Role as PermissionRole;
 
 uses(RefreshDatabase::class);
 
 beforeEach(function () {
     Mail::fake();
 
-    Permission::firstOrCreate(['name' => 'approve', 'guard_name' => 'web']);
-    Permission::firstOrCreate(['name' => 'deny', 'guard_name' => 'web']);
-    Permission::firstOrCreate(['name' => 'review', 'guard_name' => 'web']);
-    Permission::firstOrCreate(['name' => 'manage everything', 'guard_name' => 'web']);
-    PermissionRole::firstOrCreate(['name' => 'direction', 'guard_name' => 'web']);
+    $this->seed(RoleAndPermissionSeeder::class);
 });
 
 it('forbids a direction user from approving their own project', function () {
 
     $direction = User::factory()->create();
-    $direction->givePermissionTo('approve');
+    $direction->assignRole(Role::Direction->value);
 
     $project = Project::factory()->evaluation()->create(['proposer_id' => $direction->id]);
 
@@ -39,7 +35,7 @@ it('forbids a direction user from approving their own project', function () {
 it('allows a direction user to approve a project they did not propose', function () {
 
     $direction = User::factory()->create();
-    $direction->givePermissionTo('approve');
+    $direction->assignRole(Role::Direction->value);
 
     $proposer = User::factory()->create();
     $project = Project::factory()->evaluation()->create(['proposer_id' => $proposer->id]);
@@ -53,7 +49,7 @@ it('allows a direction user to approve a project they did not propose', function
 it('allows an admin with manage everything permission to approve their own project', function () {
 
     $admin = User::factory()->create();
-    $admin->givePermissionTo(['approve', 'manage everything']);
+    $admin->assignRole(Role::Admin->value);
 
     $project = Project::factory()->evaluation()->create(['proposer_id' => $admin->id]);
 
@@ -66,7 +62,7 @@ it('allows an admin with manage everything permission to approve their own proje
 it('forbids a direction user from denying their own project', function () {
 
     $direction = User::factory()->create();
-    $direction->givePermissionTo('deny');
+    $direction->assignRole(Role::Direction->value);
 
     $project = Project::factory()->evaluation()->create(['proposer_id' => $direction->id]);
 
@@ -79,7 +75,7 @@ it('forbids a direction user from denying their own project', function () {
 it('allows a direction user to deny a project they did not propose', function () {
 
     $direction = User::factory()->create();
-    $direction->givePermissionTo('deny');
+    $direction->assignRole(Role::Direction->value);
 
     $proposer = User::factory()->create();
     $project = Project::factory()->evaluation()->create(['proposer_id' => $proposer->id]);
@@ -93,7 +89,7 @@ it('allows a direction user to deny a project they did not propose', function ()
 it('allows an admin with manage everything permission to deny their own project', function () {
 
     $admin = User::factory()->create();
-    $admin->givePermissionTo(['deny', 'manage everything']);
+    $admin->assignRole(Role::Admin->value);
 
     $project = Project::factory()->evaluation()->create(['proposer_id' => $admin->id]);
 
@@ -106,8 +102,7 @@ it('allows an admin with manage everything permission to deny their own project'
 it('forbids a direction user from requesting more info on their own project', function () {
 
     $direction = User::factory()->create();
-    $direction->givePermissionTo('review');
-    $direction->assignRole('direction');
+    $direction->assignRole(Role::Direction->value);
 
     $project = Project::factory()->evaluation()->create(['proposer_id' => $direction->id]);
 
@@ -122,8 +117,7 @@ it('forbids a direction user from requesting more info on their own project', fu
 it('allows a direction user to request more info on a project they did not propose', function () {
 
     $direction = User::factory()->create();
-    $direction->givePermissionTo('review');
-    $direction->assignRole('direction');
+    $direction->assignRole(Role::Direction->value);
 
     $proposer = User::factory()->create();
     $project = Project::factory()->evaluation()->create(['proposer_id' => $proposer->id]);

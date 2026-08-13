@@ -7,3 +7,7 @@
 body{
     background: linear-gradient(to bottom, #0d1b3d, #0d1b3d, #162456);
 }
+
+[x-cloak]{
+    display: none !important;
+}
