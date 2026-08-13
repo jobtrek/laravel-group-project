@@ -28,7 +28,16 @@ class ProjectController extends Controller
     public function index(FilterProjectsRequest $request)
     {
         $projects = $this->filter->apply(
-            Project::with(['proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions'])
+            Project::with([
+                'proposer',
+                'leader',
+                'evaluation',
+                'phases' => function ($query) {
+                    $query
+                        ->withSum('resources as amount_needed', 'amount_needed')
+                        ->withSum('contributions as amount_found', 'amount');
+                },
+            ])
                 ->whereNotState('status', [ArchiveState::class, CompleteState::class]),
             $request
         )->paginate((int) config('projects.per_page', 10))->withQueryString();

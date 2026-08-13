@@ -26,7 +26,14 @@ abstract class StageProjectController extends Controller
     protected function baseQuery(): Builder
     {
         return Project::with([
-            'proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions',
+            'proposer',
+            'leader',
+            'evaluation',
+            'phases' => function ($query) {
+                $query
+                    ->withSum('resources as amount_needed', 'amount_needed')
+                    ->withSum('contributions as amount_found', 'amount');
+            },
         ])->whereState('status', $this->states());
     }
 

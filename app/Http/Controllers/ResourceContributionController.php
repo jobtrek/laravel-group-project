@@ -21,11 +21,21 @@ class ResourceContributionController extends Controller
     {
         abort_if(
             ! $project->status instanceof RecolteState &&
-            ! $project->status instanceof EncoursState,
+                ! $project->status instanceof EncoursState,
             404
         );
 
-        $project->load(['phases.resources', 'phases.contributions', 'leader', 'members']);
+        $project->load([
+            'phases' => function ($query) {
+                $query
+                    ->with('resources')
+                    ->with('contributions')
+                    ->withSum('resources as amount_needed', 'amount_needed')
+                    ->withSum('contributions as amount_found', 'amount');
+            },
+            'leader',
+            'members',
+        ]);
 
         $phasesData = $project->phases->map(fn (ProjectPhase $phase) => [
             'id' => $phase->id,
@@ -53,7 +63,13 @@ class ResourceContributionController extends Controller
         DB::transaction(function () use ($request, $project): void {
             // Lock the parent project record to serialize contributions and prevent race conditions
             $lockedProject = Project::lockForUpdate()->findOrFail($project->id);
-            $lockedProject->load('phases.resources');
+            $lockedProject->load([
+                'phases' => function ($query) {
+                    $query
+                        ->with('resources')
+                        ->withSum('resources as amount_needed', 'amount_needed');
+                },
+            ]);
 
             $phaseId = (int) $request->validated('phase_id');
             $resourceType = $request->validated('resource_type');
@@ -83,8 +99,7 @@ class ResourceContributionController extends Controller
             $totalFound = ResourceContribution::whereIn('phase_id', $phaseIds)
                 ->sum('amount');
 
-            $totalNeeded = $lockedProject->phases
-                ->sum(fn (ProjectPhase $phase): float => $phase->amount_needed);
+            $totalNeeded = (float) $lockedProject->phases->sum('amount_needed');
 
             if ($totalNeeded > 0) {
                 $newProgress = (($totalFound + $amount) / $totalNeeded) * 100;
