@@ -19,7 +19,7 @@
             </div>
             <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
                 @foreach ($users as $user)
-                    <x-user-card :name="$user->name" :email="$user->email">
+                    <x-user-card :name="$user->name" :email="$user->email" slotPosition='below'>
                         @if ($user->roles->isNotEmpty())
                             <div class="flex flex-wrap gap-1.5 mt-3">
                                 @foreach ($user->roles as $role)
