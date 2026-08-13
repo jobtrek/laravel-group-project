@@ -133,6 +133,36 @@ it('does not escalate when the leader comments after the reminder', function () 
     expect($project->refresh()->escalated_at)->toBeNull();
 });
 
+it('still escalates when the project row was edited but no comment was posted', function () {
+    Bus::fake();
+
+    $leader = User::factory()->create();
+
+    $project = Project::factory()->encours()->create([
+        'leader_id' => $leader->id,
+        'updated_at' => now()->subMonths(2),
+        'last_reminder_at' => null,
+        'escalated_at' => null,
+    ]);
+
+    Artisan::call('mail:send-reminders');
+    Bus::assertDispatchedTimes(SendMailProcess::class, 1);
+
+    $firstReminderAt = $project->refresh()->last_reminder_at;
+
+    // Somebody edits the project row two days later — no comment from the leader,
+    // so the silence is unbroken and updated_at must not stall the escalation.
+    $this->travel(2)->days();
+    $project->update(['title' => 'Renamed while still silent']);
+    expect($project->refresh()->updated_at->greaterThan($firstReminderAt))->toBeTrue();
+
+    $this->travel(6)->days();
+    Artisan::call('mail:send-warnings');
+    Bus::assertDispatchedTimes(SendStrongerMailProcess::class, 1);
+
+    expect($project->refresh()->escalated_at)->not->toBeNull();
+});
+
 it('does not remind or warn a freshly-launched En cours project with no comments', function () {
     Bus::fake();
 

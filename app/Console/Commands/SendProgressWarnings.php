@@ -22,8 +22,11 @@ class SendProgressWarnings extends Command
             ->whereNull('escalated_at')
             ->where('last_reminder_at', '<', now()->subWeeks($escalationAfterWeeks))
             ->get()
-            ->filter(fn (Project $project) => ($project->last_leader_comment_at ?? $project->updated_at)
-                ->lt($project->last_reminder_at));
+            // A non-null last_reminder_at already proves the month of silence was
+            // reached, so only a leader comment since then can stop the escalation.
+            // Falling back to updated_at would let any row edit cancel it.
+            ->filter(fn (Project $project) => $project->last_leader_comment_at === null
+                || $project->last_leader_comment_at->lt($project->last_reminder_at));
 
         foreach ($overdueProjects as $project) {
             SendStrongerMailProcess::dispatch($project);
