@@ -5,7 +5,7 @@
 @php
     $status = $project->status;
     $title = $project->title;
-    $chef = $project->leader?->name ?? $project->proposer?->name;
+    $chef = $project->leader?->name ?? $project->proposer->name;
     $importance = $project->importance;
     $progress = $project->progress;
     $creationDate = $project->created_at?->locale('fr')?->translatedFormat('d M Y') ?? '—';
