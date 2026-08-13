@@ -15,13 +15,15 @@
             </div>
 
             <div class="grid grid-cols-1 gap-4">
-                @foreach ($members as $member)
+                @forelse ($members as $member)
                     <x-user-card :name="$member->name" :roles="$member->roles" :email="$member->email">
                         @if ($member === $project->leader)
                             <div class="ml-auto">Leader</div>
                         @endif
                     </x-user-card>
-                @endforeach
+                @empty
+                    <p>Aucun membres selectionnés</p>
+                @endforelse
             </div>
 
             <div class="flex items-center justify-between mb-6 pb-4 border-b border-gray-100">

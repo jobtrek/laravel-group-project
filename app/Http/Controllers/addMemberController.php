@@ -10,7 +10,12 @@ class addMemberController extends Controller
         public function render(Project $project)
     {
         $users = User::all();
-        $members = $project->members()->get()->push($project->leader);
+        $members = $project->members()->get();
+        
+        if($project->leader){
+            $members->push($project->leader);
+        }
+
         return view('addMembersToProject', compact('project', 'users', 'members'
         ));
     }
