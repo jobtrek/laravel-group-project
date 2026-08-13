@@ -7,8 +7,8 @@
     impact: @js(old('impact', '')),
     confiance: @js(old('confiance', '')),
     effort: @js(old('effort', '')),
-    buts: @js(old('buts', [''])).map((value) => ({ id: crypto.randomUUID(), value })),
-    phases: @js(old('phases', [
+    buts: window.listHelpers.toIdList(@js(old('buts', ['']))),
+    ...window.phaseRepeaterFactory(@js(old('phases', [
         [
             'titre' => '',
             'duree' => '',
@@ -17,7 +17,7 @@
             'livrables' => [''],
             'ressources_necessaires' => [['resource_type' => '', 'amount_needed' => '']]
         ]
-    ])),
+    ])), { resourcesKey: 'ressources_necessaires', defaultResources: [{ resource_type: '', amount_needed: '' }] }),
     errors: {},
     phaseErrors: [],
 
@@ -41,9 +41,6 @@
             this.phases.splice(i, 1);
             this.phaseErrors.splice(i, 1);
         }
-    },
-    removeItem(arr, i) {
-        window.listHelpers.remove(arr, i);
     },
     validateStep1() {
         this.errors = {};

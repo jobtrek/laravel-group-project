@@ -46,14 +46,14 @@
                                     <input type="text" :name="'phases[' + pi + '][objectifs][' + oi + ']'"
                                         x-model="phase.objectifs[oi]" placeholder="Objectif"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    <button type="button" @click="removeItem(phase.objectifs, oi)"
+                                    <button type="button" @click="removeObjectif(pi, oi)"
                                         x-show="phase.objectifs.length > 1"
                                         class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
                                 </div>
                             </template>
                         </div>
                         <p x-show="phaseErrors[pi]?.objectifs" x-text="phaseErrors[pi]?.objectifs || ''" class="mt-1 text-sm text-red-600"></p>
-                        <button type="button" @click="phase.objectifs.push('')"
+                        <button type="button" @click="addObjectif(pi)"
                             class="mt-2 text-sm text-indigo-600 hover:underline">+ Ajouter un objectif</button>
                     </div>
 
@@ -66,14 +66,14 @@
                                     <input type="text" :name="'phases[' + pi + '][livrables][' + li + ']'"
                                         x-model="phase.livrables[li]" placeholder="Livrable"
                                         class="block w-full rounded-md border-gray-300 shadow-sm focus:border-indigo-500 focus:ring-indigo-500">
-                                    <button type="button" @click="removeItem(phase.livrables, li)"
+                                    <button type="button" @click="removeLivrable(pi, li)"
                                         x-show="phase.livrables.length > 1"
                                         class="px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
                                 </div>
                             </template>
                         </div>
                         <p x-show="phaseErrors[pi]?.livrables" x-text="phaseErrors[pi]?.livrables || ''" class="mt-1 text-sm text-red-600"></p>
-                        <button type="button" @click="phase.livrables.push('')"
+                        <button type="button" @click="addLivrable(pi)"
                             class="mt-2 text-sm text-indigo-600 hover:underline">+ Ajouter un livrable</button>
                     </div>
 
@@ -92,14 +92,14 @@
                                             class="block w-full rounded-md border-gray-300 shadow-sm pr-12 focus:border-indigo-500 focus:ring-indigo-500">
                                         <span class="pointer-events-none absolute inset-y-0 right-3 flex items-center text-sm text-gray-400">CHF</span>
                                     </div>
-                                    <button type="button" @click="removeItem(phase.ressources_necessaires, ri)"
+                                    <button type="button" @click="removeResource(pi, ri)"
                                         x-show="phase.ressources_necessaires.length > 1"
                                         class="self-start sm:self-center px-2 py-1 text-red-500 hover:text-red-700 text-lg font-bold leading-none">&times;</button>
                                 </div>
                             </template>
                         </div>
                         <p x-show="phaseErrors[pi]?.ressources" x-text="phaseErrors[pi]?.ressources || ''" class="mt-1 text-sm text-red-600"></p>
-                        <button type="button" @click="phase.ressources_necessaires.push({ resource_type: '', amount_needed: '' })"
+                        <button type="button" @click="addResource(pi)"
                             class="mt-2 text-sm text-indigo-600 hover:underline">+ Ajouter une ressource</button>
                     </div>
                 </div>
