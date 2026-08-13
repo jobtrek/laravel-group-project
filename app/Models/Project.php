@@ -50,6 +50,7 @@ class Project extends Model
         'archived_at' => 'datetime',
         'restored_at' => 'datetime',
         'last_reminder_at' => 'datetime',
+        'escalated_at' => 'datetime',
         'status' => ProjectState::class,
     ];
 
