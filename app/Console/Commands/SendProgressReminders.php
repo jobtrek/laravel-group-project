@@ -44,13 +44,13 @@ class SendProgressReminders extends Command
      */
     private function isDueForReminder(Project $project, int $reminderAfterMonths): bool
     {
-        $lastComment = $project->last_leader_comment_at;
+        $lastActivity = $project->last_leader_comment_at ?? $project->updated_at;
 
-        if ($lastComment !== null && $lastComment->gte(now()->subMonths($reminderAfterMonths))) {
+        if ($lastActivity->gte(now()->subMonths($reminderAfterMonths))) {
             return false;
         }
 
         return $project->last_reminder_at === null
-            || ($lastComment !== null && $lastComment->gt($project->last_reminder_at));
+            || $lastActivity->gt($project->last_reminder_at);
     }
 }

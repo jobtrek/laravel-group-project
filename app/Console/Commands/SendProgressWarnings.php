@@ -22,8 +22,8 @@ class SendProgressWarnings extends Command
             ->whereNull('escalated_at')
             ->where('last_reminder_at', '<', now()->subWeeks($escalationAfterWeeks))
             ->get()
-            ->filter(fn (Project $project) => $project->last_leader_comment_at === null
-                || $project->last_leader_comment_at->lt($project->last_reminder_at));
+            ->filter(fn (Project $project) => ($project->last_leader_comment_at ?? $project->updated_at)
+                ->lt($project->last_reminder_at));
 
         foreach ($overdueProjects as $project) {
             SendStrongerMailProcess::dispatch($project);

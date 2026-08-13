@@ -133,6 +133,25 @@ it('does not escalate when the leader comments after the reminder', function () 
     expect($project->refresh()->escalated_at)->toBeNull();
 });
 
+it('does not remind or warn a freshly-launched En cours project with no comments', function () {
+    Bus::fake();
+
+    $leader = User::factory()->create();
+
+    $project = Project::factory()->encours()->create([
+        'leader_id' => $leader->id,
+        'updated_at' => now(),
+        'last_reminder_at' => null,
+        'escalated_at' => null,
+    ]);
+
+    Artisan::call('mail:send-reminders');
+    Bus::assertNotDispatched(SendMailProcess::class);
+
+    Artisan::call('mail:send-warnings');
+    Bus::assertNotDispatched(SendStrongerMailProcess::class);
+});
+
 it('CCs only users with the project manager role on the stronger reminder', function () {
     Mail::fake();
     $this->seed(RoleAndPermissionSeeder::class);
