@@ -28,7 +28,16 @@ class ProjectController extends Controller
     public function index(FilterProjectsRequest $request)
     {
         $projects = $this->filter->apply(
-            Project::with(['proposer', 'leader', 'evaluation', 'phases.resources', 'phases.contributions'])
+            Project::with([
+                'proposer',
+                'leader',
+                'evaluation',
+                'phases' => function ($query) {
+                    $query
+                        ->withSum('resources as amount_needed', 'amount_needed')
+                        ->withSum('contributions as amount_found', 'amount');
+                },
+            ])
                 ->whereNotState('status', [ArchiveState::class, CompleteState::class]),
             $request
         )->paginate((int) config('projects.per_page', 10))->withQueryString();
@@ -93,7 +102,20 @@ class ProjectController extends Controller
 
     public function detailPage(Project $project)
     {
-        $project->load(['proposer', 'leader', 'evaluation', 'phases', 'phases.resources', 'members', 'comments', 'comments.user']);
+        $project->load([
+            'proposer',
+            'leader',
+            'evaluation',
+            'phases' => function ($query) {
+                $query
+                    ->with('resources')
+                    ->withSum('resources as amount_needed', 'amount_needed')
+                    ->withSum('contributions as amount_found', 'amount');
+            },
+            'members',
+            'comments',
+            'comments.user',
+        ]);
 
         return view('projectsDetails', compact('project'));
     }
@@ -102,7 +124,14 @@ class ProjectController extends Controller
     {
         abort_if($phase->project_id !== $project->id, 404);
 
-        $phase->load(['resources', 'contributions', 'itemCompletions']);
+        $phase->load([
+            'resources',
+            'contributions',
+            'itemCompletions',
+        ]);
+
+        $phase->loadSum('resources as amount_needed', 'amount_needed');
+        $phase->loadSum('contributions as amount_found', 'amount');
 
         $phaseNumber = $project->phases->pluck('id')->search($phase->id) + 1;
 

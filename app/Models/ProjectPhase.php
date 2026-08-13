@@ -47,23 +47,16 @@ class ProjectPhase extends Model
         return $this->hasMany(ResourceContribution::class, 'phase_id');
     }
 
-    public function getAmountNeededAttribute(): float
-    {
-        return (float) $this->resources->sum('amount_needed');
-    }
-
-    public function getAmountFoundAttribute(): float
-    {
-        return (float) $this->contributions->sum('amount');
-    }
-
     public function getProgressAttribute(): float
     {
-        if ($this->amount_needed <= 0) {
+        $amountNeeded = (float) ($this->attributes['amount_needed'] ?? 0);
+        $amountFound = (float) ($this->attributes['amount_found'] ?? 0);
+
+        if ($amountNeeded <= 0) {
             return 0.0;
         }
 
-        $progress = round(($this->amount_found / $this->amount_needed) * 100, 2);
+        $progress = round(($amountFound / $amountNeeded) * 100, 2);
 
         return ResourceCap::capProgress($progress);
     }

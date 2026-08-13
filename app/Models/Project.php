@@ -139,7 +139,6 @@ class Project extends Model
                 $stage->value => collect($stage->statuses())->sum(fn (string $status) => $raw->get($status, 0)),
             ]
         );
-
     }
 
     /** @return HasManyThrough<ResourceContribution, ProjectPhase, $this> */
@@ -159,9 +158,10 @@ class Project extends Model
     {
         return Attribute::make(
             get: function (): float {
-                $totalNeeded = $this->loadMissing('phases.resources')->phases->sum('amount_needed');
-
-                return $totalNeeded;
+                return (float) $this->phases()
+                    ->withSum('resources as amount_needed', 'amount_needed')
+                    ->get()
+                    ->sum('amount_needed');
             }
         );
     }
